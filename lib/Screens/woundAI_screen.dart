@@ -1,0 +1,278 @@
+import 'dart:io';
+import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'woundAI_results.dart';
+
+class WoundAiScreen extends StatefulWidget {
+  const WoundAiScreen({super.key});
+
+  @override
+  State<WoundAiScreen> createState() => _WoundAiScreenState();
+}
+
+class _WoundAiScreenState extends State<WoundAiScreen> {
+  File? _image;
+  bool _isAnalyzing = false;
+
+  final ImagePicker _picker = ImagePicker();
+
+  // 📷 CAMERA
+  Future<void> _pickFromCamera() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.camera);
+
+    if (pickedFile != null) {
+      setState(() {
+        _image = File(pickedFile.path);
+      });
+    }
+  }
+
+  // 🖼 GALLERY
+  Future<void> _pickFromGallery() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      setState(() {
+        _image = File(pickedFile.path);
+      });
+    }
+  }
+
+  // 📌 BOTTOM SHEET
+  void _showImageSourcePicker() {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        return Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                "Select Image",
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+              const SizedBox(height: 20),
+
+              // Camera
+              ListTile(
+                leading: const Icon(Icons.camera_alt),
+                title: const Text("Take Photo"),
+                onTap: () {
+                  Navigator.pop(context);
+                  _pickFromCamera();
+                },
+              ),
+
+              // Gallery
+              ListTile(
+                leading: const Icon(Icons.photo),
+                title: const Text("Choose from Gallery"),
+                onTap: () {
+                  Navigator.pop(context);
+                  _pickFromGallery();
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  // ✅ ANALYZE
+  void _analyzeImage() async {
+    if (_image == null || _isAnalyzing) return;
+
+    setState(() {
+      _isAnalyzing = true;
+    });
+
+    await Future.delayed(const Duration(seconds: 2));
+
+    if (!mounted) return;
+
+    setState(() {
+      _isAnalyzing = false;
+    });
+
+    // 🚀 Navigate ABOVE navbar
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => const WoundResultScreen(),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFFE7EFE8),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(22, 18, 22, 20),
+          child: Column(
+            children: [
+              const Text(
+                "Wound Analyzer",
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w800,
+                  color: Colors.black,
+                ),
+              ),
+              const SizedBox(height: 12),
+              const Text(
+                "Take or upload a photo — AI checks severity instantly",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Color(0xFF7A9A88),
+                ),
+              ),
+              const SizedBox(height: 30),
+
+              Expanded(
+                child: Center(
+                  child: _image == null
+                      ? _buildUploadUI()
+                      : _buildPreviewUI(),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // 📷 Upload UI
+  Widget _buildUploadUI() {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        GestureDetector(
+          onTap: _showImageSourcePicker,
+          child: Container(
+            padding: const EdgeInsets.all(28),
+            decoration: const BoxDecoration(
+              color: Color(0xFFDCEFE5),
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(
+              Icons.camera_alt,
+              size: 60,
+              color: Color(0xFF1E5A43),
+            ),
+          ),
+        ),
+        const SizedBox(height: 20),
+        const Text(
+          "Tap to Capture Photo",
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w800,
+            color: Color(0xFF1E5A43),
+          ),
+        ),
+        const SizedBox(height: 6),
+        const Text(
+          "Take wound image",
+          style: TextStyle(
+            color: Color(0xFF7A9A88),
+          ),
+        ),
+      ],
+    );
+  }
+
+  // 🖼 Preview UI
+  Widget _buildPreviewUI() {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        ClipRRect(
+          borderRadius: BorderRadius.circular(20),
+          child: Image.file(
+            _image!,
+            width: double.infinity,
+            height: 180,
+            fit: BoxFit.cover,
+          ),
+        ),
+        const SizedBox(height: 10),
+
+        // Change image
+        Row(
+          children: [
+            const Icon(Icons.refresh,
+                size: 18, color: Color(0xFF6B8F7B)),
+            const SizedBox(width: 6),
+            GestureDetector(
+              onTap: _showImageSourcePicker,
+              child: const Text(
+                "Use a different photo",
+                style: TextStyle(
+                  color: Color(0xFF6B8F7B),
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+          ],
+        ),
+
+        const SizedBox(height: 20),
+
+        // Analyze Button
+        GestureDetector(
+          onTap: _isAnalyzing ? null : _analyzeImage,
+          child: Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            decoration: BoxDecoration(
+              gradient: const LinearGradient(
+                colors: [
+                  Color(0xFF2E7D5B),
+                  Color(0xFF4CAF84),
+                ],
+              ),
+              borderRadius: BorderRadius.circular(30),
+            ),
+            child: Center(
+              child: _isAnalyzing
+                  ? const SizedBox(
+                      height: 22,
+                      width: 22,
+                      child: CircularProgressIndicator(
+                        color: Colors.white,
+                        strokeWidth: 2,
+                      ),
+                    )
+                  : const Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.search, color: Colors.white),
+                        SizedBox(width: 8),
+                        Text(
+                          "Analyze with AI",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ],
+                    ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
