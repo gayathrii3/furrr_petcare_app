@@ -1,7 +1,11 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'woundAI_results.dart';
+import 'package:furrr/Screens/Wound Analyzer/woundAI_results.dart';
+import '../../widgets/custom_back_button.dart';
+import '../../services/translation_service.dart';
+import '../../services/ai_analysis_service.dart';
+import 'package:furrr/models/ai_health_analysis.dart';
 
 class WoundAiScreen extends StatefulWidget {
   const WoundAiScreen({super.key});
@@ -11,6 +15,21 @@ class WoundAiScreen extends StatefulWidget {
 }
 
 class _WoundAiScreenState extends State<WoundAiScreen> {
+  @override
+  void initState() {
+    super.initState();
+    TranslationService().addListener(_onLanguageChanged);
+  }
+
+  @override
+  void dispose() {
+    TranslationService().removeListener(_onLanguageChanged);
+    super.dispose();
+  }
+
+  void _onLanguageChanged() {
+    if (mounted) setState(() {});
+  }
   File? _image;
   bool _isAnalyzing = false;
 
@@ -94,20 +113,31 @@ class _WoundAiScreenState extends State<WoundAiScreen> {
       _isAnalyzing = true;
     });
 
-    await Future.delayed(const Duration(seconds: 2));
+    try {
+      final analysis = await AiAnalysisService().analyzeWound(_image!);
 
-    if (!mounted) return;
+      if (!mounted) return;
 
-    setState(() {
-      _isAnalyzing = false;
-    });
+      setState(() {
+        _isAnalyzing = false;
+      });
 
-    // 🚀 Navigate ABOVE navbar
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => const WoundResultScreen(),
-      ),
-    );
+      // 🚀 Navigate with real analysis data
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) => WoundResultScreen(analysis: analysis),
+        ),
+      );
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isAnalyzing = false;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Error analyzing image: $e")),
+        );
+      }
+    }
   }
 
   @override
@@ -119,13 +149,19 @@ class _WoundAiScreenState extends State<WoundAiScreen> {
           padding: const EdgeInsets.fromLTRB(22, 18, 22, 20),
           child: Column(
             children: [
-              const Text(
-                "Wound Analyzer",
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w800,
-                  color: Colors.black,
-                ),
+              Row(
+                children: [
+                  const CustomBackButton(),
+                  const SizedBox(width: 15),
+                  Text(
+                    TranslationService.t('wound_analyzer'),
+                    style: const TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.w900,
+                      color: Colors.black,
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: 12),
               const Text(
@@ -254,14 +290,14 @@ class _WoundAiScreenState extends State<WoundAiScreen> {
                         strokeWidth: 2,
                       ),
                     )
-                  : const Row(
+                  : Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.search, color: Colors.white),
-                        SizedBox(width: 8),
+                        const Icon(Icons.search, color: Colors.white),
+                        const SizedBox(width: 8),
                         Text(
-                          "Analyze with AI",
-                          style: TextStyle(
+                          TranslationService.t('analyze_ai'),
+                          style: const TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.w700,
                             fontSize: 16,

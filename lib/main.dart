@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:furrr/screens/main_nav.dart';
+import 'screens/splash_screen.dart';
 
 void main() {
   runApp(const FurrrApp());
@@ -10,9 +10,23 @@ class FurrrApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: MainNav(), 
+      title: 'Furrr',
+      theme: ThemeData(
+        primaryColor: const Color(0xFF006949),
+        scaffoldBackgroundColor: Colors.white,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xFF006949),
+          primary: const Color(0xFF006949),
+          secondary: const Color(0xFFA6FDD3),
+        ),
+        fontFamily: 'Manrope',
+        textTheme: const TextTheme(
+          bodyMedium: TextStyle(color: Color(0xFF00362B)),
+        ),
+      ),
+      home: const SplashScreen(),
     );
   }
 }

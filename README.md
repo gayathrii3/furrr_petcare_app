@@ -1,74 +1,60 @@
-# Furrr - 🐾 PetCare AI
+# Furrr - 🐾 PetCare AI (Advanced Companion)
 
-> An AI-powered pet healthcare companion app built for Indian dog owners — with breed-aware health intelligence, vernacular support, and hyperlocal community features.
-
----
-
-## What is Furr - PetCare AI?
-
-Furrr is a mobile-app of a dog health and community app designed specifically for the Indian market. Most pet apps are built for Western audiences — Furrr PetCare AI focuses on problems that Indian pet owners actually face: desi food safety, vernacular language barriers, monsoon health risks, and lack of hyperlocal pet services in Tier 2/3 cities.
+**Furrr** is a state-of-the-art Flutter application designed to provide Indian pet owners with intelligent, real-time health and behavioral insights. Combining modern UI design with Google's **Gemini 2.0 Flash** AI and Google Places, Furrr offers a comprehensive ecosystem for proactive pet care tailored to the Indian market.
 
 ---
 
-## Features
+## 🚀 Key Features
 
-### AI-Powered
-| Feature | Description |
-|---|---|
-| **AI Wound Analyzer** | Upload a photo of your dog's wound — Claude analyzes severity, type, and recommends action |
-| **AI Symptom Checker** | Select symptoms → AI generates a likely diagnosis with urgency level and next steps |
-| **AI Behavior Analyzer** | Describe unusual behavior → AI explains the cause and what to do |
+### 🧠 AI Health Ecosystem
+- **AI Wound Analyzer**: Upload or capture images of pet wounds for instant AI-driven severity assessment and first-aid guidance (Powered by Gemini).
+- **Smart Symptom Checker**: Select symptoms and provide custom descriptions to receive dynamic health verdicts and professional advice.
+- **Behavior Analyzer**: Transform pet behavior observations into actionable insights using AI to understand the "Why" and "What to do."
 
-| Feature | Description |
-|---|---|
-| **Indian Food Safety Guide** | 18 Indian foods (Roti, Dal, Idli, Biryani, Paneer, Mango, Jaggery...) rated Safe / Caution / Toxic |
-| **Vernacular Support** | Full UI available in English, Hindi (हिन्दी), Telugu (తెలుగు), Tamil (தமிழ்) |
-| **Breed Health Risk Engine** | Proactive genetic risk analysis for 9 breeds including Indie/Desi dogs — age-filtered |
+### 📍 Localized Services & Real-World Data
+- **Real-Time Find Vets**: Uses GPS and the **Google Places API** to find actual veterinary clinics near you.
+- **Indian Food Safety Guide**: Specialized guide for Indian foods (Roti, Dal, Idli, Paneer, Jaggery...) rated for pet safety.
+- **Location-Based Content**: Neighborhood-optimized service lists for Indian cities (starting with Hyderabad).
 
-### Unique Features
-| Feature | Description |
-|---|---|
-| **Walker Finder** | Find verified dog walkers and pet sitters within 2km with ratings, pricing, and booking |
-| **Playdate Finder** | Match your dog with compatible dogs nearby by size, temperament, and vaccination status |
-| **Vaccine Tracker** | Smart status per vaccine — Up to date / Due Soon / Overdue with days countdown |
-| **Pet Reels** | YouTube Shorts feed of pet videos embedded in a vertical scroll experience |
+### 🐕 Breed-Specific Intelligence
+- **Custom Care Guides**: The app adapts based on your pet's breed, offering tailored health risks, care tips, and medication warnings.
+- **Real-Time Profile Sync**: A centralized service ensures that changes to your pet's profile are instantly reflected everywhere.
 
-### Core Features
-- Pet Profile with editable health data synced to home screen
-- Food Safety Guide with search and tap-to-expand details
-- Medication Guide with dosage and safety ratings
-- Nearby Vet Finder
-- Multi-language support across all screens
+### 🌎 Community & Accessibility
+- **Community Feed**: A vibrant feed of pet-related content powered by **YouTube Shorts** integration.
+- **Multilingual Support**: Support for English, Hindi (हिन्दी), Telugu (తెలుగు), and Tamil (தமிழ்) for global and local accessibility.
 
 ---
 
-## Supported Breeds — Health Risk Engine
+## 🔒 Security & API Configuration
 
-Each risk includes: description, warning signs to watch, and prevention/management advice. Risks are filtered by the dog's current age — only age-relevant conditions are shown.
+This project uses a secure method to manage API keys. **Never** commit your API keys to version control.
 
----
+### 1. Simple Setup (Recommended)
+Create a `secrets.json` file in the root directory:
 
-No backend. No database. This is a frontend-only prototype with one live API call (wound analyzer).
+```json
+{
+  "GEMINI_API_KEY": "YOUR_KEY_HERE",
+  "YOUTUBE_API_KEY": "YOUR_KEY_HERE",
+  "GOOGLE_MAPS_API_KEY": "YOUR_KEY_HERE"
+}
+```
 
-
----
-
-## Known Limitations
-
-This is a prototype. The following features use mock/static data:
-
-- Walker and sitter profiles are hardcoded — no real backend
-- Vet locations and distances are static — no Google Maps integration
-- Playdate profiles are simulated — no real user accounts
-- YouTube Shorts may not autoplay due to browser iframe restrictions
-- Profile data resets on page refresh — no persistent storage
-
-In a production version these would be replaced with:
-- Firebase Firestore for real-time data
-- Firebase Auth for user accounts
-- Google Maps Platform for live location and distances
-- React Native + Expo for true Android/iOS deployment
+### 2. Running the App
+```bash
+flutter run --dart-define-from-file=secrets.json
+```
 
 ---
 
-*Built with care for every Brownie, Bruno, Coco, and Luna out there.*
+## 🛠️ Technology Stack
+- **Framework**: Flutter (Dart)
+- **AI Core**: Google Gemini 2.0 Flash
+- **Location**: Google Places API & Geolocator
+- **Feed**: YouTube Data API v3
+- **State Management**: Service-based singleton pattern for real-time synchronization.
+
+---
+
+*Made with ❤️ for pet owners everywhere.*

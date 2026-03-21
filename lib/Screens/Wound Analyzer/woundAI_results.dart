@@ -1,24 +1,50 @@
 import 'package:flutter/material.dart';
+import '../../widgets/custom_back_button.dart';
+import '../../services/translation_service.dart';
+import 'package:furrr/models/ai_health_analysis.dart';
 
-class WoundResultScreen extends StatelessWidget {
-  const WoundResultScreen({super.key});
+class WoundResultScreen extends StatefulWidget {
+  final AiHealthAnalysis analysis;
+  const WoundResultScreen({super.key, required this.analysis});
+
+  @override
+  State<WoundResultScreen> createState() => _WoundResultScreenState();
+}
+
+class _WoundResultScreenState extends State<WoundResultScreen> {
+  @override
+  void initState() {
+    super.initState();
+    TranslationService().addListener(_onLanguageChanged);
+  }
+
+  @override
+  void dispose() {
+    TranslationService().removeListener(_onLanguageChanged);
+    super.dispose();
+  }
+
+  void _onLanguageChanged() {
+    if (mounted) setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFE7EFE8),
       appBar: AppBar(
+        leading: const CustomBackButton(),
+        leadingWidth: 60,
         backgroundColor: Colors.transparent,
         elevation: 0,
         centerTitle: true,
-        title: const Text(
-          "Analysis Result",
-          style: TextStyle(
+        title: Text(
+          TranslationService.t('analysis_result'),
+          style: const TextStyle(
             color: Colors.black,
             fontWeight: FontWeight.w700,
           ),
         ),
-        iconTheme: const IconThemeData(color: Colors.black),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(18),
@@ -49,7 +75,7 @@ class WoundResultScreen extends StatelessWidget {
         borderRadius: BorderRadius.circular(22),
         border: Border.all(color: const Color(0xFFFF8A65)),
       ),
-      child: const Column(
+      child: Column(
         children: [
           Icon(
             Icons.warning_amber_rounded,
@@ -58,18 +84,18 @@ class WoundResultScreen extends StatelessWidget {
           ),
           SizedBox(height: 10),
           Text(
-            "See Vet Soon",
-            style: TextStyle(
+            widget.analysis.severity,
+            style: const TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.w800,
               color: Color(0xFFFF7043),
             ),
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           Text(
-            "Two open wounds on a dog's front paw/leg with raw tissue, redness, and missing fur. The wounds appear relatively fresh with exposed dermis and signs of inflammation around the edges. The pad appears dark/discolored which may indicate bruising.",
+            widget.analysis.description,
             textAlign: TextAlign.center,
-            style: TextStyle(
+            style: const TextStyle(
               color: Color(0xFF5F7D6E),
               height: 1.5,
             ),
@@ -112,7 +138,7 @@ class WoundResultScreen extends StatelessWidget {
           Wrap(
             spacing: 10,
             runSpacing: 10,
-            children: supplies.map((e) => _chip(e)).toList(),
+            children: widget.analysis.supplies.map((e) => _chip(e)).toList(),
           ),
         ],
       ),
@@ -176,8 +202,8 @@ class WoundResultScreen extends StatelessWidget {
           const SizedBox(height: 14),
           Column(
             children: List.generate(
-              steps.length,
-              (i) => _stepItem(i + 1, steps[i]),
+              widget.analysis.steps.length,
+              (i) => _stepItem(i + 1, widget.analysis.steps[i]),
             ),
           ),
         ],
@@ -239,7 +265,7 @@ class WoundResultScreen extends StatelessWidget {
               width: 1.3,
             ),
           ),
-          child: const Column(
+          child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
@@ -265,8 +291,8 @@ class WoundResultScreen extends StatelessWidget {
               ),
               SizedBox(height: 14),
               Text(
-                "Increased swelling, pus or discharge, foul odor, spreading redness, limping worsens, fever, lethargy, or wounds don't show improvement within 24-48 hours",
-                style: TextStyle(
+                widget.analysis.vetAdvice,
+                style: const TextStyle(
                   fontSize: 15,
                   height: 1.6,
                   color: Color(0xFFD25A21),
