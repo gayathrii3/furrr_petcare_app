@@ -5,6 +5,7 @@ import '../../services/pet_profile_service.dart';
 import '../../services/ai_analysis_service.dart';
 import 'package:furrr/models/ai_health_analysis.dart';
 import 'package:furrr/Screens/Vets/vets_screen.dart';
+import '../../theme/app_colors.dart';
 
 class SymptomCheckerScreen extends StatefulWidget {
   const SymptomCheckerScreen({super.key});
@@ -56,7 +57,7 @@ class _SymptomCheckerScreenState extends State<SymptomCheckerScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF0FAF5),
+      backgroundColor: AppColors.background,
       body: SafeArea(
         child: Column(
           children: [
@@ -82,7 +83,7 @@ class _SymptomCheckerScreenState extends State<SymptomCheckerScreen> {
             style: const TextStyle(
               fontSize: 22,
               fontWeight: FontWeight.w900,
-              color: Color(0xFF1B2A22),
+              color: AppColors.textPrimary,
             ),
           ),
         ],
@@ -99,7 +100,7 @@ class _SymptomCheckerScreenState extends State<SymptomCheckerScreen> {
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: const Color(0xFFCDE9D6).withOpacity(0.5),
+              color: AppColors.primary.withOpacity(0.12),
               borderRadius: BorderRadius.circular(20),
             ),
             child: Row(
@@ -112,7 +113,7 @@ class _SymptomCheckerScreenState extends State<SymptomCheckerScreen> {
                     style: const TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w600,
-                      color: Color(0xFF0B5D3B),
+                      color: AppColors.primary,
                     ),
                   ),
                 ),
@@ -146,10 +147,10 @@ class _SymptomCheckerScreenState extends State<SymptomCheckerScreen> {
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12),
                   decoration: BoxDecoration(
-                    color: isSelected ? const Color(0xFF0B5D3B) : Colors.white,
+                    color: isSelected ? AppColors.primary : AppColors.surface,
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(
-                      color: isSelected ? const Color(0xFF0B5D3B) : const Color(0xFFCDE9D6),
+                      color: isSelected ? AppColors.primary : AppColors.primary.withOpacity(0.2),
                       width: 1.5,
                     ),
                   ),
@@ -157,7 +158,7 @@ class _SymptomCheckerScreenState extends State<SymptomCheckerScreen> {
                     children: [
                       Icon(
                         symptom['icon'],
-                        color: isSelected ? Colors.white : const Color(0xFF5F8B73),
+                        color: isSelected ? AppColors.textDark : AppColors.textSecondary,
                         size: 22,
                       ),
                       const SizedBox(width: 10),
@@ -167,7 +168,7 @@ class _SymptomCheckerScreenState extends State<SymptomCheckerScreen> {
                           style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.bold,
-                            color: isSelected ? Colors.white : const Color(0xFF1B2A22),
+                            color: isSelected ? AppColors.textDark : AppColors.textPrimary,
                           ),
                         ),
                       ),
@@ -182,16 +183,16 @@ class _SymptomCheckerScreenState extends State<SymptomCheckerScreen> {
             padding: const EdgeInsets.all(16),
             height: 120,
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: AppColors.surface,
               borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: const Color(0xFFCDE9D6), width: 1.5),
+              border: Border.all(color: AppColors.primary.withOpacity(0.2), width: 1.5),
             ),
             child: TextField(
               controller: _descriptionController,
               maxLines: 4,
               decoration: const InputDecoration(
                 hintText: "Or describe in your own words...",
-                hintStyle: TextStyle(color: Colors.black26, fontSize: 15),
+                hintStyle: const TextStyle(color: AppColors.textSecondary, fontSize: 15),
                 border: InputBorder.none,
               ),
             ),
@@ -205,18 +206,18 @@ class _SymptomCheckerScreenState extends State<SymptomCheckerScreen> {
               height: 60,
               decoration: BoxDecoration(
                 color: (_selectedSymptoms.isEmpty && _descriptionController.text.isEmpty) || _isAnalyzing 
-                    ? Colors.grey[200] 
-                    : const Color(0xFFE3F6E8),
+                    ? Colors.grey.withOpacity(0.2) 
+                    : AppColors.primary.withOpacity(0.15),
                 borderRadius: BorderRadius.circular(30),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   _isAnalyzing 
-                    ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Color(0xFF0B5D3B), strokeWidth: 2))
+                    ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: AppColors.primary, strokeWidth: 2))
                     : Icon(
                         Icons.search,
-                        color: (_selectedSymptoms.isEmpty && _descriptionController.text.isEmpty) ? Colors.grey : const Color(0xFF0B5D3B),
+                        color: (_selectedSymptoms.isEmpty && _descriptionController.text.isEmpty) ? Colors.grey : AppColors.primary,
                       ),
                   const SizedBox(width: 10),
                   Text(
@@ -224,7 +225,7 @@ class _SymptomCheckerScreenState extends State<SymptomCheckerScreen> {
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w900,
-                      color: (_selectedSymptoms.isEmpty && _descriptionController.text.isEmpty) ? Colors.grey : const Color(0xFF0B5D3B),
+                      color: (_selectedSymptoms.isEmpty && _descriptionController.text.isEmpty) ? Colors.grey : AppColors.primary,
                     ),
                   ),
                 ],
@@ -280,12 +281,12 @@ class _SymptomCheckerScreenState extends State<SymptomCheckerScreen> {
               width: 80,
               height: 80,
               decoration: BoxDecoration(
-                color: isUrgent ? const Color(0xFFFFE8E8) : const Color(0xFFE3F6E8),
+                color: isUrgent ? AppColors.error.withOpacity(0.15) : AppColors.primary.withOpacity(0.15),
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 isUrgent ? Icons.warning_amber_rounded : Icons.check_circle_outline,
-                color: isUrgent ? const Color(0xFFE63946) : const Color(0xFF1F8A5F),
+                color: isUrgent ? AppColors.error : AppColors.primary,
                 size: 48,
               ),
             ),
@@ -297,7 +298,7 @@ class _SymptomCheckerScreenState extends State<SymptomCheckerScreen> {
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.w900,
-                color: isUrgent ? const Color(0xFFE63946) : const Color(0xFF1F8A5F),
+                color: isUrgent ? AppColors.error : AppColors.primary,
               ),
             ),
           ),
@@ -305,7 +306,7 @@ class _SymptomCheckerScreenState extends State<SymptomCheckerScreen> {
           Text(
             _aiAnalysis!.description,
             textAlign: TextAlign.center,
-            style: const TextStyle(color: Color(0xFF5F8B73), height: 1.5),
+            style: const TextStyle(color: AppColors.textSecondary, height: 1.5),
           ),
           const SizedBox(height: 30),
           const Text(
@@ -316,7 +317,7 @@ class _SymptomCheckerScreenState extends State<SymptomCheckerScreen> {
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: AppColors.cardBackground,
               borderRadius: BorderRadius.circular(16),
             ),
             child: Column(
@@ -338,8 +339,8 @@ class _SymptomCheckerScreenState extends State<SymptomCheckerScreen> {
               );
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF0B5D3B),
-              foregroundColor: Colors.white,
+              backgroundColor: AppColors.primary,
+              foregroundColor: AppColors.textDark,
               padding: const EdgeInsets.symmetric(vertical: 16),
               minimumSize: const Size(double.infinity, 54),
               shape: RoundedRectangleBorder(
@@ -362,14 +363,14 @@ class _SymptomCheckerScreenState extends State<SymptomCheckerScreen> {
             style: OutlinedButton.styleFrom(
               padding: const EdgeInsets.symmetric(vertical: 16),
               minimumSize: const Size(double.infinity, 54),
-              side: const BorderSide(color: Color(0xFF0B5D3B)),
+              side: const BorderSide(color: AppColors.primary),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
               ),
             ),
             child: const Text(
               "Back",
-              style: TextStyle(color: Color(0xFF0B5D3B), fontWeight: FontWeight.bold),
+              style: const TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold),
             ),
           ),
         ],
@@ -387,7 +388,7 @@ class _SymptomCheckerScreenState extends State<SymptomCheckerScreen> {
             width: 70,
             child: Text(
               title,
-              style: const TextStyle(color: Color(0xFF5F8B73), fontSize: 14),
+              style: const TextStyle(color: AppColors.textSecondary, fontSize: 14),
             ),
           ),
           const SizedBox(width: 12),

@@ -6,6 +6,7 @@ import '../../widgets/custom_back_button.dart';
 import '../../services/translation_service.dart';
 import '../../services/ai_analysis_service.dart';
 import 'package:furrr/models/ai_health_analysis.dart';
+import '../../theme/app_colors.dart';
 
 class WoundAiScreen extends StatefulWidget {
   const WoundAiScreen({super.key});
@@ -64,6 +65,7 @@ class _WoundAiScreenState extends State<WoundAiScreen> {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
+      backgroundColor: AppColors.surface,
       builder: (context) {
         return Padding(
           padding: const EdgeInsets.all(20),
@@ -143,7 +145,7 @@ class _WoundAiScreenState extends State<WoundAiScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFE7EFE8),
+      backgroundColor: AppColors.background,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.fromLTRB(22, 18, 22, 20),
@@ -158,7 +160,7 @@ class _WoundAiScreenState extends State<WoundAiScreen> {
                     style: const TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.w900,
-                      color: Colors.black,
+                      color: AppColors.textPrimary,
                     ),
                   ),
                 ],
@@ -169,7 +171,7 @@ class _WoundAiScreenState extends State<WoundAiScreen> {
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 14,
-                  color: Color(0xFF7A9A88),
+                  color: AppColors.textSecondary,
                 ),
               ),
               const SizedBox(height: 30),
@@ -198,13 +200,13 @@ class _WoundAiScreenState extends State<WoundAiScreen> {
           child: Container(
             padding: const EdgeInsets.all(28),
             decoration: const BoxDecoration(
-              color: Color(0xFFDCEFE5),
+              color: AppColors.surface,
               shape: BoxShape.circle,
             ),
             child: const Icon(
               Icons.camera_alt,
               size: 60,
-              color: Color(0xFF1E5A43),
+              color: AppColors.primary,
             ),
           ),
         ),
@@ -214,14 +216,14 @@ class _WoundAiScreenState extends State<WoundAiScreen> {
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.w800,
-            color: Color(0xFF1E5A43),
+            color: AppColors.primary,
           ),
         ),
         const SizedBox(height: 6),
         const Text(
           "Take wound image",
           style: TextStyle(
-            color: Color(0xFF7A9A88),
+            color: AppColors.textSecondary,
           ),
         ),
       ],
@@ -272,12 +274,7 @@ class _WoundAiScreenState extends State<WoundAiScreen> {
             width: double.infinity,
             padding: const EdgeInsets.symmetric(vertical: 16),
             decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [
-                  Color(0xFF2E7D5B),
-                  Color(0xFF4CAF84),
-                ],
-              ),
+              gradient: AppColors.primaryGradient,
               borderRadius: BorderRadius.circular(30),
             ),
             child: Center(

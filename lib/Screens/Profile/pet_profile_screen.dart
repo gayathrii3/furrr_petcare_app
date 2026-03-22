@@ -3,6 +3,7 @@ import '../../widgets/custom_back_button.dart';
 import '../../services/translation_service.dart';
 import '../../services/pet_profile_service.dart';
 import '../../models/dog_profile.dart';
+import '../../theme/app_colors.dart';
 
 class PetProfileScreen extends StatefulWidget {
   const PetProfileScreen({super.key});
@@ -52,7 +53,7 @@ class _PetProfileScreenState extends State<PetProfileScreen>
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(TranslationService.t('profile_saved')),
-        backgroundColor: const Color(0xFF2D6A4F),
+        backgroundColor: AppColors.background,
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         margin: const EdgeInsets.all(16),
@@ -68,7 +69,7 @@ class _PetProfileScreenState extends State<PetProfileScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAF9),
+      backgroundColor: AppColors.background,
       body: Column(
         children: [
           _ProfileHeader(
@@ -124,7 +125,7 @@ class _ProfileHeader extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [Color(0xFF1B4332), Color(0xFF2D6A4F), Color(0xFF40916C)],
+          colors: [AppColors.surface, AppColors.background],
         ),
       ),
       child: SafeArea(
@@ -140,7 +141,7 @@ class _ProfileHeader extends StatelessWidget {
                   Text(
                     TranslationService.t('pet_profile'),
                     style: const TextStyle(
-                      color: Colors.white,
+                      color: AppColors.textPrimary,
                       fontSize: 18,
                       fontWeight: FontWeight.w800,
                     ),
@@ -171,7 +172,7 @@ class _ProfileHeader extends StatelessWidget {
             Text(
               dog.name,
               style: const TextStyle(
-                color: Colors.white,
+                color: AppColors.textPrimary,
                 fontSize: 22,
                 fontWeight: FontWeight.w900,
                 letterSpacing: -0.4,
@@ -221,7 +222,7 @@ class _CircleBtn extends StatelessWidget {
         ),
         child: Icon(icon,
             size: 16,
-            color: filled ? const Color(0xFF2D6A4F) : Colors.white),
+            color: filled ? AppColors.primary : Colors.white),
       ),
     );
   }
@@ -255,12 +256,12 @@ class _TabBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.white,
+      color: AppColors.background,
       child: TabBar(
         controller: controller,
-        labelColor: const Color(0xFF2D6A4F),
-        unselectedLabelColor: const Color(0xFF7A9E8A),
-        indicatorColor: const Color(0xFF2D6A4F),
+        labelColor: AppColors.primary,
+        unselectedLabelColor: AppColors.textSecondary.withOpacity(0.5),
+        indicatorColor: AppColors.primary,
         indicatorWeight: 2.5,
         labelStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w800),
         unselectedLabelStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
@@ -470,20 +471,20 @@ class _VaccinesTab extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(14),
             decoration: BoxDecoration(
-              color: const Color(0xFFD8F3DC),
+              color: AppColors.primary.withOpacity(0.12),
               borderRadius: BorderRadius.circular(14),
-              border: Border.all(color: const Color(0xFFE0EEE6)),
+              border: Border.all(color: AppColors.primary.withOpacity(0.2)),
             ),
             child: Row(
               children: [
-                const Icon(Icons.vaccines, color: Color(0xFF2D6A4F), size: 22),
+                const Icon(Icons.vaccines, color: AppColors.primary, size: 22),
                 const SizedBox(width: 10),
                 Expanded(
                   child: Text(
                     TranslationService.t('pet_care_tip'),
                     style: const TextStyle(
                       fontSize: 12,
-                      color: Color(0xFF2D6A4F),
+                      color: AppColors.primary,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -511,27 +512,27 @@ class _VaccineCard extends StatelessWidget {
 
     switch (vaccine.status) {
       case VaccineStatus.overdue:
-        color = const Color(0xFFE63946);
-        bg = const Color(0xFFFFEBEE);
+        color = AppColors.error;
+        bg = AppColors.error.withOpacity(0.12);
         labelKey = 'overdue';
         break;
       case VaccineStatus.dueSoon:
-        color = const Color(0xFFF4845F);
-        bg = const Color(0xFFFFF3E0);
+        color = AppColors.accent;
+        bg = AppColors.accent.withOpacity(0.12);
         labelKey = 'due_soon';
         break;
       default:
-        color = const Color(0xFF2D6A4F);
-        bg = const Color(0xFFD8F3DC);
+        color = AppColors.primary;
+        bg = AppColors.primary.withOpacity(0.12);
         labelKey = 'up_to_date';
     }
 
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.cardBackground,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFE0EEE6)),
+        border: Border.all(color: AppColors.primary.withOpacity(0.2)),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.04),
@@ -571,7 +572,7 @@ class _VaccineCard extends StatelessWidget {
                         style: const TextStyle(
                           fontWeight: FontWeight.w800,
                           fontSize: 14,
-                          color: Color(0xFF1B2D24),
+                          color: AppColors.textPrimary,
                         ),
                       ),
                     ),
@@ -635,7 +636,7 @@ class _VaccineDetail extends StatelessWidget {
         Text(label,
             style: const TextStyle(
                 fontSize: 9,
-                color: Color(0xFF7A9E8A),
+                color: AppColors.textSecondary,
                 fontWeight: FontWeight.w700,
                 letterSpacing: 0.5)),
         const SizedBox(height: 2),
@@ -643,7 +644,7 @@ class _VaccineDetail extends StatelessWidget {
             style: TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.w800,
-                color: valueColor ?? const Color(0xFF1B2D24))),
+                color: valueColor ?? AppColors.textPrimary)),
       ],
     );
   }
@@ -662,12 +663,12 @@ class _Card extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.cardBackground,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: const Color(0xFFE0EEE6)),
+        border: Border.all(color: AppColors.primary.withOpacity(0.1)),
         boxShadow: [
           BoxShadow(
-              color: Colors.black.withOpacity(0.04),
+              color: Colors.black.withOpacity(0.2),
               blurRadius: 8,
               offset: const Offset(0, 2)),
         ],
@@ -677,14 +678,14 @@ class _Card extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(icon, size: 14, color: const Color(0xFF2D6A4F)),
+              Icon(icon, size: 14, color: AppColors.primary),
               const SizedBox(width: 6),
               Text(
                 title.toUpperCase(),
                 style: const TextStyle(
                   fontSize: 10,
                   fontWeight: FontWeight.w800,
-                  color: Color(0xFF2D6A4F),
+                  color: AppColors.primary,
                   letterSpacing: 1.2,
                 ),
               ),
@@ -731,24 +732,24 @@ class _Field extends StatelessWidget {
                   style: const TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w700,
-                      color: Color(0xFF1B2D24)),
+                      color: AppColors.textPrimary),
                   decoration: InputDecoration(
                     contentPadding: const EdgeInsets.symmetric(
                         horizontal: 13, vertical: 11),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(11),
-                      borderSide: const BorderSide(color: Color(0xFFE0EEE6)),
+                      borderSide: BorderSide(color: AppColors.primary.withOpacity(0.2)),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(11),
-                      borderSide: const BorderSide(color: Color(0xFF2D6A4F)),
+                      borderSide: const BorderSide(color: AppColors.primary),
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(11),
-                      borderSide: const BorderSide(color: Color(0xFFE0EEE6)),
+                      borderSide: BorderSide(color: AppColors.primary.withOpacity(0.2)),
                     ),
                     filled: true,
-                    fillColor: Colors.white,
+                    fillColor: AppColors.surface,
                   ),
                 )
               : Text(
@@ -756,7 +757,7 @@ class _Field extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w700,
-                    color: value.isEmpty ? const Color(0xFF7A9E8A) : const Color(0xFF1B2D24),
+                    color: value.isEmpty ? AppColors.textSecondary : AppColors.textPrimary,
                   ),
                 ),
         ],
@@ -808,7 +809,7 @@ class _DateField extends StatelessWidget {
                       builder: (ctx, child) => Theme(
                         data: Theme.of(ctx).copyWith(
                           colorScheme: const ColorScheme.light(
-                            primary: Color(0xFF2D6A4F),
+                            primary: AppColors.primary,
                           ),
                         ),
                         child: child!,
@@ -822,14 +823,14 @@ class _DateField extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(
                         horizontal: 13, vertical: 12),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: AppColors.cardBackground,
                       borderRadius: BorderRadius.circular(11),
-                      border: Border.all(color: const Color(0xFFE0EEE6)),
+                      border: Border.all(color: AppColors.primary.withOpacity(0.2)),
                     ),
                     child: Row(
                       children: [
                         const Icon(Icons.calendar_today_outlined,
-                            size: 15, color: Color(0xFF2D6A4F)),
+                            size: 15, color: AppColors.primary),
                         const SizedBox(width: 8),
                         Text(
                           value.isEmpty ? 'Select date' : _format(value),
@@ -837,8 +838,8 @@ class _DateField extends StatelessWidget {
                             fontSize: 13,
                             fontWeight: FontWeight.w700,
                             color: value.isEmpty
-                                ? const Color(0xFF7A9E8A)
-                                : const Color(0xFF1B2D24),
+                                ? AppColors.textSecondary
+                                : AppColors.textPrimary,
                           ),
                         ),
                       ],
@@ -853,15 +854,15 @@ class _DateField extends StatelessWidget {
                         fontSize: 14,
                         fontWeight: FontWeight.w700,
                         color: value.isEmpty
-                            ? const Color(0xFF7A9E8A)
-                            : const Color(0xFF1B2D24),
+                            ? AppColors.textSecondary
+                            : AppColors.textPrimary,
                       ),
                     ),
                     if (suffix != null) ...[
                       const SizedBox(width: 6),
                       Text(suffix!,
                           style: const TextStyle(
-                              fontSize: 12, color: Color(0xFF7A9E8A))),
+                              fontSize: 12, color: AppColors.textSecondary)),
                     ],
                   ],
                 ),
@@ -910,15 +911,15 @@ class _ToggleField extends StatelessWidget {
                               horizontal: 18, vertical: 8),
                           decoration: BoxDecoration(
                             gradient: selected
-                                ? const LinearGradient(
-                                    colors: [Color(0xFF2D6A4F), Color(0xFF52B788)])
+                                ? LinearGradient(
+                                    colors: [AppColors.primary, AppColors.primary.withOpacity(0.8)])
                                 : null,
-                            color: selected ? null : const Color(0xFFD8F3DC),
+                            color: selected ? null : AppColors.primary.withOpacity(0.12),
                             borderRadius: BorderRadius.circular(100),
                             boxShadow: selected
                                 ? [
                                     BoxShadow(
-                                      color: const Color(0xFF2D6A4F).withOpacity(0.3),
+                                      color: AppColors.primary.withOpacity(0.15),
                                       blurRadius: 8,
                                       offset: const Offset(0, 3),
                                     )
@@ -930,7 +931,7 @@ class _ToggleField extends StatelessWidget {
                             style: TextStyle(
                               fontSize: 13,
                               fontWeight: FontWeight.w800,
-                              color: selected ? Colors.white : const Color(0xFF2D6A4F),
+                              color: selected ? AppColors.textDark : AppColors.textPrimary,
                             ),
                           ),
                         ),
@@ -943,7 +944,7 @@ class _ToggleField extends StatelessWidget {
                   style: const TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w700,
-                      color: Color(0xFF1B2D24)),
+                      color: AppColors.textPrimary),
                 ),
         ],
       ),
@@ -987,8 +988,8 @@ class _LocationPicker extends StatelessWidget {
                             horizontal: 13, vertical: 7),
                         decoration: BoxDecoration(
                           gradient: selected
-                              ? const LinearGradient(
-                                  colors: [Color(0xFF2D6A4F), Color(0xFF52B788)])
+                              ? LinearGradient(
+                                  colors: [AppColors.primary, AppColors.primary.withOpacity(0.8)])
                               : null,
                           color: selected ? null : const Color(0xFFD8F3DC),
                           borderRadius: BorderRadius.circular(100),
@@ -998,7 +999,7 @@ class _LocationPicker extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w700,
-                            color: selected ? Colors.white : const Color(0xFF2D6A4F),
+                            color: selected ? AppColors.textDark : AppColors.textPrimary,
                           ),
                         ),
                       ),
@@ -1010,7 +1011,7 @@ class _LocationPicker extends StatelessWidget {
                   style: const TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w700,
-                      color: Color(0xFF1B2D24)),
+                      color: AppColors.textPrimary),
                 ),
         ],
       ),
@@ -1054,8 +1055,8 @@ class _BreedPicker extends StatelessWidget {
                             horizontal: 13, vertical: 7),
                         decoration: BoxDecoration(
                           gradient: selected
-                              ? const LinearGradient(
-                                  colors: [Color(0xFF2D6A4F), Color(0xFF52B788)])
+                              ? LinearGradient(
+                                  colors: [AppColors.primary, AppColors.primary.withOpacity(0.8)])
                               : null,
                           color: selected ? null : const Color(0xFFD8F3DC),
                           borderRadius: BorderRadius.circular(100),
@@ -1065,7 +1066,7 @@ class _BreedPicker extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w700,
-                            color: selected ? Colors.white : const Color(0xFF2D6A4F),
+                            color: selected ? AppColors.textDark : AppColors.textPrimary,
                           ),
                         ),
                       ),
@@ -1077,7 +1078,7 @@ class _BreedPicker extends StatelessWidget {
                   style: const TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w700,
-                      color: Color(0xFF1B2D24)),
+                      color: AppColors.textPrimary),
                 ),
         ],
       ),
@@ -1119,7 +1120,7 @@ class _SaveBar extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.cardBackground,
         border: const Border(top: BorderSide(color: Color(0xFFE0EEE6))),
         boxShadow: [
           BoxShadow(
@@ -1151,12 +1152,12 @@ class _SaveBar extends StatelessWidget {
               onPressed: onSave,
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 14),
-                backgroundColor: const Color(0xFF2D6A4F),
+                backgroundColor: AppColors.primary,
                 foregroundColor: Colors.white,
                 elevation: 0,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(14)),
-                shadowColor: const Color(0xFF2D6A4F).withOpacity(0.4),
+                shadowColor: AppColors.primary.withOpacity(0.4),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,

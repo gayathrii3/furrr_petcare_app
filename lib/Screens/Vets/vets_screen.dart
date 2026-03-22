@@ -4,6 +4,7 @@ import '../../services/translation_service.dart';
 import '../../services/pet_profile_service.dart';
 import '../../services/vet_service.dart';
 import '../../models/vet.dart';
+import '../../theme/app_colors.dart';
 
 class VetsScreen extends StatefulWidget {
   const VetsScreen({super.key});
@@ -79,7 +80,7 @@ class _VetsScreenState extends State<VetsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF0FAF5),
+      backgroundColor: AppColors.background,
       body: SafeArea(
         child: Column(
           children: [
@@ -106,7 +107,7 @@ class _VetsScreenState extends State<VetsScreen> {
             style: const TextStyle(
               fontSize: 22,
               fontWeight: FontWeight.w900,
-              color: Color(0xFF1B2A22),
+              color: AppColors.textPrimary,
             ),
           ),
         ],
@@ -119,7 +120,7 @@ class _VetsScreenState extends State<VetsScreen> {
     
     return Container(
       height: 60,
-      color: const Color(0xFF0B5D3B),
+      color: AppColors.surface,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
@@ -133,7 +134,7 @@ class _VetsScreenState extends State<VetsScreen> {
               label: Text(
                 filter,
                 style: TextStyle(
-                  color: isSelected ? const Color(0xFF0B5D3B) : Colors.white70,
+                  color: isSelected ? AppColors.textDark : AppColors.textSecondary,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -143,7 +144,7 @@ class _VetsScreenState extends State<VetsScreen> {
                   _selectedFilter = filter;
                 });
               },
-              selectedColor: Colors.white,
+              selectedColor: AppColors.primary,
               backgroundColor: Colors.white.withOpacity(0.15),
               showCheckmark: false,
               shape: RoundedRectangleBorder(
@@ -158,7 +159,7 @@ class _VetsScreenState extends State<VetsScreen> {
 
   Widget _buildMainContent() {
     if (_isLoading) {
-      return const Center(child: CircularProgressIndicator(color: Color(0xFF0B5D3B)));
+      return const Center(child: CircularProgressIndicator(color: AppColors.primary));
     }
     
     if (_error != null) {
@@ -183,7 +184,7 @@ class _VetsScreenState extends State<VetsScreen> {
               const SizedBox(height: 24),
               ElevatedButton(
                 onPressed: _fetchVets,
-                style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF0B5D3B)),
+                style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary),
                 child: const Text("Retry", style: TextStyle(color: Colors.white)),
               ),
             ],
@@ -217,11 +218,11 @@ class _VetsScreenState extends State<VetsScreen> {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.cardBackground,
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF0B5D3B).withOpacity(0.06),
+            color: Colors.black.withOpacity(0.3),
             blurRadius: 15,
             offset: const Offset(0, 6),
           ),
@@ -239,10 +240,10 @@ class _VetsScreenState extends State<VetsScreen> {
                   width: 60,
                   height: 60,
                   decoration: BoxDecoration(
-                    color: const Color(0xFF0B5D3B).withOpacity(0.1),
+                    color: AppColors.primary.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(16),
                   ),
-                  child: const Icon(Icons.local_hospital, color: Color(0xFF0B5D3B), size: 32),
+                  child: const Icon(Icons.local_hospital, color: AppColors.primary, size: 32),
                 ),
                 const SizedBox(width: 14),
                 Expanded(
@@ -258,7 +259,7 @@ class _VetsScreenState extends State<VetsScreen> {
                               style: const TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.w800,
-                                color: Color(0xFF1B2A22),
+                                color: AppColors.textPrimary,
                               ),
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -267,7 +268,7 @@ class _VetsScreenState extends State<VetsScreen> {
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                             decoration: BoxDecoration(
-                              color: vet.isOpen ? const Color(0xFFE3F6E8) : const Color(0xFFFFE8E8),
+                              color: vet.isOpen ? AppColors.primary.withOpacity(0.15) : AppColors.error.withOpacity(0.15),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Text(
@@ -275,7 +276,7 @@ class _VetsScreenState extends State<VetsScreen> {
                               style: TextStyle(
                                 fontSize: 10,
                                 fontWeight: FontWeight.w900,
-                                color: vet.isOpen ? const Color(0xFF1F8A5F) : const Color(0xFFE63946),
+                                color: vet.isOpen ? AppColors.primary : AppColors.error,
                               ),
                             ),
                           ),
@@ -288,12 +289,12 @@ class _VetsScreenState extends State<VetsScreen> {
                           const SizedBox(width: 4),
                           Text(
                             vet.rating.toString(),
-                            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xFF476555)),
+                            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.textSecondary),
                           ),
                           const SizedBox(width: 10),
-                          const Icon(Icons.location_on, color: Color(0xFF52B788), size: 14),
+                          const Icon(Icons.location_on, color: AppColors.primary, size: 14),
                           const SizedBox(width: 4),
-                          Text(vet.distance, style: const TextStyle(fontSize: 14, color: Color(0xFF476555))),
+                          Text(vet.distance, style: const TextStyle(fontSize: 14, color: AppColors.textSecondary)),
                         ],
                       ),
                     ],
@@ -317,14 +318,14 @@ class _VetsScreenState extends State<VetsScreen> {
             const Divider(height: 30, thickness: 0.8),
             Row(
               children: [
-                const Icon(Icons.phone, size: 16, color: Color(0xFF476555)),
+                const Icon(Icons.phone, size: 16, color: AppColors.textSecondary),
                 const SizedBox(width: 8),
-                Text(vet.phone, style: const TextStyle(fontSize: 14, color: Color(0xFF476555))),
+                Text(vet.phone, style: const TextStyle(fontSize: 14, color: AppColors.textSecondary)),
                 const Spacer(),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                  decoration: BoxDecoration(color: const Color(0xFF0B5D3B), borderRadius: BorderRadius.circular(12)),
-                  child: const Text("Book", style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold)),
+                  decoration: BoxDecoration(color: AppColors.primary, borderRadius: BorderRadius.circular(12)),
+                  child: const Text("Book", style: TextStyle(color: AppColors.textDark, fontSize: 12, fontWeight: FontWeight.bold)),
                 ),
               ],
             ),
@@ -337,10 +338,10 @@ class _VetsScreenState extends State<VetsScreen> {
   Widget _buildSpecialtyChip(String label) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      decoration: BoxDecoration(color: const Color(0xFFDDEFE3), borderRadius: BorderRadius.circular(10)),
+      decoration: BoxDecoration(color: AppColors.primary.withOpacity(0.1), borderRadius: BorderRadius.circular(10)),
       child: Text(
         label,
-        style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: Color(0xFF0B5D3B)),
+        style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: AppColors.primary),
       ),
     );
   }

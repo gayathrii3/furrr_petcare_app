@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../theme/app_colors.dart';
 
 enum AppLanguage { en, hi, te, ta }
 
@@ -16,9 +17,9 @@ class LanguageSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const selectedBg = Color(0xFF2D6A4F);
-    const selectedText = Colors.white;
-    const unselectedText = Colors.white70;
+    final selectedBg = AppColors.primary;
+    final selectedText = AppColors.textDark;
+    final unselectedText = AppColors.textSecondary;
 
     return Wrap(
       alignment: WrapAlignment.end,

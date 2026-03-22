@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../theme/app_colors.dart';
 import 'language_selector.dart';
 
 class AppBottomNavBar extends StatelessWidget {
@@ -30,10 +31,10 @@ class AppBottomNavBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
-      decoration: const BoxDecoration(
-        color: Colors.white,
+      decoration: BoxDecoration(
+        color: AppColors.surface,
         border: Border(
-          top: BorderSide(color: Color(0x22000000)),
+          top: BorderSide(color: AppColors.primary.withOpacity(0.1)),
         ),
       ),
       child: Row(
@@ -82,13 +83,13 @@ class AppBottomNavBar extends StatelessWidget {
                   ? const EdgeInsets.symmetric(horizontal: 12, vertical: 6)
                   : EdgeInsets.zero,
               decoration: BoxDecoration(
-                color: isSelected ? const Color(0xFFDDEFE3) : Colors.transparent,
+                color: isSelected ? AppColors.primary.withOpacity(0.15) : Colors.transparent,
                 borderRadius: BorderRadius.circular(30),
               ),
               child: Icon(
                 icon,
                 size: 22,
-                color: isSelected ? const Color(0xFF0B5D3B) : const Color(0xFF476555),
+                color: isSelected ? AppColors.primary : AppColors.textSecondary.withOpacity(0.6),
               ),
             ),
             const SizedBox(height: 4),
@@ -100,7 +101,7 @@ class AppBottomNavBar extends StatelessWidget {
               style: TextStyle(
                 fontSize: 10,
                 fontWeight: FontWeight.bold,
-                color: isSelected ? const Color(0xFF0B5D3B) : const Color(0xFF476555),
+                color: isSelected ? AppColors.primary : AppColors.textSecondary.withOpacity(0.6),
               ),
             ),
           ],

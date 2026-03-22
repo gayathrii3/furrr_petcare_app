@@ -12,6 +12,7 @@ import '../Meds/medication_guide_screen.dart';
 import '../Services/find_walker_screen.dart';
 import '../Behavior/behavior_analyzer_screen.dart';
 import '../SymptomChecker/symptom_checker_screen.dart';
+import '../../theme/app_colors.dart';
 
 class FurrrHomePage extends StatefulWidget {
   const FurrrHomePage({super.key});
@@ -48,7 +49,7 @@ class _FurrrHomePageState extends State<FurrrHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF0FAF5),
+      backgroundColor: AppColors.background,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
@@ -73,8 +74,8 @@ class _FurrrHomePageState extends State<FurrrHomePage> {
       decoration: const BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            Color(0xFF0B5D3B),
-            Color(0xFF1F8A5F),
+            AppColors.surface,
+            AppColors.background,
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -97,17 +98,17 @@ class _FurrrHomePageState extends State<FurrrHomePage> {
                     children: [
                       Row(
                         children: [
-                          const Icon(
+                          Icon(
                             Icons.eco_outlined,
-                            color: Color(0xFFEAF8EE),
+                            color: AppColors.primary.withOpacity(0.8),
                             size: 16,
                           ),
                           const SizedBox(width: 6),
                           Expanded(
                             child: Text(
                               t('good_morning'),
-                              style: const TextStyle(
-                                color: Color(0xFFF0FFF4),
+                              style: TextStyle(
+                                color: AppColors.textSecondary.withOpacity(0.8),
                                 fontSize: 14,
                                 fontWeight: FontWeight.w500,
                               ),
@@ -132,8 +133,8 @@ class _FurrrHomePageState extends State<FurrrHomePage> {
                       const SizedBox(height: 10),
                       Text(
                         "${PetProfileService().currentPet.breed} · ${PetProfileService().currentPet.weight}kg",
-                        style: const TextStyle(
-                          color: Color(0xFFE3F6E8),
+                        style: TextStyle(
+                          color: AppColors.textSecondary.withOpacity(0.7),
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
                         ),
@@ -220,7 +221,7 @@ class _FurrrHomePageState extends State<FurrrHomePage> {
                   style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w800,
-                    color: Color(0xFF183326),
+                    color: AppColors.textPrimary,
                   ),
                 ),
               ),
@@ -254,8 +255,8 @@ class _FurrrHomePageState extends State<FurrrHomePage> {
               QuickActionCard(
                 title: t('check_symptoms'),
                 icon: Icons.search,
-                bgColor: const Color(0xFFD8F1E3),
-                iconColor: const Color(0xFF0B5D3B),
+                bgColor: AppColors.surface,
+                iconColor: AppColors.primary,
                 faintIcon: Icons.medical_services_outlined,
                 onTap: () {
                   Navigator.of(context).push(
@@ -268,9 +269,9 @@ class _FurrrHomePageState extends State<FurrrHomePage> {
               QuickActionCard(
                 title: t('food_safety'),
                 icon: Icons.rice_bowl,
-                bgColor: const Color(0xFFD7E8FF),
-                iconColor: const Color(0xFF2459A8),
-                faintIcon: Icons.rice_bowl,
+                bgColor: AppColors.surface,
+                iconColor: const Color(0xFF4A90E2),
+                faintIcon: Icons.restaurant_menu,
                 onTap: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
@@ -282,8 +283,8 @@ class _FurrrHomePageState extends State<FurrrHomePage> {
               QuickActionCard(
                 title: t('behavior_check'),
                 icon: Icons.psychology_outlined,
-                bgColor: const Color(0xFFE7DBF7),
-                iconColor: const Color(0xFF6E3CBC),
+                bgColor: AppColors.surface,
+                iconColor: const Color(0xFFA55EEA),
                 faintIcon: Icons.psychology_alt_outlined,
                 onTap: () {
                   Navigator.of(context).push(
@@ -296,8 +297,8 @@ class _FurrrHomePageState extends State<FurrrHomePage> {
               QuickActionCard(
                 title: t('medications'),
                 icon: Icons.medication_outlined,
-                bgColor: const Color(0xFFFFE8C7),
-                iconColor: const Color(0xFFD97706),
+                bgColor: AppColors.surface,
+                iconColor: AppColors.accent,
                 faintIcon: Icons.medication_outlined,
                 onTap: () {
                   Navigator.of(context).push(
@@ -310,8 +311,8 @@ class _FurrrHomePageState extends State<FurrrHomePage> {
               QuickActionCard(
                 title: t('health_risks'),
                 icon: Icons.pets,
-                bgColor: const Color(0xFFFFD9E2),
-                iconColor: const Color(0xFFB4235A),
+                bgColor: AppColors.surface,
+                iconColor: const Color(0xFFEB3B5A),
                 faintIcon: Icons.pets_outlined,
                 onTap: () {
                   Navigator.of(context).push(
@@ -324,8 +325,8 @@ class _FurrrHomePageState extends State<FurrrHomePage> {
               QuickActionCard(
                 title: t('pet_services'),
                 icon: Icons.storefront_outlined,
-                bgColor: const Color(0xFFD7F2F4),
-                iconColor: const Color(0xFF0F7C8C),
+                bgColor: AppColors.surface,
+                iconColor: const Color(0xFF2bcbba),
                 faintIcon: Icons.pets_outlined,
                 onTap: () {
                   Navigator.of(context).push(
@@ -349,11 +350,11 @@ class _FurrrHomePageState extends State<FurrrHomePage> {
         width: double.infinity,
         padding: const EdgeInsets.all(18),
         decoration: BoxDecoration(
-          color: const Color(0xFFFFF4D6),
+          color: AppColors.cardBackground,
           borderRadius: BorderRadius.circular(20),
-          boxShadow: const [
+          boxShadow: [
             BoxShadow(
-              color: Color(0x12000000),
+              color: Colors.black.withOpacity(0.3),
               blurRadius: 14,
               offset: Offset(0, 4),
             ),
@@ -387,7 +388,7 @@ class _FurrrHomePageState extends State<FurrrHomePage> {
               style: const TextStyle(
                 fontSize: 13,
                 height: 1.5,
-                color: Color(0xFF4A3B12),
+                color: AppColors.textSecondary,
               ),
             ),
           ],
@@ -415,10 +416,10 @@ class HeaderStatCard extends StatelessWidget {
       height: 110,
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.16),
+        color: AppColors.primary.withOpacity(0.08),
         borderRadius: BorderRadius.circular(18),
         border: Border.all(
-          color: Colors.white.withOpacity(0.10),
+          color: AppColors.primary.withOpacity(0.15),
         ),
       ),
       child: Column(
@@ -503,12 +504,12 @@ class _JumpingDogState extends State<JumpingDog>
             width: 50,
             height: 50,
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: AppColors.primary,
               borderRadius: BorderRadius.circular(15),
             ),
             child: const Icon(
               Icons.pets,
-              color: Color(0xFF0B5D3B),
+              color: AppColors.primary,
               size: 30,
             ),
           ),

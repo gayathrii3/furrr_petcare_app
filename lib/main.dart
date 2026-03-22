@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'screens/splash_screen.dart';
+import 'theme/app_colors.dart';
 
 void main() {
   runApp(const FurrrApp());
@@ -13,17 +14,32 @@ class FurrrApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Furrr',
+      themeMode: ThemeMode.dark,
       theme: ThemeData(
-        primaryColor: const Color(0xFF006949),
-        scaffoldBackgroundColor: Colors.white,
+        useMaterial3: true,
+        brightness: Brightness.dark,
+        primaryColor: AppColors.primary,
+        scaffoldBackgroundColor: AppColors.background,
         colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF006949),
-          primary: const Color(0xFF006949),
-          secondary: const Color(0xFFA6FDD3),
+          seedColor: AppColors.primary,
+          primary: AppColors.primary,
+          secondary: AppColors.secondary,
+          surface: AppColors.surface,
+          background: AppColors.background,
+          brightness: Brightness.dark,
         ),
         fontFamily: 'Manrope',
         textTheme: const TextTheme(
-          bodyMedium: TextStyle(color: Color(0xFF00362B)),
+          bodyLarge: TextStyle(color: AppColors.textPrimary),
+          bodyMedium: TextStyle(color: AppColors.textSecondary),
+          titleLarge: TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.bold),
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: AppColors.primary,
+            foregroundColor: AppColors.textDark,
+            textStyle: const TextStyle(fontWeight: FontWeight.bold),
+          ),
         ),
       ),
       home: const SplashScreen(),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../widgets/custom_back_button.dart';
 import '../../services/translation_service.dart';
 import 'package:furrr/models/ai_health_analysis.dart';
+import '../../theme/app_colors.dart';
 
 class WoundResultScreen extends StatefulWidget {
   final AiHealthAnalysis analysis;
@@ -31,7 +32,7 @@ class _WoundResultScreenState extends State<WoundResultScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFE7EFE8),
+      backgroundColor: AppColors.background,
       appBar: AppBar(
         leading: const CustomBackButton(),
         leadingWidth: 60,
@@ -41,7 +42,7 @@ class _WoundResultScreenState extends State<WoundResultScreen> {
         title: Text(
           TranslationService.t('analysis_result'),
           style: const TextStyle(
-            color: Colors.black,
+            color: AppColors.textPrimary,
             fontWeight: FontWeight.w700,
           ),
         ),
@@ -71,15 +72,15 @@ class _WoundResultScreenState extends State<WoundResultScreen> {
       width: double.infinity,
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: const Color(0xFFFFF2EE),
+        color: AppColors.error.withOpacity(0.1),
         borderRadius: BorderRadius.circular(22),
-        border: Border.all(color: const Color(0xFFFF8A65)),
+        border: Border.all(color: AppColors.error.withOpacity(0.5)),
       ),
       child: Column(
         children: [
           Icon(
             Icons.warning_amber_rounded,
-            color: Color(0xFFFF7043),
+            color: AppColors.error,
             size: 40,
           ),
           SizedBox(height: 10),
@@ -88,7 +89,7 @@ class _WoundResultScreenState extends State<WoundResultScreen> {
             style: const TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.w800,
-              color: Color(0xFFFF7043),
+              color: AppColors.error,
             ),
           ),
           const SizedBox(height: 10),
@@ -96,7 +97,7 @@ class _WoundResultScreenState extends State<WoundResultScreen> {
             widget.analysis.description,
             textAlign: TextAlign.center,
             style: const TextStyle(
-              color: Color(0xFF5F7D6E),
+              color: AppColors.textSecondary,
               height: 1.5,
             ),
           ),
@@ -121,7 +122,7 @@ class _WoundResultScreenState extends State<WoundResultScreen> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(22),
-        border: Border.all(color: const Color(0xFFB7D6C6)),
+        border: Border.all(color: AppColors.primary.withOpacity(0.12)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -131,7 +132,7 @@ class _WoundResultScreenState extends State<WoundResultScreen> {
             style: TextStyle(
               fontWeight: FontWeight.w800,
               letterSpacing: 1,
-              color: Color(0xFF2F6B4F),
+              color: AppColors.primary,
             ),
           ),
           const SizedBox(height: 14),
@@ -149,19 +150,19 @@ class _WoundResultScreenState extends State<WoundResultScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
       decoration: BoxDecoration(
-        color: const Color(0xFFDCEFE5),
+        color: AppColors.primary.withOpacity(0.1),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(Icons.pets, size: 16, color: Color(0xFF2F6B4F)),
+          const Icon(Icons.pets, size: 16, color: AppColors.primary),
           const SizedBox(width: 6),
           Flexible(
             child: Text(
               text,
               style: const TextStyle(
-                color: Color(0xFF2F6B4F),
+                color: AppColors.textPrimary,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -186,7 +187,7 @@ class _WoundResultScreenState extends State<WoundResultScreen> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(22),
-        border: Border.all(color: const Color(0xFFB7D6C6)),
+        border: Border.all(color: AppColors.primary.withOpacity(0.12)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -196,7 +197,7 @@ class _WoundResultScreenState extends State<WoundResultScreen> {
             style: TextStyle(
               fontWeight: FontWeight.w800,
               letterSpacing: 1,
-              color: Color(0xFF2F6B4F),
+              color: AppColors.primary,
             ),
           ),
           const SizedBox(height: 14),
@@ -222,15 +223,15 @@ class _WoundResultScreenState extends State<WoundResultScreen> {
             height: 28,
             alignment: Alignment.center,
             decoration: BoxDecoration(
-              color: const Color(0xFFDCEFE5),
+              color: AppColors.primary.withOpacity(0.15),
               shape: BoxShape.circle,
-              border: Border.all(color: const Color(0xFF2F6B4F)),
+              border: Border.all(color: AppColors.primary.withOpacity(0.5)),
             ),
             child: Text(
               "$number",
               style: const TextStyle(
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF2F6B4F),
+                color: AppColors.primary,
               ),
             ),
           ),
@@ -239,7 +240,7 @@ class _WoundResultScreenState extends State<WoundResultScreen> {
             child: Text(
               text,
               style: const TextStyle(
-                color: Color(0xFF2F6B4F),
+                color: AppColors.textSecondary,
                 height: 1.5,
               ),
             ),
@@ -258,10 +259,10 @@ class _WoundResultScreenState extends State<WoundResultScreen> {
           width: double.infinity,
           padding: const EdgeInsets.fromLTRB(18, 22, 18, 18),
           decoration: BoxDecoration(
-            color: const Color(0xFFE9E0CC),
+            color: AppColors.surface,
             borderRadius: BorderRadius.circular(26),
             border: Border.all(
-              color: const Color(0xFFE4BE57),
+              color: AppColors.primary.withOpacity(0.2),
               width: 1.3,
             ),
           ),
@@ -272,7 +273,7 @@ class _WoundResultScreenState extends State<WoundResultScreen> {
                 children: [
                   Icon(
                     Icons.warning_amber_rounded,
-                    color: Color(0xFFEF5B12),
+                    color: AppColors.accent,
                     size: 20,
                   ),
                   SizedBox(width: 6),
@@ -283,7 +284,7 @@ class _WoundResultScreenState extends State<WoundResultScreen> {
                         fontSize: 18,
                         fontWeight: FontWeight.w900,
                         letterSpacing: 0.6,
-                        color: Color(0xFFEF5B12),
+                        color: AppColors.accent,
                       ),
                     ),
                   ),
@@ -295,7 +296,7 @@ class _WoundResultScreenState extends State<WoundResultScreen> {
                 style: const TextStyle(
                   fontSize: 15,
                   height: 1.6,
-                  color: Color(0xFFD25A21),
+                  color: AppColors.textSecondary,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -311,7 +312,7 @@ class _WoundResultScreenState extends State<WoundResultScreen> {
             width: 38,
             height: 34,
             decoration: const BoxDecoration(
-              color: Color(0xFFF0C742),
+              color: AppColors.primary,
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(14),
                 topRight: Radius.circular(14),
@@ -330,7 +331,7 @@ class _WoundResultScreenState extends State<WoundResultScreen> {
             width: 38,
             height: 34,
             decoration: const BoxDecoration(
-              color: Color(0xFFF0C742),
+              color: AppColors.primary,
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(14),
                 topRight: Radius.circular(14),
@@ -354,20 +355,20 @@ class _WoundResultScreenState extends State<WoundResultScreen> {
         },
         icon: const Icon(
           Icons.camera_alt_outlined,
-          color: Color(0xFF102027),
+          color: AppColors.textPrimary,
         ),
         label: const Text(
           "Analyze Another Wound",
           style: TextStyle(
-            color: Color(0xFF102027),
+            color: AppColors.textPrimary,
             fontWeight: FontWeight.w800,
             fontSize: 16,
           ),
         ),
         style: OutlinedButton.styleFrom(
-          backgroundColor: const Color(0xFFF7F7F7),
-          side: const BorderSide(
-            color: Color(0xFFA6D7B3),
+          backgroundColor: AppColors.surface,
+          side: BorderSide(
+            color: AppColors.primary.withOpacity(0.5),
             width: 1.7,
           ),
           shape: RoundedRectangleBorder(

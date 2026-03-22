@@ -3,6 +3,7 @@ import '../../widgets/custom_back_button.dart';
 import '../../services/translation_service.dart';
 import '../../services/youtube_service.dart';
 import '../../services/pet_profile_service.dart';
+import '../../theme/app_colors.dart';
 
 class HealthRisk {
   final String title;
@@ -90,7 +91,7 @@ class _HealthRiskScreenState extends State<HealthRiskScreen> {
         .toList();
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF3F7F3),
+      backgroundColor: AppColors.background,
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
@@ -98,7 +99,7 @@ class _HealthRiskScreenState extends State<HealthRiskScreen> {
             leadingWidth: 60,
             expandedHeight: 200,
             pinned: true,
-            backgroundColor: const Color(0xFFB4235A),
+            backgroundColor: AppColors.accent,
             flexibleSpace: FlexibleSpaceBar(
               title: Text(
                 TranslationService.t('health_risks'),
@@ -107,7 +108,7 @@ class _HealthRiskScreenState extends State<HealthRiskScreen> {
               background: Container(
                 decoration: const BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [Color(0xFFB4235A), Color(0xFFE63946)],
+                    colors: [AppColors.accent, AppColors.background],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
@@ -144,11 +145,11 @@ class _HealthRiskScreenState extends State<HealthRiskScreen> {
       margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.cardBackground,
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
+            color: Colors.black.withOpacity(0.35),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -165,7 +166,7 @@ class _HealthRiskScreenState extends State<HealthRiskScreen> {
                 style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w800,
-                  color: Color(0xFF1B2A22),
+                  color: AppColors.textPrimary,
                 ),
               ),
               Container(
@@ -190,7 +191,7 @@ class _HealthRiskScreenState extends State<HealthRiskScreen> {
             risk.description,
             style: const TextStyle(
               fontSize: 14,
-              color: Color(0xFF476555),
+              color: AppColors.textSecondary,
               height: 1.4,
             ),
           ),
@@ -198,14 +199,14 @@ class _HealthRiskScreenState extends State<HealthRiskScreen> {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: const Color(0xFFF0FFF4),
+              color: AppColors.primary.withOpacity(0.08),
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: const Color(0xFFB7E4C7)),
+              border: Border.all(color: AppColors.primary.withOpacity(0.2)),
             ),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Icon(Icons.lightbulb_outline, size: 18, color: Color(0xFF1F8A5F)),
+                const Icon(Icons.lightbulb_outline, size: 18, color: AppColors.primary),
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
@@ -213,7 +214,7 @@ class _HealthRiskScreenState extends State<HealthRiskScreen> {
                     style: const TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFF1F8A5F),
+                      color: AppColors.primary,
                     ),
                   ),
                 ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../theme/app_colors.dart';
 
 class QuickActionCard extends StatefulWidget {
   final String title;
@@ -60,7 +61,7 @@ class _QuickActionCardState extends State<QuickActionCard> {
             color: widget.bgColor,
             borderRadius: BorderRadius.circular(24),
             border: Border.all(
-              color: Colors.white,
+              color: AppColors.primary.withOpacity(0.12),
               width: 1.2,
             ),
             boxShadow: [

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../widgets/custom_back_button.dart';
 import '../../services/translation_service.dart';
 import '../../services/pet_profile_service.dart';
+import '../../theme/app_colors.dart';
 
 class PetService {
   final String name;
@@ -140,7 +141,7 @@ class _FindWalkerScreenState extends State<FindWalkerScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF0FAF5),
+      backgroundColor: AppColors.background,
       body: SafeArea(
         child: Column(
           children: [
@@ -179,7 +180,7 @@ class _FindWalkerScreenState extends State<FindWalkerScreen> {
             style: const TextStyle(
               fontSize: 22,
               fontWeight: FontWeight.w900,
-              color: Color(0xFF1B2A22),
+              color: AppColors.textPrimary,
             ),
           ),
         ],
@@ -200,11 +201,11 @@ class _FindWalkerScreenState extends State<FindWalkerScreen> {
       margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.cardBackground,
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF0F7C8C).withOpacity(0.04),
+            color: Colors.black.withOpacity(0.3),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -216,9 +217,8 @@ class _FindWalkerScreenState extends State<FindWalkerScreen> {
           Row(
             children: [
               CircleAvatar(
-                radius: 28,
-                backgroundColor: const Color(0xFFD7F2F4),
-                child: Icon(typeIcon, color: const Color(0xFF0F7C8C), size: 30),
+                backgroundColor: AppColors.primary.withOpacity(0.1),
+                child: Icon(typeIcon, color: AppColors.primary, size: 30),
               ),
               const SizedBox(width: 16),
               Expanded(
@@ -232,14 +232,14 @@ class _FindWalkerScreenState extends State<FindWalkerScreen> {
                           style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w800,
-                            color: Color(0xFF1B2A22),
+                            color: AppColors.textPrimary,
                           ),
                         ),
                         const SizedBox(width: 8),
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                           decoration: BoxDecoration(
-                            color: const Color(0xFF0F7C8C).withOpacity(0.1),
+                            color: AppColors.primary.withOpacity(0.15),
                             borderRadius: BorderRadius.circular(6),
                           ),
                           child: Text(
@@ -247,7 +247,7 @@ class _FindWalkerScreenState extends State<FindWalkerScreen> {
                             style: const TextStyle(
                               fontSize: 9,
                               fontWeight: FontWeight.w900,
-                              color: Color(0xFF0F7C8C),
+                              color: AppColors.primary,
                             ),
                           ),
                         ),
@@ -263,15 +263,15 @@ class _FindWalkerScreenState extends State<FindWalkerScreen> {
                           style: const TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.bold,
-                            color: Color(0xFF476555),
+                            color: AppColors.textSecondary,
                           ),
                         ),
                         const SizedBox(width: 12),
-                        const Icon(Icons.location_on, color: Color(0xFF0F7C8C), size: 14),
+                        const Icon(Icons.location_on, color: AppColors.primary, size: 14),
                         const SizedBox(width: 4),
                         Text(
                           service.location,
-                          style: const TextStyle(fontSize: 13, color: Color(0xFF5F8B73)),
+                          style: const TextStyle(fontSize: 13, color: AppColors.textSecondary),
                         ),
                       ],
                     ),
@@ -283,7 +283,7 @@ class _FindWalkerScreenState extends State<FindWalkerScreen> {
                 style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w900,
-                  color: Color(0xFF0F7C8C),
+                  color: AppColors.primary,
                 ),
               ),
             ],
@@ -293,7 +293,7 @@ class _FindWalkerScreenState extends State<FindWalkerScreen> {
             service.bio,
             style: const TextStyle(
               fontSize: 14,
-              color: Color(0xFF476555),
+              color: AppColors.textSecondary,
               height: 1.4,
             ),
           ),
@@ -308,8 +308,8 @@ class _FindWalkerScreenState extends State<FindWalkerScreen> {
               },
               icon: const Icon(Icons.phone_outlined, size: 18),
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF0F7C8C),
-                foregroundColor: Colors.white,
+                backgroundColor: AppColors.primary,
+                foregroundColor: AppColors.textDark,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),

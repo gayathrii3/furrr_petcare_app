@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../widgets/custom_back_button.dart';
 import '../../services/translation_service.dart';
 import '../../services/pet_profile_service.dart';
+import '../../theme/app_colors.dart';
 
 enum SafetyLevel { safe, caution, toxic }
 
@@ -73,15 +74,15 @@ class _FoodSafetyScreenState extends State<FoodSafetyScreen> {
     return DefaultTabController(
       length: 3,
       child: Scaffold(
-        backgroundColor: const Color(0xFFF3F7F3),
+        backgroundColor: AppColors.background,
         appBar: AppBar(
           leading: const CustomBackButton(),
           leadingWidth: 60,
           title: Text(
             TranslationService.t('food_safety'),
-            style: const TextStyle(fontWeight: FontWeight.w800, color: Colors.white),
+            style: const TextStyle(fontWeight: FontWeight.w800, color: AppColors.textPrimary),
           ),
-          backgroundColor: const Color(0xFF2459A8),
+          backgroundColor: AppColors.surface,
           elevation: 0,
           bottom: TabBar(
             tabs: [
@@ -89,10 +90,10 @@ class _FoodSafetyScreenState extends State<FoodSafetyScreen> {
               Tab(text: TranslationService.t('safe')),
               Tab(text: TranslationService.t('toxic')),
             ],
-            indicatorColor: Colors.white,
-            labelColor: Colors.white,
-            unselectedLabelColor: Colors.white70,
-            labelStyle: TextStyle(fontWeight: FontWeight.bold),
+            indicatorColor: AppColors.primary,
+            labelColor: AppColors.primary,
+            unselectedLabelColor: AppColors.textSecondary,
+            labelStyle: const TextStyle(fontWeight: FontWeight.bold),
           ),
         ),
         body: Column(
@@ -117,7 +118,7 @@ class _FoodSafetyScreenState extends State<FoodSafetyScreen> {
   Widget _buildSearchBar() {
     return Container(
       padding: const EdgeInsets.all(16),
-      color: const Color(0xFF2459A8),
+      color: AppColors.surface,
       child: TextField(
         onChanged: (value) {
           setState(() {
@@ -126,16 +127,16 @@ class _FoodSafetyScreenState extends State<FoodSafetyScreen> {
         },
         decoration: InputDecoration(
           hintText: "Search food (e.g. Roti, Apple)...",
-          hintStyle: const TextStyle(color: Colors.white60),
-          prefixIcon: const Icon(Icons.search, color: Colors.white),
+          hintStyle: const TextStyle(color: AppColors.textSecondary),
+          prefixIcon: const Icon(Icons.search, color: AppColors.primary),
           filled: true,
-          fillColor: Colors.white.withOpacity(0.15),
+          fillColor: AppColors.primary.withOpacity(0.08),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(15),
             borderSide: BorderSide.none,
           ),
         ),
-        style: const TextStyle(color: Colors.white),
+        style: const TextStyle(color: AppColors.textPrimary),
       ),
     );
   }
@@ -161,19 +162,19 @@ class _FoodSafetyScreenState extends State<FoodSafetyScreen> {
 
     switch (food.level) {
       case SafetyLevel.safe:
-        cardColor = const Color(0xFFE3F6E8);
+        cardColor = AppColors.primary.withOpacity(0.15);
         icon = Icons.check_circle_outline;
-        textColor = const Color(0xFF1F8A5F);
+        textColor = AppColors.primary;
         break;
       case SafetyLevel.caution:
-        cardColor = const Color(0xFFFFF4D6);
+        cardColor = AppColors.accent.withOpacity(0.15);
         icon = Icons.warning_amber_rounded;
-        textColor = const Color(0xFF8A6A1F);
+        textColor = AppColors.accent;
         break;
       case SafetyLevel.toxic:
-        cardColor = const Color(0xFFFFE8E8);
+        cardColor = AppColors.error.withOpacity(0.15);
         icon = Icons.cancel_outlined;
-        textColor = const Color(0xFFE63946);
+        textColor = AppColors.error;
         break;
     }
 
@@ -181,11 +182,11 @@ class _FoodSafetyScreenState extends State<FoodSafetyScreen> {
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.cardBackground,
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.03),
+            color: Colors.black.withOpacity(0.35),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -211,7 +212,7 @@ class _FoodSafetyScreenState extends State<FoodSafetyScreen> {
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w800,
-                    color: Color(0xFF1B2A22),
+                    color: AppColors.textPrimary,
                   ),
                 ),
                 const SizedBox(height: 4),
@@ -219,7 +220,7 @@ class _FoodSafetyScreenState extends State<FoodSafetyScreen> {
                   food.description,
                   style: const TextStyle(
                     fontSize: 13,
-                    color: Color(0xFF5F8B73),
+                    color: AppColors.textSecondary,
                   ),
                 ),
               ],
@@ -238,20 +239,20 @@ class _FoodSafetyScreenState extends State<FoodSafetyScreen> {
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: const Color(0xFFFFF3E0),
+        color: AppColors.accent.withOpacity(0.1),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFFFE0B2)),
+        border: Border.all(color: AppColors.accent.withOpacity(0.3)),
       ),
       child: Row(
         children: [
-          const Icon(Icons.warning_amber_rounded, color: Color(0xFFEF6C00), size: 20),
+          const Icon(Icons.warning_amber_rounded, color: AppColors.accent, size: 20),
           const SizedBox(width: 10),
           Expanded(
             child: Text(
               "Warning for ${pet.breed}: ${content['food_warning']}",
               style: const TextStyle(
                 fontSize: 13,
-                color: Color(0xFFE65100),
+                color: AppColors.accent,
                 fontWeight: FontWeight.w600,
               ),
             ),

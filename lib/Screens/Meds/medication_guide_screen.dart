@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../widgets/custom_back_button.dart';
 import '../../services/translation_service.dart';
 import '../../services/pet_profile_service.dart';
+import '../../theme/app_colors.dart';
 
 class Medication {
   final String name;
@@ -99,7 +100,7 @@ class _MedicationGuideScreenState extends State<MedicationGuideScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF0FAF5),
+      backgroundColor: AppColors.background,
       body: SafeArea(
         child: Column(
           children: [
@@ -150,16 +151,16 @@ class _MedicationGuideScreenState extends State<MedicationGuideScreen> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: AppColors.surface,
           borderRadius: BorderRadius.circular(15),
-          border: Border.all(color: const Color(0xFFCDE9D6), width: 1.5),
+          border: Border.all(color: AppColors.primary.withOpacity(0.2), width: 1.5),
         ),
         child: TextField(
           controller: _searchController,
           decoration: InputDecoration(
             hintText: TranslationService.t('search_meds'),
             hintStyle: TextStyle(color: Colors.grey[400]),
-            prefixIcon: const Icon(Icons.search, color: Color(0xFF5F8B73)),
+            prefixIcon: const Icon(Icons.search, color: AppColors.primary),
             border: InputBorder.none,
             contentPadding: const EdgeInsets.symmetric(vertical: 12),
           ),
@@ -173,20 +174,20 @@ class _MedicationGuideScreenState extends State<MedicationGuideScreen> {
       padding: const EdgeInsets.all(16),
       margin: const EdgeInsets.fromLTRB(20, 5, 20, 0),
       decoration: BoxDecoration(
-        color: const Color(0xFFFFE8E8),
+        color: AppColors.error.withOpacity(0.12),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFE63946).withOpacity(0.3)),
+        border: Border.all(color: AppColors.error.withOpacity(0.4)),
       ),
       child: const Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(Icons.warning_amber_rounded, color: Color(0xFFE63946)),
+          Icon(Icons.warning_amber_rounded, color: AppColors.error),
           SizedBox(width: 12),
           Expanded(
             child: Text(
               "IMPORTANT: Always consult your veterinarian before administering any medication.",
               style: TextStyle(
-                color: Color(0xFFE63946),
+                color: AppColors.error,
                 fontSize: 12,
                 fontWeight: FontWeight.bold,
                 height: 1.4,
@@ -203,12 +204,12 @@ class _MedicationGuideScreenState extends State<MedicationGuideScreen> {
       margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.cardBackground,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: const Color(0xFFCDE9D6), width: 1),
+        border: Border.all(color: AppColors.primary.withOpacity(0.12), width: 1),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.02),
+            color: Colors.black.withOpacity(0.35),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -233,7 +234,7 @@ class _MedicationGuideScreenState extends State<MedicationGuideScreen> {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Icon(Icons.error_outline, size: 18, color: Color(0xFFE63946)),
+              const Icon(Icons.error_outline, size: 18, color: AppColors.error),
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
@@ -241,7 +242,7 @@ class _MedicationGuideScreenState extends State<MedicationGuideScreen> {
                   style: const TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
-                    color: Color(0xFFE63946),
+                    color: AppColors.error,
                   ),
                 ),
               ),
@@ -255,20 +256,20 @@ class _MedicationGuideScreenState extends State<MedicationGuideScreen> {
   Widget _medInfoRow(IconData icon, String title, String value) {
     return Row(
       children: [
-        Icon(icon, size: 16, color: const Color(0xFF5F8B73)),
+        Icon(icon, size: 16, color: AppColors.textSecondary),
         const SizedBox(width: 8),
         Text(
           "$title: ",
           style: const TextStyle(
             fontSize: 13,
             fontWeight: FontWeight.bold,
-            color: Color(0xFF1B2A22),
+            color: AppColors.textPrimary,
           ),
         ),
         Expanded(
           child: Text(
             value,
-            style: const TextStyle(fontSize: 13, color: Color(0xFF5F8B73)),
+            style: const TextStyle(fontSize: 13, color: AppColors.textSecondary),
           ),
         ),
       ],
@@ -283,20 +284,20 @@ class _MedicationGuideScreenState extends State<MedicationGuideScreen> {
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: const Color(0xFFE8F5E9),
+        color: AppColors.primary.withOpacity(0.1),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFC8E6C9)),
+        border: Border.all(color: AppColors.primary.withOpacity(0.3)),
       ),
       child: Row(
         children: [
-          const Icon(Icons.info_outline, color: Color(0xFF2E7D32), size: 20),
+          const Icon(Icons.info_outline, color: AppColors.primary, size: 20),
           const SizedBox(width: 10),
           Expanded(
             child: Text(
               "Note for ${pet.breed}: ${content['med_note']}",
               style: const TextStyle(
                 fontSize: 13,
-                color: Color(0xFF1B5E20),
+                color: AppColors.primary,
                 fontWeight: FontWeight.w500,
               ),
             ),
