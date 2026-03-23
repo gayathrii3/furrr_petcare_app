@@ -1,6 +1,6 @@
 # Furrr - 🐾 PetCare AI (Advanced Companion)
 
-**Furrr** is a state-of-the-art Flutter application designed to provide Indian pet owners with intelligent, real-time health and behavioral insights. Combining modern UI design with Google's **Gemini 2.0 Flash** AI and Google Places, Furrr offers a comprehensive ecosystem for proactive pet care tailored to the Indian market.
+**Furrr** is a Flutter application designed to provide Indian pet owners with intelligent, real-time health and behavioral insights. Combining modern UI design with Google's **Gemini 2.0 Flash** AI and Google Places, Furrr offers a comprehensive ecosystem for proactive pet care tailored to the Indian market.
 
 ---
 
