@@ -5,7 +5,8 @@ import '../models/vet.dart';
 
 class VetService {
   static const String _apiKey = String.fromEnvironment('GOOGLE_MAPS_API_KEY');
-  static const String _baseUrl = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json';
+  static const String _baseUrlNearby = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json';
+  static const String _baseUrlDetails = 'https://maps.googleapis.com/maps/api/place/details/json';
 
   static final VetService _instance = VetService._internal();
   factory VetService() => _instance;
@@ -13,7 +14,6 @@ class VetService {
 
   Future<List<Vet>> getNearbyVets() async {
     try {
-      // 1. Get current position
       Position position = await _determinePosition();
       
       if (_apiKey.isEmpty || _apiKey == 'YOUR_GOOGLE_MAPS_API_KEY') {
@@ -21,11 +21,10 @@ class VetService {
         return _getDemoVets();
       }
 
-      // 2. Fetch from Google Places API
-      final uri = Uri.parse(_baseUrl).replace(
+      final uri = Uri.parse(_baseUrlNearby).replace(
         queryParameters: {
           'location': '${position.latitude},${position.longitude}',
-          'radius': '5000',
+          'radius': '10000', // Increased radius to 10km
           'type': 'veterinary_care',
           'key': _apiKey,
         },
@@ -42,8 +41,31 @@ class VetService {
       }
     } catch (e) {
       print('Error getting vets: $e');
-      return _getDemoVets(); // Fallback to demo data on error
+      return _getDemoVets(); 
     }
+  }
+
+  Future<String?> getVetPhoneNumber(String placeId) async {
+    if (_apiKey.isEmpty || _apiKey == 'YOUR_GOOGLE_MAPS_API_KEY') return null;
+
+    try {
+      final uri = Uri.parse(_baseUrlDetails).replace(
+        queryParameters: {
+          'place_id': placeId,
+          'fields': 'formatted_phone_number',
+          'key': _apiKey,
+        },
+      );
+      
+      final response = await http.get(uri);
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        return data['result']?['formatted_phone_number'];
+      }
+    } catch (e) {
+      print('Error fetching vet details: $e');
+    }
+    return null;
   }
 
   Future<Position> _determinePosition() async {
@@ -64,7 +86,7 @@ class VetService {
     }
     
     if (permission == LocationPermission.deniedForever) {
-      return Future.error('Location permissions are permanently denied, we cannot request permissions.');
+      return Future.error('Location permissions are permanently denied.');
     }
 
     return await Geolocator.getCurrentPosition();
@@ -76,28 +98,37 @@ class VetService {
         name: "Happy Paws Clinic (Demo)",
         distance: "1.2 km",
         rating: 4.8,
-        specialties: ["Surgery", "Vaccination", "Grooming"],
+        specialties: ["Surgery", "Vaccination"],
         isOpen: true,
-        address: "123 Green Lane, Jubilee Hills",
+        address: "Jubilee Hills, Hyderabad",
         phone: "+91 98765 43210",
+        placeId: "demo_1",
+        lat: 17.4326,
+        lng: 78.4071,
       ),
       const Vet(
         name: "City Pet Hospital (Demo)",
         distance: "2.5 km",
         rating: 4.5,
-        specialties: ["Emergency", "Dental Care", "X-Ray"],
+        specialties: ["Emergency", "Dental Care"],
         isOpen: true,
-        address: "45 Blue Road, Banjara Hills",
+        address: "Banjara Hills, Hyderabad",
         phone: "+91 87654 32109",
+        placeId: "demo_2",
+        lat: 17.4126,
+        lng: 78.4171,
       ),
       const Vet(
         name: "Advanced Vet Care (Demo)",
         distance: "3.8 km",
         rating: 4.9,
-        specialties: ["Surgery", "Internal Medicine", "Oncology"],
+        specialties: ["Surgery", "Internal Medicine"],
         isOpen: false,
-        address: "78 Pearl St, Madhapur",
+        address: "Madhapur, Hyderabad",
         phone: "+91 76543 21098",
+        placeId: "demo_3",
+        lat: 17.4426,
+        lng: 78.3871,
       ),
     ];
   }

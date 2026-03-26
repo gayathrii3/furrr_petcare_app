@@ -77,6 +77,10 @@ class TranslationService extends ChangeNotifier {
       'overdue': 'Overdue',
       'due_soon': 'Due Soon',
       'up_to_date': 'Up to date',
+      'supplies_needed': 'SUPPLIES NEEDED',
+      'first_aid_steps': 'FIRST AID STEPS',
+      'when_to_vet': 'WHEN TO GO TO VET',
+      'analyze_another': 'Analyze Another Wound',
     },
     AppLanguage.hi: {
       'good_morning': 'सुप्रभात!',
@@ -145,6 +149,10 @@ class TranslationService extends ChangeNotifier {
       'overdue': 'विलंबित',
       'due_soon': 'जल्द देय',
       'up_to_date': 'अप टू डेट',
+      'supplies_needed': 'आवश्यक सामग्री',
+      'first_aid_steps': 'प्राथमिक उपचार चरण',
+      'when_to_vet': 'पशु चिकित्सक के पास कब जाएं',
+      'analyze_another': 'एक और चोट का विश्लेषण करें',
     },
     AppLanguage.te: {
       'good_morning': 'శుభోదయం!',
@@ -213,6 +221,10 @@ class TranslationService extends ChangeNotifier {
       'overdue': 'గడువు ముగిసింది',
       'due_soon': 'త్వరలో రానుంది',
       'up_to_date': 'తాజాగా ఉంది',
+      'supplies_needed': 'అవసరమైన సామాగ్రి',
+      'first_aid_steps': 'ప్రథమ చికిత్స దశలు',
+      'when_to_vet': 'వైద్యుని వద్దకు ఎప్పుడు వెళ్ళాలి',
+      'analyze_another': 'మరో గాయాన్ని విశ్లేషించండి',
     },
     AppLanguage.ta: {
       'good_morning': 'காலை வணக்கம்!',
@@ -280,6 +292,10 @@ class TranslationService extends ChangeNotifier {
       'overdue': 'காலாவதியானது',
       'due_soon': 'விரைவில் வருகிறது',
       'up_to_date': 'புதுப்பிக்கப்பட்டது',
+      'supplies_needed': 'தேவையான பொருட்கள்',
+      'first_aid_steps': 'முதலுதவி படிகள்',
+      'when_to_vet': 'எப்போது மருத்துவரிடம் செல்ல வேண்டும்',
+      'analyze_another': 'மற்றொரு காயத்தை ஆய்வு செய்யுங்கள்',
     },
   };
 

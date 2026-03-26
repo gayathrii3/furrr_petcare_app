@@ -75,9 +75,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 ),
               ),
             )
-          : const Center(
-              child: CircularProgressIndicator(color: Color(0xFF006949)),
-            ),
+          : const SizedBox.shrink(),
     );
   }
 }

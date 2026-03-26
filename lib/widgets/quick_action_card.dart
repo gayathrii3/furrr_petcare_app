@@ -61,14 +61,24 @@ class _QuickActionCardState extends State<QuickActionCard> {
             color: widget.bgColor,
             borderRadius: BorderRadius.circular(24),
             border: Border.all(
-              color: AppColors.primary.withOpacity(0.12),
-              width: 1.2,
+              color: AppColors.textPrimary.withOpacity(0.05),
+              width: 1,
             ),
             boxShadow: [
               BoxShadow(
+                color: const Color(0xFFD4A373).withOpacity(0.15), // Soft brown shadow
+                blurRadius: 15,
+                offset: const Offset(6, 6),
+              ),
+              BoxShadow(
+                color: Colors.white,
+                blurRadius: 12,
+                offset: const Offset(-6, -6),
+              ),
+              BoxShadow(
                 color: widget.iconColor.withOpacity(0.1),
                 blurRadius: 10,
-                offset: const Offset(0, 4),
+                offset: const Offset(0, 0),
               ),
             ],
           ),
@@ -93,15 +103,17 @@ class _QuickActionCardState extends State<QuickActionCard> {
                     color: widget.iconColor,
                   ),
                   const Spacer(),
-                  Text(
-                    widget.title,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      color: widget.iconColor,
-                      fontSize: 15,
-                      fontWeight: FontWeight.w800,
-                      height: 1.15,
+                  Expanded(
+                    child: Text(
+                      widget.title,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: widget.iconColor,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w800,
+                        height: 1.15,
+                      ),
                     ),
                   ),
                 ],

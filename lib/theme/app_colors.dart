@@ -1,29 +1,35 @@
 import 'package:flutter/material.dart';
 
 class AppColors {
-  // Primary Palette
-  static const Color background = Color.fromARGB(255, 127, 96, 57); // Deep Espresso
-  static const Color primary = Color(0xFFFACB3B);    // Golden Yellow
-  static const Color secondary = Color(0xFFE3C9A6);  // Warm Tan
-  static const Color accent = Color(0xFFE54D2B);     // Burnt Red
+  // Primary Palette (Dark Theme)
+  static const Color background = Color(0xFF121212); // Deep Black/Charcoal
+  static const Color primary = Color(0xFFFFD95A);    // Soft Bold Yellow/Gold
+  static const Color secondary = Color(0xFF1E1E1E);  // Dark Surface/Card BG
+  static const Color accent = Color(0xFF2C2C2C);     // Lighter Charcoal
   
   // Surface Palette
-  static const Color surface = Color(0xFF1E1A15);    // Soft Charcoal
-  static const Color cardBackground = Color(0xFF26211B);
+  static const Color surface = Color(0xFF1A1A1A);    // Dark Surface
+  static const Color cardBackground = Color(0xFFFFD95A); // Action Cards (Yellow from Image)
   
-  // Text Palette
-  static const Color textPrimary = Color(0xFFFFFFFF);
-  static const Color textSecondary = Color(0xFFD2B48C); // Warm Cream
-  static const Color textDark = Color(0xFF110E0A);
+  // Text Palette (Optimized for Dark Theme)
+  static const Color textPrimary = Color(0xFFFFFFFF);   // White
+  static const Color textSecondary = Color(0xFFB0B0B0); // Light Gray
+  static const Color textDark = Color(0xFF121212);      // For text on Yellow backgrounds
   
   // Status Colors
-  static const Color success = Color(0xFF4CAF50);
-  static const Color error = Color(0xFFE54D2B);
+  static const Color success = Color(0xFF81B29A); 
+  static const Color error = Color(0xFFE07A5F);   
   
   // Gradients
   static const LinearGradient primaryGradient = LinearGradient(
-    colors: [Color(0xFFFACB3B), Color(0xFFE3B01A)],
+    colors: [Color(0xFFFFD95A), Color(0xFFE6B800)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
+  );
+
+  static const LinearGradient darkGradient = LinearGradient(
+    colors: [Color(0xFF121212), Color(0xFF1E1E1E)],
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
   );
 }

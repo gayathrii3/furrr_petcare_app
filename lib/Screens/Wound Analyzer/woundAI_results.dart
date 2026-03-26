@@ -99,6 +99,7 @@ class _WoundResultScreenState extends State<WoundResultScreen> {
             style: const TextStyle(
               color: AppColors.textSecondary,
               height: 1.5,
+              fontSize: 14,
             ),
           ),
         ],
@@ -127,9 +128,9 @@ class _WoundResultScreenState extends State<WoundResultScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            "SUPPLIES NEEDED",
-            style: TextStyle(
+          Text(
+            TranslationService.t('supplies_needed'),
+            style: const TextStyle(
               fontWeight: FontWeight.w800,
               letterSpacing: 1,
               color: AppColors.primary,
@@ -192,9 +193,9 @@ class _WoundResultScreenState extends State<WoundResultScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            "FIRST AID STEPS",
-            style: TextStyle(
+          Text(
+            TranslationService.t('first_aid_steps'),
+            style: const TextStyle(
               fontWeight: FontWeight.w800,
               letterSpacing: 1,
               color: AppColors.primary,
@@ -279,8 +280,8 @@ class _WoundResultScreenState extends State<WoundResultScreen> {
                   SizedBox(width: 6),
                   Expanded(
                     child: Text(
-                      "WHEN TO GO TO VET",
-                      style: TextStyle(
+                      TranslationService.t('when_to_vet'),
+                      style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w900,
                         letterSpacing: 0.6,
@@ -357,9 +358,9 @@ class _WoundResultScreenState extends State<WoundResultScreen> {
           Icons.camera_alt_outlined,
           color: AppColors.textPrimary,
         ),
-        label: const Text(
-          "Analyze Another Wound",
-          style: TextStyle(
+        label: Text(
+          TranslationService.t('analyze_another'),
+          style: const TextStyle(
             color: AppColors.textPrimary,
             fontWeight: FontWeight.w800,
             fontSize: 16,

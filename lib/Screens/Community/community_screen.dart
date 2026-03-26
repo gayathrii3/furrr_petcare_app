@@ -6,7 +6,8 @@ import '../../widgets/custom_back_button.dart';
 import '../../services/translation_service.dart';
 
 class CommunityScreen extends StatefulWidget {
-  const CommunityScreen({super.key});
+  final VoidCallback? onBack;
+  const CommunityScreen({super.key, this.onBack});
 
   @override
   State<CommunityScreen> createState() => _CommunityScreenState();
@@ -103,7 +104,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
         ),
         child: Row(
           children: [
-            const CustomBackButton(),
+            CustomBackButton(onTap: widget.onBack),
             const SizedBox(width: 8),
             Text(
               TranslationService.t('community'),

@@ -3,6 +3,7 @@ import '../../widgets/custom_back_button.dart';
 import '../../services/translation_service.dart';
 import '../../services/pet_profile_service.dart';
 import '../../models/dog_profile.dart';
+import 'package:intl/intl.dart';
 import '../../theme/app_colors.dart';
 
 class PetProfileScreen extends StatefulWidget {
@@ -21,7 +22,7 @@ class _PetProfileScreenState extends State<PetProfileScreen>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 2, vsync: this); // Reduced to 2
     _draft = PetProfileService().currentPet.copyWith();
     TranslationService().addListener(_onLanguageChanged);
     PetProfileService().addListener(_onProfileChanged);
@@ -94,7 +95,7 @@ class _PetProfileScreenState extends State<PetProfileScreen>
                   editing: _editing,
                   onChanged: (d) => setState(() => _draft = d),
                 ),
-                _VaccinesTab(vaccines: PetProfileService().currentPet.vaccines),
+                // Vaccines tab removed
               ],
             ),
           ),
@@ -125,7 +126,7 @@ class _ProfileHeader extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [AppColors.surface, AppColors.background],
+          colors: [AppColors.secondary, AppColors.background],
         ),
       ),
       child: SafeArea(
@@ -159,10 +160,10 @@ class _ProfileHeader extends StatelessWidget {
               width: 82,
               height: 82,
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.15),
+                color: AppColors.primary.withOpacity(0.15),
                 shape: BoxShape.circle,
                 border: Border.all(
-                    color: Colors.white.withOpacity(0.4), width: 2.5),
+                    color: AppColors.primary.withOpacity(0.3), width: 2.5),
               ),
               child: const Center(
                 child: Text('🐶', style: TextStyle(fontSize: 44)),
@@ -181,7 +182,7 @@ class _ProfileHeader extends StatelessWidget {
             const SizedBox(height: 3),
             Text(
               '${dog.breed} · ${dog.age} · ${dog.weight} kg',
-              style: const TextStyle(color: Colors.white60, fontSize: 13),
+              style: const TextStyle(color: AppColors.textSecondary, fontSize: 13),
             ),
             const SizedBox(height: 12),
             Row(
@@ -217,12 +218,12 @@ class _CircleBtn extends StatelessWidget {
         height: 36,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: filled ? Colors.white : Colors.white.withOpacity(0.15),
-          border: Border.all(color: Colors.white.withOpacity(0.3)),
+          color: filled ? AppColors.primary : AppColors.secondary,
+          border: Border.all(color: AppColors.primary.withOpacity(0.3)),
         ),
         child: Icon(icon,
             size: 16,
-            color: filled ? AppColors.primary : Colors.white),
+            color: filled ? AppColors.textDark : AppColors.primary),
       ),
     );
   }
@@ -237,13 +238,14 @@ class _Chip extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.15),
+        color: AppColors.primary.withOpacity(0.15),
         borderRadius: BorderRadius.circular(100),
+        border: Border.all(color: AppColors.primary.withOpacity(0.2)),
       ),
       child: Text(
         label,
         style: const TextStyle(
-            color: Colors.white, fontSize: 11, fontWeight: FontWeight.w700),
+            color: AppColors.primary, fontSize: 11, fontWeight: FontWeight.w800),
       ),
     );
   }
@@ -268,7 +270,6 @@ class _TabBar extends StatelessWidget {
         tabs: [
           Tab(text: TranslationService.t('basic_info')),
           Tab(text: TranslationService.t('health')),
-          Tab(text: TranslationService.t('vaccines')),
         ],
       ),
     );
@@ -286,16 +287,6 @@ class _BasicInfoTab extends StatelessWidget {
     required this.onChanged,
   });
 
-  static const breeds = [
-    'Pug', 'Labrador', 'Golden Retriever', 'German Shepherd',
-    'Beagle', 'Bulldog', 'Shih Tzu', 'Husky', 'Rottweiler', 'Indie Dog', 'Other',
-  ];
-
-  static const hyderabadLocations = [
-    'Jubilee Hills', 'Banjara Hills', 'Gachibowli', 'Madhapur',
-    'Kondapur', 'Kukatpally', 'HITEC City', 'Secunderabad',
-  ];
-
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -312,18 +303,6 @@ class _BasicInfoTab extends StatelessWidget {
                 icon: Icons.label_outline,
                 editing: editing,
                 onChanged: (v) => onChanged(dog.copyWith(name: v)),
-              ),
-              _BreedPicker(
-                value: dog.breed,
-                editing: editing,
-                breeds: breeds,
-                onChanged: (v) => onChanged(dog.copyWith(breed: v)),
-              ),
-              _LocationPicker(
-                value: dog.location,
-                editing: editing,
-                locations: hyderabadLocations,
-                onChanged: (v) => onChanged(dog.copyWith(location: v)),
               ),
               _ToggleField(
                 label: TranslationService.t('gender'),
@@ -443,209 +422,10 @@ class _HealthTab extends StatelessWidget {
                 editing: editing,
                 onChanged: (v) => onChanged(dog.copyWith(lastCheckup: v)),
               ),
-              _DateField(
-                label: TranslationService.t('next_vaccine_due'),
-                value: dog.nextVaccine,
-                icon: Icons.vaccines_outlined,
-                editing: editing,
-                onChanged: (v) => onChanged(dog.copyWith(nextVaccine: v)),
-              ),
             ],
           ),
         ],
       ),
-    );
-  }
-}
-
-class _VaccinesTab extends StatelessWidget {
-  final List<Vaccine> vaccines;
-  const _VaccinesTab({required this.vaccines});
-
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(14),
-            decoration: BoxDecoration(
-              color: AppColors.primary.withOpacity(0.12),
-              borderRadius: BorderRadius.circular(14),
-              border: Border.all(color: AppColors.primary.withOpacity(0.2)),
-            ),
-            child: Row(
-              children: [
-                const Icon(Icons.vaccines, color: AppColors.primary, size: 22),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Text(
-                    TranslationService.t('pet_care_tip'),
-                    style: const TextStyle(
-                      fontSize: 12,
-                      color: AppColors.primary,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 12),
-          ...vaccines.map((v) => _VaccineCard(vaccine: v)),
-        ],
-      ),
-    );
-  }
-}
-
-class _VaccineCard extends StatelessWidget {
-  final Vaccine vaccine;
-  const _VaccineCard({required this.vaccine});
-
-  @override
-  Widget build(BuildContext context) {
-    final Color color;
-    final Color bg;
-    final String labelKey;
-
-    switch (vaccine.status) {
-      case VaccineStatus.overdue:
-        color = AppColors.error;
-        bg = AppColors.error.withOpacity(0.12);
-        labelKey = 'overdue';
-        break;
-      case VaccineStatus.dueSoon:
-        color = AppColors.accent;
-        bg = AppColors.accent.withOpacity(0.12);
-        labelKey = 'due_soon';
-        break;
-      default:
-        color = AppColors.primary;
-        bg = AppColors.primary.withOpacity(0.12);
-        labelKey = 'up_to_date';
-    }
-
-    return Container(
-      margin: const EdgeInsets.only(bottom: 10),
-      decoration: BoxDecoration(
-        color: AppColors.cardBackground,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.primary.withOpacity(0.2)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        children: [
-          Container(
-            height: 3,
-            decoration: BoxDecoration(
-              color: color,
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(14),
-            child: Column(
-              children: [
-                Row(
-                  children: [
-                    Container(
-                      width: 40,
-                      height: 40,
-                      decoration: BoxDecoration(
-                        color: bg,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Icon(Icons.vaccines, color: color, size: 20),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Text(
-                        vaccine.name,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w800,
-                          fontSize: 14,
-                          color: AppColors.textPrimary,
-                        ),
-                      ),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: bg,
-                        borderRadius: BorderRadius.circular(100),
-                        border: Border.all(color: color.withOpacity(0.3)),
-                      ),
-                      child: Text(
-                        TranslationService.t(labelKey),
-                        style: TextStyle(
-                          color: color,
-                          fontSize: 10,
-                          fontWeight: FontWeight.w800,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                Row(
-                  children: [
-                    _VaccineDetail(
-                        label: TranslationService.t('last_given'), value: vaccine.formattedLast),
-                    const SizedBox(width: 20),
-                    _VaccineDetail(
-                        label: TranslationService.t('due_date'),
-                        value: vaccine.formattedDue,
-                        valueColor: color),
-                    if (vaccine.status != VaccineStatus.overdue) ...[
-                      const SizedBox(width: 20),
-                      _VaccineDetail(
-                          label: TranslationService.t('days_left'),
-                          value: '${vaccine.daysLeft}d',
-                          valueColor: color),
-                    ],
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _VaccineDetail extends StatelessWidget {
-  final String label, value;
-  final Color? valueColor;
-  const _VaccineDetail({required this.label, required this.value, this.valueColor});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(label,
-            style: const TextStyle(
-                fontSize: 9,
-                color: AppColors.textSecondary,
-                fontWeight: FontWeight.w700,
-                letterSpacing: 0.5)),
-        const SizedBox(height: 2),
-        Text(value,
-            style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w800,
-                color: valueColor ?? AppColors.textPrimary)),
-      ],
     );
   }
 }
@@ -663,15 +443,9 @@ class _Card extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.cardBackground,
+        color: AppColors.secondary,
         borderRadius: BorderRadius.circular(18),
         border: Border.all(color: AppColors.primary.withOpacity(0.1)),
-        boxShadow: [
-          BoxShadow(
-              color: Colors.black.withOpacity(0.2),
-              blurRadius: 8,
-              offset: const Offset(0, 2)),
-        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -749,7 +523,7 @@ class _Field extends StatelessWidget {
                       borderSide: BorderSide(color: AppColors.primary.withOpacity(0.2)),
                     ),
                     filled: true,
-                    fillColor: AppColors.surface,
+                    fillColor: AppColors.secondary,
                   ),
                 )
               : Text(
@@ -759,6 +533,88 @@ class _Field extends StatelessWidget {
                     fontWeight: FontWeight.w700,
                     color: value.isEmpty ? AppColors.textSecondary : AppColors.textPrimary,
                   ),
+                ),
+        ],
+      ),
+    );
+  }
+}
+
+class _FieldLabel extends StatelessWidget {
+  final String label;
+  final IconData icon;
+  const _FieldLabel({required this.label, required this.icon});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Icon(icon, size: 12, color: AppColors.textSecondary),
+        const SizedBox(width: 5),
+        Text(
+          label.toUpperCase(),
+          style: const TextStyle(
+            fontSize: 9,
+            fontWeight: FontWeight.w800,
+            color: AppColors.textSecondary,
+            letterSpacing: 0.5,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _ToggleField extends StatelessWidget {
+  final String label, value;
+  final List<String> options;
+  final bool editing;
+  final IconData icon;
+  final ValueChanged<String> onChanged;
+
+  const _ToggleField({
+    required this.label,
+    required this.value,
+    required this.options,
+    required this.editing,
+    required this.icon,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 14),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _FieldLabel(label: label, icon: icon),
+          const SizedBox(height: 6),
+          editing
+              ? Row(
+                  children: options
+                      .map((o) => Padding(
+                            padding: const EdgeInsets.only(right: 8),
+                            child: ChoiceChip(
+                              label: Text(o),
+                              selected: value == o,
+                              onSelected: (s) => s ? onChanged(o) : null,
+                              selectedColor: AppColors.primary,
+                              labelStyle: TextStyle(
+                                fontSize: 12,
+                                color: value == o ? AppColors.textDark : AppColors.textPrimary,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ))
+                      .toList(),
+                )
+              : Text(
+                  value,
+                  style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.textPrimary),
                 ),
         ],
       ),
@@ -782,13 +638,6 @@ class _DateField extends StatelessWidget {
     this.suffix,
   });
 
-  String _format(String raw) {
-    final d = DateTime.tryParse(raw);
-    if (d == null) return raw;
-    const m = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    return '${d.day} ${m[d.month - 1]} ${d.year}';
-  }
-
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -799,148 +648,42 @@ class _DateField extends StatelessWidget {
           _FieldLabel(label: label, icon: icon),
           const SizedBox(height: 5),
           editing
-              ? GestureDetector(
+              ? InkWell(
                   onTap: () async {
-                    final picked = await showDatePicker(
+                    final d = await showDatePicker(
                       context: context,
                       initialDate: DateTime.tryParse(value) ?? DateTime.now(),
                       firstDate: DateTime(2000),
-                      lastDate: DateTime(2035),
-                      builder: (ctx, child) => Theme(
-                        data: Theme.of(ctx).copyWith(
-                          colorScheme: const ColorScheme.light(
-                            primary: AppColors.primary,
-                          ),
-                        ),
-                        child: child!,
-                      ),
+                      lastDate: DateTime(2100),
                     );
-                    if (picked != null) {
-                      onChanged(picked.toIso8601String().substring(0, 10));
+                    if (d != null) {
+                      onChanged(DateFormat('yyyy-MM-dd').format(d));
                     }
                   },
                   child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 13, vertical: 12),
+                    padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 11),
                     decoration: BoxDecoration(
-                      color: AppColors.cardBackground,
+                      color: AppColors.secondary,
                       borderRadius: BorderRadius.circular(11),
                       border: Border.all(color: AppColors.primary.withOpacity(0.2)),
                     ),
                     child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Icon(Icons.calendar_today_outlined,
-                            size: 15, color: AppColors.primary),
-                        const SizedBox(width: 8),
                         Text(
-                          value.isEmpty ? 'Select date' : _format(value),
-                          style: TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w700,
-                            color: value.isEmpty
-                                ? AppColors.textSecondary
-                                : AppColors.textPrimary,
-                          ),
+                          value.isEmpty ? 'Select Date' : value,
+                          style: const TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w700,
+                              color: AppColors.textPrimary),
                         ),
+                        const Icon(Icons.calendar_today_outlined, size: 16, color: AppColors.primary),
                       ],
                     ),
                   ),
                 )
-              : Row(
-                  children: [
-                    Text(
-                      value.isEmpty ? 'Not set' : _format(value),
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w700,
-                        color: value.isEmpty
-                            ? AppColors.textSecondary
-                            : AppColors.textPrimary,
-                      ),
-                    ),
-                    if (suffix != null) ...[
-                      const SizedBox(width: 6),
-                      Text(suffix!,
-                          style: const TextStyle(
-                              fontSize: 12, color: AppColors.textSecondary)),
-                    ],
-                  ],
-                ),
-        ],
-      ),
-    );
-  }
-}
-
-class _ToggleField extends StatelessWidget {
-  final String label, value;
-  final List<String> options;
-  final IconData icon;
-  final bool editing;
-  final ValueChanged<String> onChanged;
-
-  const _ToggleField({
-    required this.label,
-    required this.value,
-    required this.options,
-    required this.icon,
-    required this.editing,
-    required this.onChanged,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 14),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _FieldLabel(label: label, icon: icon),
-          const SizedBox(height: 5),
-          editing
-              ? Row(
-                  children: options.map((o) {
-                    final selected = value == o;
-                    return Padding(
-                      padding: const EdgeInsets.only(right: 8),
-                      child: GestureDetector(
-                        onTap: () => onChanged(o),
-                        child: AnimatedContainer(
-                          duration: const Duration(milliseconds: 150),
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 18, vertical: 8),
-                          decoration: BoxDecoration(
-                            gradient: selected
-                                ? LinearGradient(
-                                    colors: [AppColors.primary, AppColors.primary.withOpacity(0.8)])
-                                : null,
-                            color: selected ? null : AppColors.primary.withOpacity(0.12),
-                            borderRadius: BorderRadius.circular(100),
-                            boxShadow: selected
-                                ? [
-                                    BoxShadow(
-                                      color: AppColors.primary.withOpacity(0.15),
-                                      blurRadius: 8,
-                                      offset: const Offset(0, 3),
-                                    )
-                                  ]
-                                : null,
-                          ),
-                          child: Text(
-                            o,
-                            style: TextStyle(
-                              fontSize: 13,
-                              fontWeight: FontWeight.w800,
-                              color: selected ? AppColors.textDark : AppColors.textPrimary,
-                            ),
-                          ),
-                        ),
-                      ),
-                    );
-                  }).toList(),
-                )
               : Text(
-                  value,
+                  value.isEmpty ? 'Not set' : '$value ${suffix ?? ''}',
                   style: const TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w700,
@@ -948,165 +691,6 @@ class _ToggleField extends StatelessWidget {
                 ),
         ],
       ),
-    );
-  }
-}
-
-class _LocationPicker extends StatelessWidget {
-  final String value;
-  final bool editing;
-  final List<String> locations;
-  final ValueChanged<String> onChanged;
-
-  const _LocationPicker({
-    required this.value,
-    required this.editing,
-    required this.locations,
-    required this.onChanged,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 14),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _FieldLabel(label: TranslationService.t('location'), icon: Icons.location_on_outlined),
-          const SizedBox(height: 5),
-          editing
-              ? Wrap(
-                  spacing: 7,
-                  runSpacing: 7,
-                  children: locations.map((l) {
-                    final selected = value == l;
-                    return GestureDetector(
-                      onTap: () => onChanged(l),
-                      child: AnimatedContainer(
-                        duration: const Duration(milliseconds: 150),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 13, vertical: 7),
-                        decoration: BoxDecoration(
-                          gradient: selected
-                              ? LinearGradient(
-                                  colors: [AppColors.primary, AppColors.primary.withOpacity(0.8)])
-                              : null,
-                          color: selected ? null : const Color(0xFFD8F3DC),
-                          borderRadius: BorderRadius.circular(100),
-                        ),
-                        child: Text(
-                          l,
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w700,
-                            color: selected ? AppColors.textDark : AppColors.textPrimary,
-                          ),
-                        ),
-                      ),
-                    );
-                  }).toList(),
-                )
-              : Text(
-                  value,
-                  style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.textPrimary),
-                ),
-        ],
-      ),
-    );
-  }
-}
-
-class _BreedPicker extends StatelessWidget {
-  final String value;
-  final bool editing;
-  final List<String> breeds;
-  final ValueChanged<String> onChanged;
-
-  const _BreedPicker({
-    required this.value,
-    required this.editing,
-    required this.breeds,
-    required this.onChanged,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 14),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _FieldLabel(label: TranslationService.t('breed'), icon: Icons.pets),
-          const SizedBox(height: 5),
-          editing
-              ? Wrap(
-                  spacing: 7,
-                  runSpacing: 7,
-                  children: breeds.map((b) {
-                    final selected = value == b;
-                    return GestureDetector(
-                      onTap: () => onChanged(b),
-                      child: AnimatedContainer(
-                        duration: const Duration(milliseconds: 150),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 13, vertical: 7),
-                        decoration: BoxDecoration(
-                          gradient: selected
-                              ? LinearGradient(
-                                  colors: [AppColors.primary, AppColors.primary.withOpacity(0.8)])
-                              : null,
-                          color: selected ? null : const Color(0xFFD8F3DC),
-                          borderRadius: BorderRadius.circular(100),
-                        ),
-                        child: Text(
-                          b,
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w700,
-                            color: selected ? AppColors.textDark : AppColors.textPrimary,
-                          ),
-                        ),
-                      ),
-                    );
-                  }).toList(),
-                )
-              : Text(
-                  value,
-                  style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.textPrimary),
-                ),
-        ],
-      ),
-    );
-  }
-}
-
-class _FieldLabel extends StatelessWidget {
-  final String label;
-  final IconData icon;
-  const _FieldLabel({required this.label, required this.icon});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Icon(icon, size: 11, color: const Color(0xFF7A9E8A)),
-        const SizedBox(width: 5),
-        Text(
-          label.toUpperCase(),
-          style: const TextStyle(
-            fontSize: 10,
-            fontWeight: FontWeight.w800,
-            color: Color(0xFF7A9E8A),
-            letterSpacing: 1,
-          ),
-        ),
-      ],
     );
   }
 }
@@ -1118,60 +702,41 @@ class _SaveBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.cardBackground,
-        border: const Border(top: BorderSide(color: Color(0xFFE0EEE6))),
+        color: AppColors.secondary,
         boxShadow: [
           BoxShadow(
-              color: Colors.black.withOpacity(0.06),
-              blurRadius: 12,
-              offset: const Offset(0, -3)),
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 10,
+              offset: const Offset(0, -2))
         ],
       ),
-      child: Row(
-        children: [
-          Expanded(
-            child: OutlinedButton(
-              onPressed: onCancel,
-              style: OutlinedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 14),
-                side: const BorderSide(color: Color(0xFFE0EEE6)),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14)),
-              ),
-              child: Text(TranslationService.t('cancel'),
-                  style: const TextStyle(
-                      color: Color(0xFF1B2D24), fontWeight: FontWeight.w700)),
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            flex: 2,
-            child: ElevatedButton(
-              onPressed: onSave,
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 14),
-                backgroundColor: AppColors.primary,
-                foregroundColor: Colors.white,
-                elevation: 0,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14)),
-                shadowColor: AppColors.primary.withOpacity(0.4),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(Icons.check_rounded, size: 18),
-                  const SizedBox(width: 6),
-                  Text(TranslationService.t('save_profile'),
-                      style: const TextStyle(
-                          fontSize: 14, fontWeight: FontWeight.w800)),
-                ],
+      child: SafeArea(
+        top: false,
+        child: Row(
+          children: [
+            Expanded(
+              child: TextButton(
+                onPressed: onCancel,
+                child: const Text('Cancel', style: TextStyle(color: AppColors.textSecondary)),
               ),
             ),
-          ),
-        ],
+            const SizedBox(width: 16),
+            Expanded(
+              child: ElevatedButton(
+                onPressed: onSave,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primary,
+                  foregroundColor: AppColors.textDark,
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                ),
+                child: const Text('Save Changes', style: TextStyle(fontWeight: FontWeight.bold)),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

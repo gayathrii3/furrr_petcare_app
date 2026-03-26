@@ -1,28 +1,35 @@
 import 'dart:convert';
-import 'dart:io';
+import 'dart:typed_data';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import '../models/ai_health_analysis.dart';
 
 class AiAnalysisService {
-  // Gemini API Key from https://aistudio.google.com/
-  static const String _apiKey = String.fromEnvironment('GEMINI_API_KEY');
+  static String _apiKey = "";
+  static GenerativeModel? _model;
   
   static final AiAnalysisService _instance = AiAnalysisService._internal();
   factory AiAnalysisService() => _instance;
   AiAnalysisService._internal();
 
-  final GenerativeModel _model = GenerativeModel(
-    model: 'gemini-2.5-flash',
-    apiKey: _apiKey,
-    generationConfig: GenerationConfig(
-      responseMimeType: 'application/json',
-    ),
-  );
+  /// Initialize the service with an API key
+  static void init(String key) {
+    _apiKey = key;
+    // Using gemini-flash-latest as it is the only verified working alias
+    _model = GenerativeModel(
+      model: 'gemini-flash-latest',
+      apiKey: _apiKey,
+      generationConfig: GenerationConfig(
+        responseMimeType: 'application/json',
+      ),
+    );
+  }
 
-  Future<AiHealthAnalysis> analyzeWound(File imageFile) async {
+  GenerativeModel get _generativeModel => _model!;
+
+  Future<AiHealthAnalysis> analyzeWound(Uint8List imageBytes) async {
     return _analyzeGeneric(
       prompt: "Analyze this image of a pet's wound. Provide a detailed analysis in JSON.",
-      imageFile: imageFile,
+      imageBytes: imageBytes,
     );
   }
 
@@ -40,8 +47,8 @@ class AiAnalysisService {
     );
   }
 
-  Future<AiHealthAnalysis> _analyzeGeneric({required String prompt, File? imageFile}) async {
-    if (_apiKey == "YOUR_GEMINI_API_KEY") {
+  Future<AiHealthAnalysis> _analyzeGeneric({required String prompt, Uint8List? imageBytes}) async {
+    if (_apiKey.isEmpty) {
       return AiHealthAnalysis(
         severity: "Key Missing",
         description: "Please provide a Gemini API Key.",
@@ -65,15 +72,26 @@ class AiAnalysisService {
       """;
 
       final content = [
-        imageFile != null 
-          ? Content.multi([TextPart(fullPrompt), DataPart('image/jpeg', await imageFile.readAsBytes())])
+        imageBytes != null 
+          ? Content.multi([TextPart(fullPrompt), DataPart('image/jpeg', imageBytes)])
           : Content.text(fullPrompt)
       ];
 
-      final response = await _model.generateContent(content);
-      print("AI Response: ${response.text}");
-      final jsonResponse = jsonDecode(response.text ?? '{}');
+      final response = await _generativeModel.generateContent(content);
       
+      String? text = response.text;
+      print("AI Response Raw: $text");
+      
+      if (text == null) throw Exception("Empty AI response");
+
+      // Cleanup JSON from markdown code blocks if necessary
+      if (text.contains("```")) {
+        text = text.replaceAll(RegExp(r'```json\n?'), '');
+        text = text.replaceAll(RegExp(r'\n?```'), '');
+        text = text.trim();
+      }
+      
+      final jsonResponse = jsonDecode(text);
       return AiHealthAnalysis.fromJson(jsonResponse);
     } catch (e) {
       print("AI Analysis Error: $e");

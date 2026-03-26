@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
 import 'language_selector.dart';
 
-class AppBottomNavBar extends StatelessWidget {
+class AppBottomNavBar extends StatefulWidget {
   final int selectedIndex;
   final AppLanguage selectedLanguage;
   final Function(int) onTabTapped;
@@ -14,99 +14,176 @@ class AppBottomNavBar extends StatelessWidget {
     required this.onTabTapped,
   });
 
-  String t(String en, String hi, String te, String ta) {
-    switch (selectedLanguage) {
-      case AppLanguage.en:
-        return en;
-      case AppLanguage.hi:
-        return hi;
-      case AppLanguage.te:
-        return te;
-      case AppLanguage.ta:
-        return ta;
+  @override
+  State<AppBottomNavBar> createState() => _AppBottomNavBarState();
+}
+
+class _AppBottomNavBarState extends State<AppBottomNavBar>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _animation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 400),
+    );
+    _animation = Tween<double>(begin: 0, end: 0).animate(CurvedAnimation(
+      parent: _controller,
+      curve: Curves.elasticOut,
+    ));
+  }
+
+  @override
+  void didUpdateWidget(AppBottomNavBar oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.selectedIndex != widget.selectedIndex) {
+      _controller.forward(from: 0);
     }
   }
 
   @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final double width = MediaQuery.of(context).size.width;
+    final double itemWidth = width / 4;
+    final double activeOffset = widget.selectedIndex * itemWidth + (itemWidth / 2);
+
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        border: Border(
-          top: BorderSide(color: AppColors.primary.withOpacity(0.1)),
-        ),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
+      height: 90,
+      color: Colors.transparent,
+      child: Stack(
+        clipBehavior: Clip.none,
         children: [
-          _buildNavItem(
-            index: 0,
-            icon: Icons.home,
-            label: t("Home", "होम", "హోమ్", "ஹோம்"),
+          // Background with Curve Cutout
+          CustomPaint(
+            size: Size(width, 90),
+            painter: NavPainter(activeOffset),
           ),
-          _buildNavItem(
-            index: 1,
-            icon: Icons.medical_services,
-            label: t("Wound AI", "वाउंड AI", "వౌండ్ AI", "வுண்ட் AI"),
+          // Icons Row
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              _buildNavItem(0, Icons.home_rounded),
+              _buildNavItem(1, Icons.bolt_rounded),
+              _buildNavItem(2, Icons.medical_services_rounded),
+              _buildNavItem(3, Icons.pets_rounded),
+            ],
           ),
-          _buildNavItem(
-            index: 2,
-            icon: Icons.local_hospital,
-            label: t("Vets", "वेट्स", "వెట్స్", "வெட்ஸ்"),
-          ),
-          _buildNavItem(
-            index: 3,
-            icon: Icons.groups,
-            label: t("Community", "समुदाय", "కమ్యూనిటీ", "சமூகம்"),
+          // Animated Yellow Circle
+          AnimatedPositioned(
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOutBack,
+            left: activeOffset - 30, // 30 is half of 60 radius
+            top: -20,
+            child: Container(
+              width: 60,
+              height: 60,
+              decoration: BoxDecoration(
+                color: AppColors.primary,
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.primary.withOpacity(0.4),
+                    blurRadius: 15,
+                    spreadRadius: 2,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: Center(
+                child: Icon(
+                  _getIconForIndex(widget.selectedIndex),
+                  color: AppColors.textDark,
+                  size: 28,
+                ),
+              ),
+            ),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildNavItem({
-    required int index,
-    required IconData icon,
-    required String label,
-  }) {
-    final bool isSelected = selectedIndex == index;
-
-    return Expanded(
-      child: GestureDetector(
-        onTap: () => onTabTapped(index),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              padding: isSelected
-                  ? const EdgeInsets.symmetric(horizontal: 12, vertical: 6)
-                  : EdgeInsets.zero,
-              decoration: BoxDecoration(
-                color: isSelected ? AppColors.primary.withOpacity(0.15) : Colors.transparent,
-                borderRadius: BorderRadius.circular(30),
-              ),
-              child: Icon(
-                icon,
-                size: 22,
-                color: isSelected ? AppColors.primary : AppColors.textSecondary.withOpacity(0.6),
-              ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              label,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 10,
-                fontWeight: FontWeight.bold,
-                color: isSelected ? AppColors.primary : AppColors.textSecondary.withOpacity(0.6),
-              ),
-            ),
-          ],
+  Widget _buildNavItem(int index, IconData icon) {
+    final bool isSelected = widget.selectedIndex == index;
+    return GestureDetector(
+      onTap: () => widget.onTabTapped(index),
+      child: Container(
+        width: 60,
+        height: 60,
+        color: Colors.transparent,
+        child: Visibility(
+          visible: !isSelected,
+          child: Icon(
+            icon,
+            color: AppColors.textSecondary.withOpacity(0.5),
+            size: 26,
+          ),
         ),
       ),
     );
+  }
+
+  IconData _getIconForIndex(int index) {
+    switch (index) {
+      case 0: return Icons.home_rounded;
+      case 1: return Icons.bolt_rounded;
+      case 2: return Icons.medical_services_rounded;
+      case 3: return Icons.pets_rounded;
+      default: return Icons.home_rounded;
+    }
+  }
+}
+
+class NavPainter extends CustomPainter {
+  final double x;
+  NavPainter(this.x);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    Paint paint = Paint()
+      ..color = AppColors.background // Dark background color
+      ..style = PaintingStyle.fill;
+
+    // We use a dark color from the theme for the main bar
+    paint.color = const Color(0xFF1E1E1E); // Solid dark surface color
+
+    Path path = Path()
+      ..moveTo(0, 0)
+      ..lineTo(x - 60, 0)
+      ..quadraticBezierTo(x - 40, 0, x - 35, 10)
+      ..arcToPoint(
+        Offset(x + 35, 10),
+        radius: const Radius.circular(40),
+        clockwise: false,
+      )
+      ..quadraticBezierTo(x + 40, 0, x + 60, 0)
+      ..lineTo(size.width, 0)
+      ..lineTo(size.width, size.height)
+      ..lineTo(0, size.height)
+      ..close();
+
+    canvas.drawPath(path, paint);
+    
+    // Add a top border line
+    Paint linePaint = Paint()
+      ..color = Colors.white.withOpacity(0.05)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1;
+      
+    canvas.drawPath(path, linePaint);
+  }
+
+  @override
+  bool shouldRepaint(covariant NavPainter oldDelegate) {
+    return oldDelegate.x != x;
   }
 }

@@ -16,12 +16,11 @@ class MainNav extends StatefulWidget {
 
 class _MainNavState extends State<MainNav> {
   int _selectedIndex = 0;
-  // No need for local _selectedLanguage, use TranslationService
-  final List<Widget> _screens = const [
-    FurrrHomePage(),
-    WoundAiScreen(),
-    VetsScreen(),
-    CommunityScreen(),
+  late final List<Widget> _screens = [
+    const FurrrHomePage(),
+    WoundAiScreen(onBack: () => _onTabTapped(0)),
+    VetsScreen(onBack: () => _onTabTapped(0)),
+    CommunityScreen(onBack: () => _onTabTapped(0)),
   ];
 
   @override

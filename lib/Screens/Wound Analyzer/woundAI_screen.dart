@@ -9,7 +9,8 @@ import 'package:furrr/models/ai_health_analysis.dart';
 import '../../theme/app_colors.dart';
 
 class WoundAiScreen extends StatefulWidget {
-  const WoundAiScreen({super.key});
+  final VoidCallback? onBack;
+  const WoundAiScreen({super.key, this.onBack});
 
   @override
   State<WoundAiScreen> createState() => _WoundAiScreenState();
@@ -116,7 +117,8 @@ class _WoundAiScreenState extends State<WoundAiScreen> {
     });
 
     try {
-      final analysis = await AiAnalysisService().analyzeWound(_image!);
+      final bytes = await _image!.readAsBytes();
+      final analysis = await AiAnalysisService().analyzeWound(bytes);
 
       if (!mounted) return;
 
@@ -153,14 +155,18 @@ class _WoundAiScreenState extends State<WoundAiScreen> {
             children: [
               Row(
                 children: [
-                  const CustomBackButton(),
+                  CustomBackButton(onTap: widget.onBack),
                   const SizedBox(width: 15),
-                  Text(
-                    TranslationService.t('wound_analyzer'),
-                    style: const TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.w900,
-                      color: AppColors.textPrimary,
+                  Expanded(
+                    child: Text(
+                      TranslationService.t('wound_analyzer'),
+                      style: const TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.w900,
+                        color: AppColors.textPrimary,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
                 ],
@@ -199,9 +205,30 @@ class _WoundAiScreenState extends State<WoundAiScreen> {
           onTap: _showImageSourcePicker,
           child: Container(
             padding: const EdgeInsets.all(28),
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               color: AppColors.surface,
               shape: BoxShape.circle,
+              border: Border.all(
+                color: Colors.white.withOpacity(0.05),
+                width: 1,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.4),
+                  blurRadius: 20,
+                  offset: const Offset(8, 8),
+                ),
+                BoxShadow(
+                  color: Colors.white.withOpacity(0.03),
+                  blurRadius: 20,
+                  offset: const Offset(-4, -4),
+                ),
+                BoxShadow(
+                  color: AppColors.primary.withOpacity(0.1),
+                  blurRadius: 30,
+                  spreadRadius: 5,
+                ),
+              ],
             ),
             child: const Icon(
               Icons.camera_alt,
@@ -276,6 +303,13 @@ class _WoundAiScreenState extends State<WoundAiScreen> {
             decoration: BoxDecoration(
               gradient: AppColors.primaryGradient,
               borderRadius: BorderRadius.circular(30),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.primary.withOpacity(0.4),
+                  blurRadius: 20,
+                  offset: const Offset(0, 8),
+                ),
+              ],
             ),
             child: Center(
               child: _isAnalyzing
