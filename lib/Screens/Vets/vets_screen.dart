@@ -7,6 +7,7 @@ import '../../services/pet_profile_service.dart';
 import '../../services/vet_service.dart';
 import '../../models/vet.dart';
 import '../../theme/app_colors.dart';
+import '../../widgets/paws_loading.dart';
 
 class VetsScreen extends StatefulWidget {
   final VoidCallback? onBack;
@@ -220,23 +221,8 @@ class _VetsScreenState extends State<VetsScreen> {
 
   Widget _buildMainContent() {
     if (_isLoading) {
-      return Center(
-        child: SizedBox(
-          width: 150,
-          height: 150,
-          child: Lottie.asset(
-            'assets/animations/paws.json',
-            fit: BoxFit.contain,
-            delegates: LottieDelegates(
-              values: [
-                ValueDelegate.color(
-                  const ['**'],
-                  value: AppColors.primary,
-                ),
-              ],
-            ),
-          ),
-        ),
+      return const Center(
+        child: PawsLoading(size: 100),
       );
     }
     

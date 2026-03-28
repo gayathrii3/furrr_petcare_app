@@ -4,14 +4,15 @@ import 'package:flutter/services.dart';
 import 'screens/splash_screen.dart';
 import 'theme/app_colors.dart';
 import 'services/ai_analysis_service.dart';
+import 'config/api_config.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
-  // Hardcoded API Keys
-  String gemini = "YOUR_GEMINI_API_KEY";
-  String youtube = "YOUR_YOUTUBE_API_KEY";
-  String maps = "YOUR_GOOGLE_MAPS_API_KEY_HERE";
+  // Pull API Keys from environment configuration
+  final gemini = ApiConfig.geminiKey;
+  final youtube = ApiConfig.youtubeKey;
+  final maps = ApiConfig.mapsKey;
 
   // Initialize Services
   AiAnalysisService.init(gemini);
@@ -22,6 +23,10 @@ Future<void> main() async {
   print('GOOGLE_MAPS_API_KEY: ${maps.isNotEmpty ? "✅ LOADED (${maps.substring(0, 4)}...)" : "❌ MISSING"}');
   print('-----------------------------');
   
+  if (ApiConfig.hasMissingKeys) {
+    print('⚠️ WARNING: SOME ESSENTIAL API KEYS ARE MISSING. Check your --dart-define parameters.');
+  }
+
   runApp(FurrrApp(
     geminiKey: gemini,
     youtubeKey: youtube,

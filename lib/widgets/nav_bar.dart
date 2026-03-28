@@ -72,9 +72,9 @@ class _AppBottomNavBarState extends State<AppBottomNavBar>
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               _buildNavItem(0, Icons.home_rounded),
-              _buildNavItem(1, Icons.bolt_rounded),
+              _buildNavItem(1, Icons.camera_alt_rounded),
               _buildNavItem(2, Icons.medical_services_rounded),
-              _buildNavItem(3, Icons.pets_rounded),
+              _buildNavItem(3, Icons.people_rounded),
             ],
           ),
           // Animated Yellow Circle
@@ -135,9 +135,9 @@ class _AppBottomNavBarState extends State<AppBottomNavBar>
   IconData _getIconForIndex(int index) {
     switch (index) {
       case 0: return Icons.home_rounded;
-      case 1: return Icons.bolt_rounded;
+      case 1: return Icons.camera_alt_rounded;
       case 2: return Icons.medical_services_rounded;
-      case 3: return Icons.pets_rounded;
+      case 3: return Icons.people_rounded;
       default: return Icons.home_rounded;
     }
   }

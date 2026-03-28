@@ -6,6 +6,7 @@ import '../../services/ai_analysis_service.dart';
 import 'package:furrr/models/ai_health_analysis.dart';
 import 'package:furrr/Screens/Vets/vets_screen.dart';
 import '../../theme/app_colors.dart';
+import '../../widgets/paws_loading.dart';
 
 class SymptomCheckerScreen extends StatefulWidget {
   const SymptomCheckerScreen({super.key});
@@ -214,7 +215,7 @@ class _SymptomCheckerScreenState extends State<SymptomCheckerScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   _isAnalyzing 
-                    ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: AppColors.primary, strokeWidth: 2))
+                    ? const PawsLoading(size: 30, color: AppColors.textDark)
                     : Icon(
                         Icons.search,
                         color: (_selectedSymptoms.isEmpty && _descriptionController.text.isEmpty) ? Colors.grey : AppColors.primary,
@@ -265,7 +266,7 @@ class _SymptomCheckerScreenState extends State<SymptomCheckerScreen> {
   }
 
   Widget _buildDiagnosis() {
-    if (_aiAnalysis == null) return const Center(child: CircularProgressIndicator());
+    if (_aiAnalysis == null) return const Center(child: PawsLoading(size: 80));
     
     final bool isUrgent = _aiAnalysis!.severity.toLowerCase().contains("urgent") || 
                          _aiAnalysis!.severity.toLowerCase().contains("vet") ||

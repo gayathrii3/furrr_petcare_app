@@ -1,9 +1,10 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import '../config/api_config.dart';
 
 class YouTubeService {
-  // Hardcoded YouTube Data API v3 Key
-  static const String _apiKey = "YOUR_YOUTUBE_API_KEY";
+  // Use centralized API config
+  static const String _apiKey = ApiConfig.youtubeKey;
   static const String _baseUrl = 'https://www.googleapis.com/youtube/v3';
 
   Future<List<Map<String, String>>> fetchPetVideos({String pageToken = ''}) async {

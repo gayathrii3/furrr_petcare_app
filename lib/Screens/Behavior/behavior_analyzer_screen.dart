@@ -5,6 +5,7 @@ import '../../services/pet_profile_service.dart';
 import '../../services/ai_analysis_service.dart';
 import 'package:furrr/models/ai_health_analysis.dart';
 import '../../theme/app_colors.dart';
+import '../../widgets/paws_loading.dart';
 
 class Behavior {
   final String title;
@@ -253,7 +254,7 @@ class _BehaviorAnalyzerScreenState extends State<BehaviorAnalyzerScreen> {
     final b = _selectedBehavior!;
     
     if (_isAnalyzing) {
-      return const Center(child: CircularProgressIndicator(color: AppColors.primary));
+      return const Center(child: PawsLoading(size: 80));
     }
 
     if (_aiAnalysis == null) {

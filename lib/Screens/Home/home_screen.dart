@@ -1,3 +1,4 @@
+import 'dart:ui' show ImageFilter;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../Profile/pet_profile_screen.dart';
@@ -40,51 +41,105 @@ class _FurrrHomePageState extends State<FurrrHomePage> {
       backgroundColor: AppColors.background,
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+          padding: const EdgeInsets.symmetric(vertical: 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildHeader(),
-              const SizedBox(height: 24),
-              _buildHorizontalCalendar(),
-              const SizedBox(height: 30),
-              _buildHeroStatusCard(),
-              const SizedBox(height: 32),
-              _buildSectionHeader("ACTIVE CARE FOR ${PetProfileService().currentPet.name.toUpperCase()}!", showSeeAll: false),
-              const SizedBox(height: 16),
-              StackedCardSwiper(
-                cards: [
-                  OngoingTaskCard(
-                    title: "Symptom Checker",
-                    icon: Icons.health_and_safety_rounded,
-                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const SymptomCheckerScreen())),
-                  ),
-                  OngoingTaskCard(
-                    title: "Medication Guide",
-                    icon: Icons.medication_rounded,
-                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const MedicationGuideScreen())),
-                  ),
-                  OngoingTaskCard(
-                    title: "Behavior Check",
-                    icon: Icons.psychology_rounded,
-                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const BehaviorAnalyzerScreen())),
-                  ),
-                  OngoingTaskCard(
-                    title: "Food Safety",
-                    icon: Icons.restaurant_menu_rounded,
-                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const FoodSafetyScreen())),
-                  ),
-                  OngoingTaskCard(
-                    title: "Health Risks",
-                    icon: Icons.warning_rounded,
-                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const HealthRiskScreen())),
-                  ),
-                ],
+              _buildGlassDashboard(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildHeader(),
+                    const SizedBox(height: 24),
+                    _buildHorizontalCalendar(),
+                    const SizedBox(height: 20),
+                    _buildHeroStatusCard(),
+                  ],
+                ),
               ),
-              const SizedBox(height: 40), // Spacing for end of scroll
+              const SizedBox(height: 32),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildSectionHeader("ACTIVE CARE FOR ${PetProfileService().currentPet.name.toUpperCase()}!", showSeeAll: false),
+                    const SizedBox(height: 16),
+                    StackedCardSwiper(
+                      cards: [
+                        OngoingTaskCard(
+                          title: "Symptom Checker",
+                          icon: Icons.health_and_safety_rounded,
+                          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const SymptomCheckerScreen())),
+                        ),
+                        OngoingTaskCard(
+                          title: "Medication Guide",
+                          icon: Icons.medication_rounded,
+                          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const MedicationGuideScreen())),
+                        ),
+                        OngoingTaskCard(
+                          title: "Behavior Check",
+                          icon: Icons.psychology_rounded,
+                          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const BehaviorAnalyzerScreen())),
+                        ),
+                        OngoingTaskCard(
+                          title: "Food Safety",
+                          icon: Icons.restaurant_menu_rounded,
+                          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const FoodSafetyScreen())),
+                        ),
+                        OngoingTaskCard(
+                          title: "Health Risks",
+                          icon: Icons.warning_rounded,
+                          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const HealthRiskScreen())),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 40), 
+                  ],
+                ),
+              ),
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildGlassDashboard({required Widget child}) {
+    return IntrinsicHeight(
+      child: Stack(
+        children: [
+          // 1. The Glass Shape & Content
+          ClipPath(
+            clipper: DashboardClipper(),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 25, sigmaY: 25), // Increased blur for Stomer style
+              child: Container(
+                // Full padding to clear the "ears" and dip area
+                padding: const EdgeInsets.only(top: 65, left: 24, right: 24, bottom: 30),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      AppColors.primary.withOpacity(0.15),
+                      AppColors.primary.withOpacity(0.05),
+                    ],
+                  ),
+                ),
+                child: child,
+              ),
+            ),
+          ),
+          // 2. The Border Layer - Positioned.fill ensures it captures the full height
+          Positioned.fill(
+            child: IgnorePointer(
+              child: CustomPaint(
+                painter: DashboardBorderPainter(),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -337,6 +392,116 @@ class _FurrrHomePageState extends State<FurrrHomePage> {
       ],
     );
   }
+}
+
+class DashboardClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    var path = Path();
+    double radius = 38; // Slightly larger for smoother look
+    double sideMargin = 2; // Almost full width
+    double topPadding = 0;
+    double earWidth = 100; // Refined ear width
+    double dipHeight = 35; // Depth of the head dip
+    
+    // Start at bottom left
+    path.moveTo(sideMargin, size.height - radius);
+    
+    // Left side going up into the ear
+    path.lineTo(sideMargin, dipHeight + topPadding + radius + 10);
+    
+    // Left Ear - Organic smooth parabolic curve
+    path.cubicTo(
+      sideMargin, topPadding + 5, 
+      sideMargin + 20, topPadding, 
+      sideMargin + radius + 15, topPadding
+    );
+    
+    path.lineTo(sideMargin + earWidth - radius - 15, topPadding);
+    
+    // Smooth transition to the Dip
+    path.cubicTo(
+      sideMargin + earWidth - 10, topPadding,
+      sideMargin + earWidth, topPadding + 10,
+      sideMargin + earWidth, dipHeight + topPadding
+    );
+    
+    // Middle Dip - Flat connecting line
+    path.lineTo(size.width - sideMargin - earWidth, dipHeight + topPadding);
+    
+    // Right Ear - Perfect mirror of Left
+    path.cubicTo(
+      size.width - sideMargin - earWidth, topPadding + 10,
+      size.width - sideMargin - earWidth + 10, topPadding,
+      size.width - sideMargin - earWidth + radius + 15, topPadding
+    );
+    
+    path.lineTo(size.width - sideMargin - radius - 15, topPadding);
+    
+    path.cubicTo(
+      size.width - sideMargin - 20, topPadding,
+      size.width - sideMargin, topPadding + 5,
+      size.width - sideMargin, dipHeight + topPadding + radius + 10
+    );
+    
+    // Right side going down
+    path.lineTo(size.width - sideMargin, size.height - radius);
+    
+    // Bottom right corner
+    path.quadraticBezierTo(
+      size.width - sideMargin, size.height,
+      size.width - sideMargin - radius, size.height
+    );
+    
+    // Bottom side
+    path.lineTo(sideMargin + radius, size.height);
+    
+    // Bottom left corner
+    path.quadraticBezierTo(
+      sideMargin, size.height,
+      sideMargin, size.height - radius
+    );
+    
+    path.close();
+    return path;
+  }
+
+  @override
+  bool shouldReclip(CustomClipper<Path> oldClipper) => true;
+}
+
+class DashboardBorderPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    var path = DashboardClipper().getClip(size);
+    
+    // 1. Neon Outer Glow (Layer 1 - Soft Spread)
+    var glowPaint1 = Paint()
+      ..color = AppColors.primary.withOpacity(0.2)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 10.0
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 8.0);
+    canvas.drawPath(path, glowPaint1);
+
+    // 2. Main Solid Yellow Border (Solid core)
+    var borderPaint = Paint()
+      ..color = AppColors.primary
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round
+      ..strokeWidth = 3.8; 
+    canvas.drawPath(path, borderPaint);
+    
+    // 3. Specular Edge Highlight (Adds glass depth)
+    var highlightPaint = Paint()
+      ..color = Colors.white.withOpacity(0.3)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.0;
+    canvas.drawPath(path, highlightPaint);
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) => true;
 }
 
 class StackedAvatars extends StatelessWidget {

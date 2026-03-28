@@ -4,6 +4,7 @@ import '../../services/youtube_service.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../widgets/custom_back_button.dart';
 import '../../services/translation_service.dart';
+import '../../widgets/paws_loading.dart';
 
 class CommunityScreen extends StatefulWidget {
   final VoidCallback? onBack;
@@ -61,7 +62,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
       body: Stack(
         children: [
           _videos.isEmpty && _isLoading
-              ? const Center(child: CircularProgressIndicator(color: Color(0xFF52B788)))
+              ? const Center(child: PawsLoading(size: 100))
               : PageView.builder(
             scrollDirection: Axis.vertical,
             itemCount: _videos.length,

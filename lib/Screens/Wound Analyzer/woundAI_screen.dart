@@ -7,6 +7,7 @@ import '../../services/translation_service.dart';
 import '../../services/ai_analysis_service.dart';
 import 'package:furrr/models/ai_health_analysis.dart';
 import '../../theme/app_colors.dart';
+import '../../widgets/paws_loading.dart';
 
 class WoundAiScreen extends StatefulWidget {
   final VoidCallback? onBack;
@@ -313,14 +314,7 @@ class _WoundAiScreenState extends State<WoundAiScreen> {
             ),
             child: Center(
               child: _isAnalyzing
-                  ? const SizedBox(
-                      height: 22,
-                      width: 22,
-                      child: CircularProgressIndicator(
-                        color: Colors.white,
-                        strokeWidth: 2,
-                      ),
-                    )
+                  ? const PawsLoading(size: 30, color: AppColors.textDark)
                   : Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
