@@ -3,6 +3,7 @@ import '../../widgets/custom_back_button.dart';
 import '../../services/translation_service.dart';
 import '../../services/pet_profile_service.dart';
 import '../../theme/app_colors.dart';
+import '../../widgets/custom_search_bar.dart';
 
 class Medication {
   final String name;
@@ -147,24 +148,10 @@ class _MedicationGuideScreenState extends State<MedicationGuideScreen> {
 
   Widget _buildSearchBar() {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        decoration: BoxDecoration(
-          color: AppColors.surface,
-          borderRadius: BorderRadius.circular(15),
-          border: Border.all(color: AppColors.primary.withOpacity(0.2), width: 1.5),
-        ),
-        child: TextField(
-          controller: _searchController,
-          decoration: InputDecoration(
-            hintText: TranslationService.t('search_meds'),
-            hintStyle: TextStyle(color: Colors.grey[400]),
-            prefixIcon: const Icon(Icons.search, color: AppColors.primary),
-            border: InputBorder.none,
-            contentPadding: const EdgeInsets.symmetric(vertical: 12),
-          ),
-        ),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      child: CustomSearchBar(
+        controller: _searchController,
+        hintText: TranslationService.t('search_meds'),
       ),
     );
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../../widgets/custom_back_button.dart';
 import '../../services/translation_service.dart';
 import 'package:furrr/models/ai_health_analysis.dart';
@@ -41,9 +42,12 @@ class _WoundResultScreenState extends State<WoundResultScreen> {
         centerTitle: true,
         title: Text(
           TranslationService.t('analysis_result'),
-          style: const TextStyle(
-            color: AppColors.textPrimary,
-            fontWeight: FontWeight.w700,
+          style: GoogleFonts.pangolin(
+            textStyle: const TextStyle(
+              color: Colors.black,
+              fontWeight: FontWeight.w700,
+              fontSize: 20,
+            ),
           ),
         ),
       ),
@@ -86,20 +90,24 @@ class _WoundResultScreenState extends State<WoundResultScreen> {
           SizedBox(height: 10),
           Text(
             widget.analysis.severity,
-            style: const TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.w800,
-              color: AppColors.error,
+            style: GoogleFonts.pangolin(
+              textStyle: const TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.w900,
+                color: AppColors.error,
+              ),
             ),
           ),
           const SizedBox(height: 10),
           Text(
             widget.analysis.description,
             textAlign: TextAlign.center,
-            style: const TextStyle(
-              color: AppColors.textSecondary,
-              height: 1.5,
-              fontSize: 14,
+            style: GoogleFonts.pangolin(
+              textStyle: const TextStyle(
+                color: Colors.black87,
+                height: 1.5,
+                fontSize: 14,
+              ),
             ),
           ),
         ],
@@ -130,10 +138,13 @@ class _WoundResultScreenState extends State<WoundResultScreen> {
         children: [
           Text(
             TranslationService.t('supplies_needed'),
-            style: const TextStyle(
-              fontWeight: FontWeight.w800,
-              letterSpacing: 1,
-              color: AppColors.primary,
+            style: GoogleFonts.pangolin(
+              textStyle: const TextStyle(
+                fontWeight: FontWeight.w800,
+                letterSpacing: 1,
+                color: AppColors.primaryOrange,
+                fontSize: 18,
+              ),
             ),
           ),
           const SizedBox(height: 14),
@@ -162,9 +173,11 @@ class _WoundResultScreenState extends State<WoundResultScreen> {
           Flexible(
             child: Text(
               text,
-              style: const TextStyle(
-                color: AppColors.textPrimary,
-                fontWeight: FontWeight.w600,
+              style: GoogleFonts.pangolin(
+                textStyle: const TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
           ),
@@ -195,10 +208,13 @@ class _WoundResultScreenState extends State<WoundResultScreen> {
         children: [
           Text(
             TranslationService.t('first_aid_steps'),
-            style: const TextStyle(
-              fontWeight: FontWeight.w800,
-              letterSpacing: 1,
-              color: AppColors.primary,
+            style: GoogleFonts.pangolin(
+              textStyle: const TextStyle(
+                fontWeight: FontWeight.w800,
+                letterSpacing: 1,
+                color: AppColors.primaryOrange,
+                fontSize: 18,
+              ),
             ),
           ),
           const SizedBox(height: 14),
@@ -230,9 +246,11 @@ class _WoundResultScreenState extends State<WoundResultScreen> {
             ),
             child: Text(
               "$number",
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                color: AppColors.primary,
+              style: GoogleFonts.pangolin(
+                textStyle: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.primaryOrange,
+                ),
               ),
             ),
           ),
@@ -240,9 +258,12 @@ class _WoundResultScreenState extends State<WoundResultScreen> {
           Expanded(
             child: Text(
               text,
-              style: const TextStyle(
-                color: AppColors.textSecondary,
-                height: 1.5,
+              style: GoogleFonts.pangolin(
+                textStyle: const TextStyle(
+                  color: Colors.black87,
+                  height: 1.5,
+                  fontSize: 15,
+                ),
               ),
             ),
           ),
@@ -263,7 +284,7 @@ class _WoundResultScreenState extends State<WoundResultScreen> {
             color: AppColors.surface,
             borderRadius: BorderRadius.circular(26),
             border: Border.all(
-              color: AppColors.primary.withOpacity(0.2),
+              color: AppColors.primaryOrange.withOpacity(0.1),
               width: 1.3,
             ),
           ),
@@ -281,11 +302,13 @@ class _WoundResultScreenState extends State<WoundResultScreen> {
                   Expanded(
                     child: Text(
                       TranslationService.t('when_to_vet'),
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w900,
-                        letterSpacing: 0.6,
-                        color: AppColors.accent,
+                      style: GoogleFonts.pangolin(
+                        textStyle: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: 0.6,
+                          color: AppColors.primaryOrange,
+                        ),
                       ),
                     ),
                   ),
@@ -294,11 +317,13 @@ class _WoundResultScreenState extends State<WoundResultScreen> {
               SizedBox(height: 14),
               Text(
                 widget.analysis.vetAdvice,
-                style: const TextStyle(
-                  fontSize: 15,
-                  height: 1.6,
-                  color: AppColors.textSecondary,
-                  fontWeight: FontWeight.w500,
+                style: GoogleFonts.pangolin(
+                  textStyle: const TextStyle(
+                    fontSize: 15,
+                    height: 1.6,
+                    color: Colors.black87,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               ),
             ],
@@ -313,7 +338,7 @@ class _WoundResultScreenState extends State<WoundResultScreen> {
             width: 38,
             height: 34,
             decoration: const BoxDecoration(
-              color: AppColors.primary,
+              color: AppColors.primaryOrange,
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(14),
                 topRight: Radius.circular(14),
@@ -332,7 +357,7 @@ class _WoundResultScreenState extends State<WoundResultScreen> {
             width: 38,
             height: 34,
             decoration: const BoxDecoration(
-              color: AppColors.primary,
+              color: AppColors.primaryOrange,
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(14),
                 topRight: Radius.circular(14),
@@ -360,16 +385,18 @@ class _WoundResultScreenState extends State<WoundResultScreen> {
         ),
         label: Text(
           TranslationService.t('analyze_another'),
-          style: const TextStyle(
-            color: AppColors.textPrimary,
-            fontWeight: FontWeight.w800,
-            fontSize: 16,
+          style: GoogleFonts.pangolin(
+            textStyle: const TextStyle(
+              color: Colors.black,
+              fontWeight: FontWeight.w800,
+              fontSize: 16,
+            ),
           ),
         ),
         style: OutlinedButton.styleFrom(
           backgroundColor: AppColors.surface,
           side: BorderSide(
-            color: AppColors.primary.withOpacity(0.5),
+            color: AppColors.primaryOrange.withOpacity(0.3),
             width: 1.7,
           ),
           shape: RoundedRectangleBorder(

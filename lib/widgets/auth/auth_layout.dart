@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../services/sound_service.dart';
+import '../../theme/app_colors.dart';
 
 enum PeepDirection { top, bottom, left, right, center }
 
@@ -34,7 +35,7 @@ class PeepingPugState extends State<PeepingPug> with TickerProviderStateMixin {
     super.initState();
     SoundService.playBoing();
     _entryController = AnimationController(
-      duration: const Duration(milliseconds: 1000),
+      duration: const Duration(milliseconds: 800),
       vsync: this,
     );
 
@@ -91,10 +92,10 @@ class PeepingPugState extends State<PeepingPug> with TickerProviderStateMixin {
             alignment: Alignment.center,
             transform: Matrix4.rotationY(widget.isFlipped ? 3.14159 : 0),
             child: Image.asset(
-              'assets/images/pug_character.png',
+              "assets/images/white_mascot.png",
               width: widget.size,
-              height: widget.size,
               fit: BoxFit.contain,
+              errorBuilder: (context, error, stackTrace) => const Icon(Icons.pets, size: 80),
             ),
           ),
         ),
@@ -112,10 +113,23 @@ class AuthBackground extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF1E1E1E), // Premium charcoal
+      backgroundColor: Colors.white, // Switched to clean white background
       body: Stack(
         children: [
+          // White Top Section
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            child: Container(
+              height: MediaQuery.of(context).size.height * 0.35,
+              color: Colors.white,
+            ),
+          ),
+          
+          // Peeping Puppy logic
           if (peepingPug != null) peepingPug!,
+          
           SafeArea(child: child),
         ],
       ),

@@ -14,9 +14,9 @@ class AiAnalysisService {
   /// Initialize the service with an API key
   static void init(String key) {
     _apiKey = key;
-    // Using gemini-flash-latest as it is the only verified working alias
+    // Using gemini-1.5-flash as the stable version for v1.
     _model = GenerativeModel(
-      model: 'gemini-flash-latest',
+      model: 'gemini-1.5-flash',
       apiKey: _apiKey,
       generationConfig: GenerationConfig(
         responseMimeType: 'application/json',

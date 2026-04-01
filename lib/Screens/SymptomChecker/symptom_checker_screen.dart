@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../../widgets/custom_back_button.dart';
 import '../../services/translation_service.dart';
 import '../../services/pet_profile_service.dart';
@@ -33,6 +34,7 @@ class _SymptomCheckerScreenState extends State<SymptomCheckerScreen> {
   void dispose() {
     TranslationService().removeListener(_onLanguageChanged);
     PetProfileService().removeListener(_onProfileChanged);
+    _descriptionController.dispose();
     super.dispose();
   }
 
@@ -81,10 +83,12 @@ class _SymptomCheckerScreenState extends State<SymptomCheckerScreen> {
           const SizedBox(width: 15),
           Text(
             TranslationService.t('symptom_checker'),
-            style: const TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.w900,
-              color: AppColors.textPrimary,
+            style: GoogleFonts.pangolin(
+              textStyle: const TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.w900,
+                color: Colors.black,
+              ),
             ),
           ),
         ],
@@ -101,7 +105,7 @@ class _SymptomCheckerScreenState extends State<SymptomCheckerScreen> {
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: AppColors.primary.withOpacity(0.12),
+              color: AppColors.primaryOrange.withOpacity(0.1),
               borderRadius: BorderRadius.circular(20),
             ),
             child: Row(
@@ -111,10 +115,12 @@ class _SymptomCheckerScreenState extends State<SymptomCheckerScreen> {
                 Expanded(
                   child: Text(
                     TranslationService.t('select_symptoms', arg: PetProfileService().currentPet.name),
-                    style: const TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.primary,
+                    style: GoogleFonts.pangolin(
+                      textStyle: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.primaryOrange,
+                      ),
                     ),
                   ),
                 ),
@@ -148,28 +154,37 @@ class _SymptomCheckerScreenState extends State<SymptomCheckerScreen> {
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12),
                   decoration: BoxDecoration(
-                    color: isSelected ? AppColors.primary : AppColors.surface,
+                    color: isSelected ? AppColors.primaryOrange : Colors.white,
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(
-                      color: isSelected ? AppColors.primary : AppColors.primary.withOpacity(0.2),
+                      color: isSelected ? AppColors.primaryOrange : AppColors.primaryOrange.withOpacity(0.15),
                       width: 1.5,
                     ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.04),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
                   ),
                   child: Row(
                     children: [
                       Icon(
                         symptom['icon'],
-                        color: isSelected ? AppColors.textDark : AppColors.textSecondary,
+                        color: isSelected ? Colors.white : AppColors.primaryOrange,
                         size: 22,
                       ),
                       const SizedBox(width: 10),
                       Expanded(
                         child: Text(
                           symptom['name'],
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                            color: isSelected ? AppColors.textDark : AppColors.textPrimary,
+                          style: GoogleFonts.pangolin(
+                            textStyle: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                              color: isSelected ? Colors.white : Colors.black87,
+                            ),
                           ),
                         ),
                       ),
@@ -184,16 +199,25 @@ class _SymptomCheckerScreenState extends State<SymptomCheckerScreen> {
             padding: const EdgeInsets.all(16),
             height: 120,
             decoration: BoxDecoration(
-              color: AppColors.surface,
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: AppColors.primary.withOpacity(0.2), width: 1.5),
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(24),
+              border: Border.all(color: AppColors.primaryOrange.withOpacity(0.1), width: 1.5),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.04),
+                  blurRadius: 15,
+                  offset: const Offset(0, 5),
+                ),
+              ],
             ),
             child: TextField(
               controller: _descriptionController,
               maxLines: 4,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 hintText: "Or describe in your own words...",
-                hintStyle: const TextStyle(color: AppColors.textSecondary, fontSize: 15),
+                hintStyle: GoogleFonts.pangolin(
+                  textStyle: const TextStyle(color: Colors.black38, fontSize: 16),
+                ),
                 border: InputBorder.none,
               ),
             ),
@@ -205,28 +229,43 @@ class _SymptomCheckerScreenState extends State<SymptomCheckerScreen> {
                 : _analyzeSymptoms,
             child: Container(
               height: 60,
+              width: double.infinity,
               decoration: BoxDecoration(
-                color: (_selectedSymptoms.isEmpty && _descriptionController.text.isEmpty) || _isAnalyzing 
-                    ? Colors.grey.withOpacity(0.2) 
-                    : AppColors.primary.withOpacity(0.15),
+                color: (_selectedSymptoms.isEmpty && _descriptionController.text.isEmpty) || _isAnalyzing
+                    ? Colors.grey.withOpacity(0.2)
+                    : AppColors.primaryOrange,
                 borderRadius: BorderRadius.circular(30),
+                boxShadow: (_selectedSymptoms.isEmpty && _descriptionController.text.isEmpty) || _isAnalyzing
+                    ? []
+                    : [
+                        BoxShadow(
+                          color: AppColors.primaryOrange.withOpacity(0.3),
+                          blurRadius: 15,
+                          offset: const Offset(0, 8),
+                        ),
+                      ],
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  _isAnalyzing 
-                    ? const PawsLoading(size: 30, color: AppColors.textDark)
-                    : Icon(
-                        Icons.search,
-                        color: (_selectedSymptoms.isEmpty && _descriptionController.text.isEmpty) ? Colors.grey : AppColors.primary,
-                      ),
+                  if (_isAnalyzing)
+                    const PawsLoading(size: 30, color: Colors.white)
+                  else
+                    const Icon(
+                      Icons.search,
+                      color: Colors.white,
+                    ),
                   const SizedBox(width: 10),
                   Text(
                     _isAnalyzing ? "Analyzing..." : "Analyze Symptoms",
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w900,
-                      color: (_selectedSymptoms.isEmpty && _descriptionController.text.isEmpty) ? Colors.grey : AppColors.primary,
+                    style: GoogleFonts.pangolin(
+                      textStyle: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w900,
+                        color: (_selectedSymptoms.isEmpty && _descriptionController.text.isEmpty) && !_isAnalyzing 
+                            ? Colors.grey 
+                            : Colors.white,
+                      ),
                     ),
                   ),
                 ],
@@ -282,12 +321,12 @@ class _SymptomCheckerScreenState extends State<SymptomCheckerScreen> {
               width: 80,
               height: 80,
               decoration: BoxDecoration(
-                color: isUrgent ? AppColors.error.withOpacity(0.15) : AppColors.primary.withOpacity(0.15),
+                color: isUrgent ? AppColors.error.withOpacity(0.15) : AppColors.primaryOrange.withOpacity(0.15),
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 isUrgent ? Icons.warning_amber_rounded : Icons.check_circle_outline,
-                color: isUrgent ? AppColors.error : AppColors.primary,
+                color: isUrgent ? AppColors.error : AppColors.primaryOrange,
                 size: 48,
               ),
             ),
@@ -296,10 +335,12 @@ class _SymptomCheckerScreenState extends State<SymptomCheckerScreen> {
           Center(
             child: Text(
               _aiAnalysis!.severity,
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.w900,
-                color: isUrgent ? AppColors.error : AppColors.primary,
+              style: GoogleFonts.pangolin(
+                textStyle: TextStyle(
+                  fontSize: 26,
+                  fontWeight: FontWeight.w900,
+                  color: isUrgent ? AppColors.error : AppColors.primaryOrange,
+                ),
               ),
             ),
           ),
@@ -307,19 +348,31 @@ class _SymptomCheckerScreenState extends State<SymptomCheckerScreen> {
           Text(
             _aiAnalysis!.description,
             textAlign: TextAlign.center,
-            style: const TextStyle(color: AppColors.textSecondary, height: 1.5),
+            style: GoogleFonts.pangolin(
+              textStyle: const TextStyle(color: Colors.black54, height: 1.5, fontSize: 15),
+            ),
           ),
           const SizedBox(height: 30),
-          const Text(
+          Text(
             "Analysis & Verdict",
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            style: GoogleFonts.pangolin(
+              textStyle: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
+            ),
           ),
           const SizedBox(height: 12),
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: AppColors.cardBackground,
-              borderRadius: BorderRadius.circular(16),
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(24),
+              border: Border.all(color: AppColors.primaryOrange.withOpacity(0.1)),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.04),
+                  blurRadius: 15,
+                  offset: const Offset(0, 5),
+                ),
+              ],
             ),
             child: Column(
               children: [
@@ -340,18 +393,21 @@ class _SymptomCheckerScreenState extends State<SymptomCheckerScreen> {
               );
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primary,
-              foregroundColor: AppColors.textDark,
+              backgroundColor: AppColors.primaryOrange,
+              foregroundColor: Colors.white,
               padding: const EdgeInsets.symmetric(vertical: 16),
-              minimumSize: const Size(double.infinity, 54),
+              minimumSize: const Size(double.infinity, 56),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
               ),
-              elevation: 0,
+              elevation: 8,
+              shadowColor: AppColors.primaryOrange.withOpacity(0.4),
             ),
-            child: const Text(
+            child: Text(
               "Find Vets Nearby",
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              style: GoogleFonts.pangolin(
+                textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
             ),
           ),
           const SizedBox(height: 12),
@@ -363,15 +419,17 @@ class _SymptomCheckerScreenState extends State<SymptomCheckerScreen> {
             },
             style: OutlinedButton.styleFrom(
               padding: const EdgeInsets.symmetric(vertical: 16),
-              minimumSize: const Size(double.infinity, 54),
-              side: const BorderSide(color: AppColors.primary),
+              minimumSize: const Size(double.infinity, 56),
+              side: const BorderSide(color: AppColors.primaryOrange, width: 2),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
               ),
             ),
-            child: const Text(
+            child: Text(
               "Back",
-              style: const TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold),
+              style: GoogleFonts.pangolin(
+                textStyle: const TextStyle(color: AppColors.primaryOrange, fontWeight: FontWeight.bold, fontSize: 16),
+              ),
             ),
           ),
         ],
@@ -397,7 +455,9 @@ class _SymptomCheckerScreenState extends State<SymptomCheckerScreen> {
             child: Text(
               value,
               textAlign: TextAlign.end,
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+              style: GoogleFonts.pangolin(
+                textStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.black87),
+              ),
             ),
           ),
         ],

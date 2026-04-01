@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import '../widgets/language_selector.dart';
+// AppLanguage enum defined below
+
+enum AppLanguage { en, hi, te, ta }
 
 class TranslationService extends ChangeNotifier {
   static final TranslationService _instance = TranslationService._internal();

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
-import 'language_selector.dart';
+import '../services/translation_service.dart';
 
 class AppBottomNavBar extends StatefulWidget {
   final int selectedIndex;

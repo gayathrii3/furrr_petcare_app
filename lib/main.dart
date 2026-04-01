@@ -2,7 +2,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'screens/splash_screen.dart';
+import 'screens/auth/welcome_screen.dart';
 import 'theme/app_colors.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'services/ai_analysis_service.dart';
 import 'config/api_config.dart';
 
@@ -51,28 +53,29 @@ class FurrrApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Furrr',
-      themeMode: ThemeMode.dark,
+      themeMode: ThemeMode.light,
       theme: ThemeData(
         useMaterial3: true,
-        brightness: Brightness.dark,
-        primaryColor: AppColors.primary,
+        brightness: Brightness.light, 
+        primaryColor: AppColors.primaryOrange,
         scaffoldBackgroundColor: AppColors.background,
-        colorScheme: const ColorScheme.dark(
-          primary: AppColors.primary,
-          secondary: AppColors.secondary,
-          surface: AppColors.surface,
-          background: AppColors.background,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: AppColors.primaryOrange,
+          primary: AppColors.primaryOrange,
+          secondary: AppColors.buttonOrange,
+          surface: AppColors.background,
         ),
-        fontFamily: 'Manrope',
-        textTheme: const TextTheme(
-          bodyLarge: TextStyle(color: AppColors.textPrimary),
-          bodyMedium: TextStyle(color: AppColors.textSecondary),
-          titleLarge: TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.bold),
+        fontFamily: GoogleFonts.pangolin().fontFamily,
+        textTheme: GoogleFonts.pangolinTextTheme().copyWith(
+          bodyLarge: const TextStyle(color: Colors.black, fontSize: 16),
+          bodyMedium: const TextStyle(color: Colors.black87, fontSize: 14),
+          titleLarge: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 22),
         ),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
-            backgroundColor: AppColors.primary,
-            foregroundColor: AppColors.textDark,
+            backgroundColor: AppColors.primaryOrange,
+            foregroundColor: Colors.white,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             textStyle: const TextStyle(fontWeight: FontWeight.bold),
           ),
         ),

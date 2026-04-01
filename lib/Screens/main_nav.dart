@@ -4,7 +4,6 @@ import 'package:furrr/Screens/Wound Analyzer/woundAI_screen.dart';
 import 'package:furrr/Screens/Vets/vets_screen.dart';
 import 'package:furrr/Screens/Community/community_screen.dart';
 import '../widgets/nav_bar.dart';
-import '../widgets/language_selector.dart';
 import '../services/translation_service.dart';
 
 class MainNav extends StatefulWidget {

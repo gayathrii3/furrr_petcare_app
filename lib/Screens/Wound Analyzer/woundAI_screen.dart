@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:furrr/Screens/Wound Analyzer/woundAI_results.dart';
 import '../../widgets/custom_back_button.dart';
@@ -8,6 +9,7 @@ import '../../services/ai_analysis_service.dart';
 import 'package:furrr/models/ai_health_analysis.dart';
 import '../../theme/app_colors.dart';
 import '../../widgets/paws_loading.dart';
+import '../../widgets/custom_camera_icon.dart';
 
 class WoundAiScreen extends StatefulWidget {
   final VoidCallback? onBack;
@@ -74,11 +76,14 @@ class _WoundAiScreenState extends State<WoundAiScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text(
+              Text(
                 "Select Image",
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w800,
+                style: GoogleFonts.pangolin(
+                  textStyle: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w800,
+                    color: Colors.black,
+                  ),
                 ),
               ),
               const SizedBox(height: 20),
@@ -161,10 +166,12 @@ class _WoundAiScreenState extends State<WoundAiScreen> {
                   Expanded(
                     child: Text(
                       TranslationService.t('wound_analyzer'),
-                      style: const TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.w900,
-                        color: AppColors.textPrimary,
+                      style: GoogleFonts.pangolin(
+                        textStyle: const TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.w900,
+                          color: Colors.black,
+                        ),
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -173,12 +180,14 @@ class _WoundAiScreenState extends State<WoundAiScreen> {
                 ],
               ),
               const SizedBox(height: 12),
-              const Text(
+               Text(
                 "Take or upload a photo — AI checks severity instantly",
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 14,
-                  color: AppColors.textSecondary,
+                style: GoogleFonts.pangolin(
+                  textStyle: const TextStyle(
+                    fontSize: 14,
+                    color: Colors.black54,
+                  ),
                 ),
               ),
               const SizedBox(height: 30),
@@ -202,56 +211,28 @@ class _WoundAiScreenState extends State<WoundAiScreen> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        GestureDetector(
+        CustomCameraIcon(
+          size: 140,
           onTap: _showImageSourcePicker,
-          child: Container(
-            padding: const EdgeInsets.all(28),
-            decoration: BoxDecoration(
-              color: AppColors.surface,
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: Colors.white.withOpacity(0.05),
-                width: 1,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.4),
-                  blurRadius: 20,
-                  offset: const Offset(8, 8),
-                ),
-                BoxShadow(
-                  color: Colors.white.withOpacity(0.03),
-                  blurRadius: 20,
-                  offset: const Offset(-4, -4),
-                ),
-                BoxShadow(
-                  color: AppColors.primary.withOpacity(0.1),
-                  blurRadius: 30,
-                  spreadRadius: 5,
-                ),
-              ],
-            ),
-            child: const Icon(
-              Icons.camera_alt,
-              size: 60,
-              color: AppColors.primary,
-            ),
-          ),
         ),
         const SizedBox(height: 20),
-        const Text(
+        Text(
           "Tap to Capture Photo",
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w800,
-            color: AppColors.primary,
+          style: GoogleFonts.pangolin(
+            textStyle: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w800,
+              color: AppColors.primaryOrange,
+            ),
           ),
         ),
         const SizedBox(height: 6),
-        const Text(
+        Text(
           "Take wound image",
-          style: TextStyle(
-            color: AppColors.textSecondary,
+          style: GoogleFonts.pangolin(
+            textStyle: const TextStyle(
+              color: Colors.black54,
+            ),
           ),
         ),
       ],
@@ -306,7 +287,7 @@ class _WoundAiScreenState extends State<WoundAiScreen> {
               borderRadius: BorderRadius.circular(30),
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.primary.withOpacity(0.4),
+                  color: AppColors.primaryOrange.withOpacity(0.3),
                   blurRadius: 20,
                   offset: const Offset(0, 8),
                 ),
@@ -322,10 +303,12 @@ class _WoundAiScreenState extends State<WoundAiScreen> {
                         const SizedBox(width: 8),
                         Text(
                           TranslationService.t('analyze_ai'),
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w700,
-                            fontSize: 16,
+                          style: GoogleFonts.pangolin(
+                            textStyle: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 18,
+                            ),
                           ),
                         ),
                       ],

@@ -12,7 +12,7 @@ void main() {
     
     if (geminiKey.isNotEmpty && geminiKey != "YOUR_GEMINI_API_KEY") {
       try {
-        final model = GenerativeModel(model: 'gemini-flash-latest', apiKey: geminiKey);
+        final model = GenerativeModel(model: 'gemini-1.5-flash', apiKey: geminiKey);
         final response = await model.generateContent([Content.text('Hello, are you working?')]);
         print('Gemini Result: ${response.text?.trim() ?? "No response"}');
         expect(response.text, isNotNull);

@@ -1,15 +1,17 @@
-import 'dart:ui' show ImageFilter;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../Profile/pet_profile_screen.dart';
 import '../../services/pet_profile_service.dart';
 import '../../theme/app_colors.dart';
-import '../../widgets/stacked_swiper.dart';
+import 'package:google_fonts/google_fonts.dart';
+import '../../services/translation_service.dart';
 import '../SymptomChecker/symptom_checker_screen.dart';
 import '../Behavior/behavior_analyzer_screen.dart';
 import '../FoodSafety/food_safety_screen.dart';
 import '../Meds/medication_guide_screen.dart';
 import '../HealthRisk/health_risk_screen.dart';
+import '../Wound Analyzer/woundAI_screen.dart';
+import '../../widgets/quick_action_card.dart';
 
 class FurrrHomePage extends StatefulWidget {
   const FurrrHomePage({super.key});
@@ -23,11 +25,13 @@ class _FurrrHomePageState extends State<FurrrHomePage> {
   void initState() {
     super.initState();
     PetProfileService().addListener(_onProfileChanged);
+    TranslationService().addListener(_onLanguageChanged);
   }
 
   @override
   void dispose() {
     PetProfileService().removeListener(_onProfileChanged);
+    TranslationService().removeListener(_onLanguageChanged);
     super.dispose();
   }
 
@@ -35,236 +39,334 @@ class _FurrrHomePageState extends State<FurrrHomePage> {
     if (mounted) setState(() {});
   }
 
+  void _onLanguageChanged() {
+    if (mounted) setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
+    final dog = PetProfileService().currentPet;
+
     return Scaffold(
-      backgroundColor: AppColors.background,
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(vertical: 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildGlassDashboard(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildHeader(),
-                    const SizedBox(height: 24),
-                    _buildHorizontalCalendar(),
-                    const SizedBox(height: 20),
-                    _buildHeroStatusCard(),
-                  ],
-                ),
+      backgroundColor: const Color(0xFFF7F9F7), // Light mint/grey background from image
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            // 1. Premium Header
+            _buildModernHeader(dog),
+
+            // 2. Main Content
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 24),
+                  
+                  // Section Title
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        TranslationService.t('quick_actions'),
+                        style: GoogleFonts.pangolin(
+                          textStyle: const TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.w900,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ),
+                      Text(
+                        TranslationService.t('for_name', arg: dog.name),
+                        style: GoogleFonts.pangolin(
+                          textStyle: const TextStyle(
+                            fontSize: 14,
+                            color: Colors.black54,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 20),
+
+                  // 3. Quick Actions Grid
+                  GridView.count(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    crossAxisCount: 2,
+                    mainAxisSpacing: 16,
+                    crossAxisSpacing: 16,
+                    childAspectRatio: 0.95,
+                    children: [
+                      QuickActionCard(
+                        title: TranslationService.t('check_symptoms'),
+                        icon: Icons.search_rounded,
+                        ghostIcon: Icons.medical_services_outlined,
+                        backgroundColor: const Color(0xFFFFF7F0), // Very Light Orange
+                        iconColor: AppColors.primaryOrange,
+                        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const SymptomCheckerScreen())),
+                      ),
+                      QuickActionCard(
+                        title: TranslationService.t('food_safety'),
+                        icon: Icons.restaurant_menu_rounded,
+                        ghostIcon: Icons.shopping_basket_outlined,
+                        backgroundColor: const Color(0xFFFFF7F0),
+                        iconColor: AppColors.primaryOrange,
+                        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const FoodSafetyScreen())),
+                      ),
+                      QuickActionCard(
+                        title: TranslationService.t('behavior_check'),
+                        icon: Icons.psychology_rounded,
+                        ghostIcon: Icons.help_outline_rounded,
+                        backgroundColor: const Color(0xFFFFF7F0),
+                        iconColor: AppColors.primaryOrange,
+                        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const BehaviorAnalyzerScreen())),
+                      ),
+                      QuickActionCard(
+                        title: TranslationService.t('medications'),
+                        icon: Icons.medication_rounded,
+                        ghostIcon: Icons.add_box_outlined,
+                        backgroundColor: const Color(0xFFFFF7F0),
+                        iconColor: AppColors.primaryOrange,
+                        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const MedicationGuideScreen())),
+                      ),
+                      QuickActionCard(
+                        title: TranslationService.t('wound_analyzer'),
+                        icon: Icons.pets_rounded,
+                        ghostIcon: Icons.camera_alt_outlined,
+                        backgroundColor: const Color(0xFFFFF7F0),
+                        iconColor: AppColors.primaryOrange,
+                        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const WoundAiScreen())),
+                      ),
+                      QuickActionCard(
+                        title: TranslationService.t('health_risks'),
+                        icon: Icons.warning_rounded,
+                        ghostIcon: Icons.info_outline_rounded,
+                        backgroundColor: const Color(0xFFFFF7F0),
+                        iconColor: AppColors.primaryOrange,
+                        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const HealthRiskScreen())),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 32),
+
+                  // 4. Dynamic Pet Tip Box
+                  _buildPetTipBox(dog),
+
+                  const SizedBox(height: 32),
+
+                  // 5. About Section
+                  _buildAboutSection(),
+
+                  const SizedBox(height: 40),
+                ],
               ),
-              const SizedBox(height: 32),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildSectionHeader("ACTIVE CARE FOR ${PetProfileService().currentPet.name.toUpperCase()}!", showSeeAll: false),
-                    const SizedBox(height: 16),
-                    StackedCardSwiper(
-                      cards: [
-                        OngoingTaskCard(
-                          title: "Symptom Checker",
-                          icon: Icons.health_and_safety_rounded,
-                          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const SymptomCheckerScreen())),
-                        ),
-                        OngoingTaskCard(
-                          title: "Medication Guide",
-                          icon: Icons.medication_rounded,
-                          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const MedicationGuideScreen())),
-                        ),
-                        OngoingTaskCard(
-                          title: "Behavior Check",
-                          icon: Icons.psychology_rounded,
-                          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const BehaviorAnalyzerScreen())),
-                        ),
-                        OngoingTaskCard(
-                          title: "Food Safety",
-                          icon: Icons.restaurant_menu_rounded,
-                          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const FoodSafetyScreen())),
-                        ),
-                        OngoingTaskCard(
-                          title: "Health Risks",
-                          icon: Icons.warning_rounded,
-                          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const HealthRiskScreen())),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 40), 
-                  ],
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
   }
 
-  Widget _buildGlassDashboard({required Widget child}) {
-    return IntrinsicHeight(
-      child: Stack(
+  Widget _buildModernHeader(var dog) {
+    return Container(
+      width: double.infinity,
+      decoration: const BoxDecoration(
+        color: AppColors.primaryOrange,
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [AppColors.primaryOrange, Color(0xFFB5722F)], // Solid brand orange gradient
+        ),
+        borderRadius: BorderRadius.only(
+          bottomLeft: Radius.circular(40),
+          bottomRight: Radius.circular(40),
+        ),
+      ),
+      padding: const EdgeInsets.fromLTRB(24, 20, 24, 40),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // 1. The Glass Shape & Content
-          ClipPath(
-            clipper: DashboardClipper(),
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 25, sigmaY: 25), // Increased blur for Stomer style
-              child: Container(
-                // Full padding to clear the "ears" and dip area
-                padding: const EdgeInsets.only(top: 65, left: 24, right: 24, bottom: 30),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      AppColors.primary.withOpacity(0.15),
-                      AppColors.primary.withOpacity(0.05),
+          const SizedBox(height: 10),
+          // Language Switcher & Icons
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              _buildLanguageSwitcher(),
+              const SizedBox(width: 12),
+            ],
+          ),
+          
+          const SizedBox(height: 10),
+
+          // Greeting & Pet Info
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      const Icon(Icons.wb_sunny_outlined, color: Colors.white70, size: 18),
+                      const SizedBox(width: 6),
+                      Text(
+                        TranslationService.t('good_morning'),
+                        style: GoogleFonts.pangolin(
+                          textStyle: const TextStyle(color: Colors.white70, fontSize: 14),
+                        ),
+                      ),
                     ],
                   ),
+                  const SizedBox(height: 8),
+                  Text(
+                    TranslationService.t('hi_name', arg: dog.name),
+                    style: GoogleFonts.pangolin(
+                      textStyle: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 32,
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    "${dog.breed} • ${dog.weight} kg",
+                    style: GoogleFonts.pangolin(
+                      textStyle: const TextStyle(color: Colors.white70, fontSize: 14),
+                    ),
+                  ),
+                ],
+              ),
+              // Pet Image (Using a CircleAvatar or similar)
+              Hero(
+                tag: 'pet_profile',
+                child: GestureDetector(
+                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const PetProfileScreen())),
+                  child: Container(
+                    width: 80,
+                    height: 80,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(color: Colors.white24, width: 2),
+                    ),
+                    child: const Center(
+                      child: Text('🐶', style: TextStyle(fontSize: 48)),
+                    ),
+                  ),
                 ),
-                child: child,
               ),
-            ),
+            ],
           ),
-          // 2. The Border Layer - Positioned.fill ensures it captures the full height
-          Positioned.fill(
-            child: IgnorePointer(
-              child: CustomPaint(
-                painter: DashboardBorderPainter(),
-              ),
-            ),
+
+          const SizedBox(height: 32),
+
+          // Stats Row
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              _buildStatCard(TranslationService.t('last_checkup'), dog.lastCheckup, Icons.favorite_rounded),
+              _buildStatCard(TranslationService.t('next_vaccine'), dog.nextVaccine, Icons.vaccines_rounded),
+              _buildStatCard(TranslationService.t('weight'), "${dog.weight} kg", Icons.scale_rounded),
+            ],
           ),
         ],
       ),
     );
   }
 
-  Widget _buildHeader() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        GestureDetector(
-          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const PetProfileScreen())),
-          child: Container(
-            width: 48,
-            height: 48,
-            decoration: BoxDecoration(
-              color: AppColors.secondary,
-              shape: BoxShape.circle,
-              border: Border.all(color: AppColors.primary.withOpacity(0.5), width: 2),
-            ),
-            child: const Center(
-              child: Icon(Icons.pets, color: AppColors.primary, size: 24),
-            ),
-          ),
-        ),
-        _buildIconBtn(Icons.notifications_none_rounded),
-      ],
-    );
-  }
-
-  Widget _buildIconBtn(IconData icon) {
+  Widget _buildLanguageSwitcher() {
     return Container(
-      width: 44,
-      height: 44,
+      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
       decoration: BoxDecoration(
-        color: AppColors.secondary,
-        borderRadius: BorderRadius.circular(12),
+        color: Colors.white.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(20),
       ),
-      child: Icon(icon, color: Colors.white, size: 22),
-    );
-  }
-
-  Widget _buildHorizontalCalendar() {
-    DateTime now = DateTime.now();
-    return SizedBox(
-      height: 90,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: 7,
-        itemBuilder: (context, index) {
-          DateTime date = now.subtract(Duration(days: now.weekday - 1)).add(Duration(days: index));
-          bool isSelected = date.day == now.day;
-          
-          return Container(
-            width: 50,
-            margin: const EdgeInsets.only(right: 12),
-            decoration: BoxDecoration(
-              color: isSelected ? AppColors.secondary : Colors.transparent,
-              borderRadius: BorderRadius.circular(25),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  DateFormat('EEE').format(date),
-                  style: TextStyle(
-                    color: isSelected ? Colors.white : AppColors.textSecondary,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Container(
-                  width: 32,
-                  height: 32,
-                  decoration: BoxDecoration(
-                    color: isSelected ? AppColors.background : Colors.transparent,
-                    shape: BoxShape.circle,
-                    border: isSelected ? Border.all(color: AppColors.primary, width: 2) : null,
-                  ),
-                  child: Center(
-                    child: Text(
-                      "${date.day}",
-                      style: TextStyle(
-                        color: isSelected ? AppColors.primary : AppColors.textSecondary,
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          );
-        },
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _buildLangBtn("EN", AppLanguage.en),
+          _buildLangBtn("HI", AppLanguage.hi),
+          _buildLangBtn("TE", AppLanguage.te),
+          _buildLangBtn("TA", AppLanguage.ta),
+        ],
       ),
     );
   }
 
-  Widget _buildGreetingSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          "HELLO ${PetProfileService().currentPet.name.toUpperCase()},",
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 22,
-            fontWeight: FontWeight.w900,
-            letterSpacing: 1.2,
+  Widget _buildLangBtn(String label, AppLanguage lang) {
+    bool isSelected = TranslationService().currentLanguage == lang;
+    return GestureDetector(
+      onTap: () => TranslationService().setLanguage(lang),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        decoration: BoxDecoration(
+          color: isSelected ? Colors.white.withOpacity(0.2) : Colors.transparent,
+          borderRadius: BorderRadius.circular(15),
+        ),
+        child: Text(
+          label,
+          style: GoogleFonts.pangolin(
+            textStyle: TextStyle(
+              color: isSelected ? Colors.white : Colors.white60,
+              fontSize: 12,
+              fontWeight: isSelected ? FontWeight.w900 : FontWeight.w600,
+            ),
           ),
         ),
-      ],
+      ),
     );
   }
 
-  Widget _buildHeroStatusCard() {
-    final dog = PetProfileService().currentPet;
+  Widget _buildStatCard(String label, String value, IconData icon) {
+    return Container(
+      width: (MediaQuery.of(context).size.width - 72) / 3,
+      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.2), // Lightened orange appearance over the orange header
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: Colors.white.withOpacity(0.1)),
+      ),
+      child: Column(
+        children: [
+          _AnimatedStatIcon(icon: icon),
+          const SizedBox(height: 8),
+          Text(
+            label,
+            style: GoogleFonts.pangolin(
+              textStyle: const TextStyle(color: Colors.white60, fontSize: 11),
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 4),
+          Text(
+            value,
+            style: GoogleFonts.pangolin(
+              textStyle: const TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.w900),
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPetTipBox(var dog) {
+    final breedContent = PetProfileService().getBreedSpecificContent();
+    final tip = breedContent['tip'] ?? "Keep your pet hydrated and happy!";
+
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 28),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppColors.primary,
-        borderRadius: BorderRadius.circular(32),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: AppColors.primaryOrange.withOpacity(0.15), width: 1.5),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary.withOpacity(0.3),
+            color: Colors.black.withOpacity(0.03),
             blurRadius: 20,
             offset: const Offset(0, 10),
           ),
@@ -275,269 +377,137 @@ class _FurrrHomePageState extends State<FurrrHomePage> {
         children: [
           Row(
             children: [
-              _buildStatusMiniChip(dog.gender),
-              const SizedBox(width: 8),
-              _buildStatusMiniChip(dog.age),
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: AppColors.primaryOrange.withOpacity(0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.lightbulb_rounded,
+                  color: AppColors.primaryOrange,
+                  size: 20,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Text(
+                "Tip for ${dog.breed}",
+                style: GoogleFonts.pangolin(
+                  textStyle: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w900,
+                    color: Colors.black87,
+                  ),
+                ),
+              ),
             ],
           ),
-          const SizedBox(height: 28),
-          // Details Grid
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              _buildDetailItem("Weight", "${dog.weight} kg", Icons.monitor_weight_outlined),
-              _buildDetailItem("Last Checkup", dog.lastCheckup, Icons.history),
-              _buildDetailItem("Next Due", dog.nextVaccine, Icons.event_available_outlined),
-            ],
+          const SizedBox(height: 12),
+          Text(
+            tip,
+            style: GoogleFonts.pangolin(
+              textStyle: const TextStyle(
+                fontSize: 15,
+                color: Colors.black54,
+                height: 1.5,
+              ),
+            ),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildStatusMiniChip(String label) {
+  Widget _buildAboutSection() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-      decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Text(
-        label,
-        style: const TextStyle(
-          color: AppColors.textDark,
-          fontSize: 11,
-          fontWeight: FontWeight.w800,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildDetailItem(String label, String value, IconData icon) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            Icon(icon, size: 14, color: AppColors.textDark.withOpacity(0.6)),
-            const SizedBox(width: 6),
-            Text(
-              label,
-              style: TextStyle(
-                color: AppColors.textDark.withOpacity(0.6),
-                fontSize: 11,
-                fontWeight: FontWeight.w700,
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(vertical: 20),
+      child: Column(
+        children: [
+          const Text(
+            "🐾",
+            style: TextStyle(fontSize: 32),
+          ),
+          const SizedBox(height: 12),
+          Text(
+            "Furrr",
+            style: GoogleFonts.pangolin(
+              textStyle: const TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.w900,
+                color: AppColors.primaryOrange,
+                letterSpacing: 1.2,
               ),
             ),
-          ],
-        ),
-        const SizedBox(height: 6),
-        Text(
-          value,
-          style: const TextStyle(
-            color: AppColors.textDark,
-            fontSize: 13,
-            fontWeight: FontWeight.w900,
           ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildOverallProgress() {
-    return Column(
-      children: [
-        const Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              "Daily Routine Progress",
-              style: TextStyle(color: AppColors.textDark, fontSize: 13, fontWeight: FontWeight.bold),
+          const SizedBox(height: 8),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 40),
+            child: Text(
+              "Your pet's all-in-one AI companion. From health tracking to food safety, we are here for every paw.",
+              textAlign: TextAlign.center,
+              style: GoogleFonts.pangolin(
+                textStyle: const TextStyle(
+                  fontSize: 14,
+                  color: Colors.black45,
+                  height: 1.6,
+                ),
+              ),
             ),
-            Text("56%", style: TextStyle(color: AppColors.textDark, fontSize: 13, fontWeight: FontWeight.bold)),
-          ],
-        ),
-        const SizedBox(height: 10),
-        const LinearProgressIndicator(
-          value: 0.56,
-          backgroundColor: Color(0x33000000),
-          valueColor: AlwaysStoppedAnimation<Color>(AppColors.textDark),
-          minHeight: 8,
-          borderRadius: BorderRadius.all(Radius.circular(10)),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildSectionHeader(String title, {bool showSeeAll = false}) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          title,
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 18,
-            fontWeight: FontWeight.w800,
-            letterSpacing: 1.1,
           ),
-        ),
-        if (showSeeAll)
-          const Row(
-            children: [
-              Text("See all", style: TextStyle(color: AppColors.textSecondary, fontSize: 13)),
-              Icon(Icons.chevron_right, color: AppColors.textSecondary, size: 20),
-            ],
+          const SizedBox(height: 20),
+          Text(
+            "Version 1.0.0",
+            style: GoogleFonts.pangolin(
+              textStyle: const TextStyle(
+                fontSize: 12,
+                color: Colors.black26,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ),
-      ],
+        ],
+      ),
     );
   }
 }
 
-class DashboardClipper extends CustomClipper<Path> {
+class _AnimatedStatIcon extends StatefulWidget {
+  final IconData icon;
+  const _AnimatedStatIcon({required this.icon});
+
   @override
-  Path getClip(Size size) {
-    var path = Path();
-    double radius = 38; // Slightly larger for smoother look
-    double sideMargin = 2; // Almost full width
-    double topPadding = 0;
-    double earWidth = 100; // Refined ear width
-    double dipHeight = 35; // Depth of the head dip
-    
-    // Start at bottom left
-    path.moveTo(sideMargin, size.height - radius);
-    
-    // Left side going up into the ear
-    path.lineTo(sideMargin, dipHeight + topPadding + radius + 10);
-    
-    // Left Ear - Organic smooth parabolic curve
-    path.cubicTo(
-      sideMargin, topPadding + 5, 
-      sideMargin + 20, topPadding, 
-      sideMargin + radius + 15, topPadding
+  State<_AnimatedStatIcon> createState() => _AnimatedStatIconState();
+}
+
+class _AnimatedStatIconState extends State<_AnimatedStatIcon> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _animation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 1500),
+      vsync: this,
+    )..repeat(reverse: true);
+
+    _animation = Tween<double>(begin: 0.9, end: 1.1).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
     );
-    
-    path.lineTo(sideMargin + earWidth - radius - 15, topPadding);
-    
-    // Smooth transition to the Dip
-    path.cubicTo(
-      sideMargin + earWidth - 10, topPadding,
-      sideMargin + earWidth, topPadding + 10,
-      sideMargin + earWidth, dipHeight + topPadding
-    );
-    
-    // Middle Dip - Flat connecting line
-    path.lineTo(size.width - sideMargin - earWidth, dipHeight + topPadding);
-    
-    // Right Ear - Perfect mirror of Left
-    path.cubicTo(
-      size.width - sideMargin - earWidth, topPadding + 10,
-      size.width - sideMargin - earWidth + 10, topPadding,
-      size.width - sideMargin - earWidth + radius + 15, topPadding
-    );
-    
-    path.lineTo(size.width - sideMargin - radius - 15, topPadding);
-    
-    path.cubicTo(
-      size.width - sideMargin - 20, topPadding,
-      size.width - sideMargin, topPadding + 5,
-      size.width - sideMargin, dipHeight + topPadding + radius + 10
-    );
-    
-    // Right side going down
-    path.lineTo(size.width - sideMargin, size.height - radius);
-    
-    // Bottom right corner
-    path.quadraticBezierTo(
-      size.width - sideMargin, size.height,
-      size.width - sideMargin - radius, size.height
-    );
-    
-    // Bottom side
-    path.lineTo(sideMargin + radius, size.height);
-    
-    // Bottom left corner
-    path.quadraticBezierTo(
-      sideMargin, size.height,
-      sideMargin, size.height - radius
-    );
-    
-    path.close();
-    return path;
   }
 
   @override
-  bool shouldReclip(CustomClipper<Path> oldClipper) => true;
-}
-
-class DashboardBorderPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    var path = DashboardClipper().getClip(size);
-    
-    // 1. Neon Outer Glow (Layer 1 - Soft Spread)
-    var glowPaint1 = Paint()
-      ..color = AppColors.primary.withOpacity(0.2)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 10.0
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 8.0);
-    canvas.drawPath(path, glowPaint1);
-
-    // 2. Main Solid Yellow Border (Solid core)
-    var borderPaint = Paint()
-      ..color = AppColors.primary
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round
-      ..strokeJoin = StrokeJoin.round
-      ..strokeWidth = 3.8; 
-    canvas.drawPath(path, borderPaint);
-    
-    // 3. Specular Edge Highlight (Adds glass depth)
-    var highlightPaint = Paint()
-      ..color = Colors.white.withOpacity(0.3)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.0;
-    canvas.drawPath(path, highlightPaint);
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
-
-  @override
-  bool shouldRepaint(CustomPainter oldDelegate) => true;
-}
-
-class StackedAvatars extends StatelessWidget {
-  const StackedAvatars({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 70,
-      height: 30,
-      child: Stack(
-        children: [
-          _buildAvatar(0),
-          _buildAvatar(15),
-          _buildAvatar(30),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildAvatar(double left) {
-    return Positioned(
-      left: left,
-      child: Container(
-        width: 30,
-        height: 30,
-        decoration: BoxDecoration(
-          color: Colors.grey[800],
-          shape: BoxShape.circle,
-          border: Border.all(color: AppColors.primary, width: 1.5),
-          image: const DecorationImage(
-            image: NetworkImage('https://i.pravatar.cc/100'),
-            fit: BoxFit.cover,
-          ),
-        ),
-      ),
+    return ScaleTransition(
+      scale: _animation,
+      child: Icon(widget.icon, color: Colors.white70, size: 24),
     );
   }
 }

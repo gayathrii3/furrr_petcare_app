@@ -3,6 +3,7 @@ import '../../widgets/custom_back_button.dart';
 import '../../services/translation_service.dart';
 import '../../services/pet_profile_service.dart';
 import '../../theme/app_colors.dart';
+import '../../widgets/custom_search_bar.dart';
 
 enum SafetyLevel { safe, caution, toxic }
 
@@ -116,27 +117,15 @@ class _FoodSafetyScreenState extends State<FoodSafetyScreen> {
   }
 
   Widget _buildSearchBar() {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      color: AppColors.surface,
-      child: TextField(
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: CustomSearchBar(
+        hintText: "Search food (e.g. Roti, Apple)...",
         onChanged: (value) {
           setState(() {
             _searchQuery = value;
           });
         },
-        decoration: InputDecoration(
-          hintText: "Search food (e.g. Roti, Apple)...",
-          hintStyle: const TextStyle(color: AppColors.textSecondary),
-          prefixIcon: const Icon(Icons.search, color: AppColors.primary),
-          filled: true,
-          fillColor: AppColors.primary.withOpacity(0.08),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(15),
-            borderSide: BorderSide.none,
-          ),
-        ),
-        style: const TextStyle(color: AppColors.textPrimary),
       ),
     );
   }

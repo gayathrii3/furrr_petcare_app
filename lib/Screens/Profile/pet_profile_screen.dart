@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../../widgets/custom_back_button.dart';
 import '../../services/translation_service.dart';
 import '../../services/pet_profile_service.dart';
 import '../../models/dog_profile.dart';
 import 'package:intl/intl.dart';
 import '../../theme/app_colors.dart';
+import '../../widgets/custom_pill_tab_bar.dart';
 
 class PetProfileScreen extends StatefulWidget {
   const PetProfileScreen({super.key});
@@ -80,7 +82,13 @@ class _PetProfileScreenState extends State<PetProfileScreen>
             onSave: _save,
             onBack: () => Navigator.pop(context),
           ),
-          _TabBar(controller: _tabController),
+          CustomPillTabBar(
+            controller: _tabController,
+            tabs: [
+              TranslationService.t('basic_info'),
+              TranslationService.t('health'),
+            ],
+          ),
           Expanded(
             child: TabBarView(
               controller: _tabController,
@@ -122,12 +130,15 @@ class _ProfileHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [AppColors.secondary, AppColors.background],
-        ),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 15,
+            offset: const Offset(0, 5),
+          ),
+        ],
       ),
       child: SafeArea(
         bottom: false,
@@ -160,10 +171,10 @@ class _ProfileHeader extends StatelessWidget {
               width: 82,
               height: 82,
               decoration: BoxDecoration(
-                color: AppColors.primary.withOpacity(0.15),
+                color: AppColors.primaryOrange.withOpacity(0.1),
                 shape: BoxShape.circle,
                 border: Border.all(
-                    color: AppColors.primary.withOpacity(0.3), width: 2.5),
+                    color: AppColors.primaryOrange.withOpacity(0.2), width: 2.5),
               ),
               child: const Center(
                 child: Text('🐶', style: TextStyle(fontSize: 44)),
@@ -172,17 +183,21 @@ class _ProfileHeader extends StatelessWidget {
             const SizedBox(height: 10),
             Text(
               dog.name,
-              style: const TextStyle(
-                color: AppColors.textPrimary,
-                fontSize: 22,
-                fontWeight: FontWeight.w900,
-                letterSpacing: -0.4,
+              style: GoogleFonts.pangolin(
+                textStyle: const TextStyle(
+                  color: Colors.black,
+                  fontSize: 26,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: -0.4,
+                ),
               ),
             ),
             const SizedBox(height: 3),
             Text(
               '${dog.breed} · ${dog.age} · ${dog.weight} kg',
-              style: const TextStyle(color: AppColors.textSecondary, fontSize: 13),
+              style: GoogleFonts.pangolin(
+                textStyle: const TextStyle(color: Colors.black54, fontSize: 14),
+              ),
             ),
             const SizedBox(height: 12),
             Row(
@@ -218,12 +233,12 @@ class _CircleBtn extends StatelessWidget {
         height: 36,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: filled ? AppColors.primary : AppColors.secondary,
-          border: Border.all(color: AppColors.primary.withOpacity(0.3)),
+          color: filled ? AppColors.primaryOrange : Colors.white,
+          border: Border.all(color: AppColors.primaryOrange.withOpacity(0.2)),
         ),
         child: Icon(icon,
-            size: 16,
-            color: filled ? AppColors.textDark : AppColors.primary),
+            size: 18,
+            color: filled ? Colors.white : AppColors.primaryOrange),
       ),
     );
   }
@@ -238,43 +253,23 @@ class _Chip extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
       decoration: BoxDecoration(
-        color: AppColors.primary.withOpacity(0.15),
+        color: AppColors.primaryOrange.withOpacity(0.1),
         borderRadius: BorderRadius.circular(100),
-        border: Border.all(color: AppColors.primary.withOpacity(0.2)),
+        border: Border.all(color: AppColors.primaryOrange.withOpacity(0.15)),
       ),
       child: Text(
         label,
-        style: const TextStyle(
-            color: AppColors.primary, fontSize: 11, fontWeight: FontWeight.w800),
+        style: GoogleFonts.pangolin(
+          textStyle: const TextStyle(
+              color: AppColors.primaryOrange, fontSize: 12, fontWeight: FontWeight.w800),
+        ),
       ),
     );
   }
 }
 
-class _TabBar extends StatelessWidget {
-  final TabController controller;
-  const _TabBar({required this.controller});
+// _TabBar class removed and replaced with CustomPillTabBar widget from ../../widgets/custom_pill_tab_bar.dart
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: AppColors.background,
-      child: TabBar(
-        controller: controller,
-        labelColor: AppColors.primary,
-        unselectedLabelColor: AppColors.textSecondary.withOpacity(0.5),
-        indicatorColor: AppColors.primary,
-        indicatorWeight: 2.5,
-        labelStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w800),
-        unselectedLabelStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
-        tabs: [
-          Tab(text: TranslationService.t('basic_info')),
-          Tab(text: TranslationService.t('health')),
-        ],
-      ),
-    );
-  }
-}
 
 class _BasicInfoTab extends StatelessWidget {
   final DogProfile dog;
@@ -443,24 +438,33 @@ class _Card extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.secondary,
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: AppColors.primary.withOpacity(0.1)),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(22),
+        border: Border.all(color: AppColors.primaryOrange.withOpacity(0.08)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.03),
+            blurRadius: 15,
+            offset: const Offset(0, 8),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Icon(icon, size: 14, color: AppColors.primary),
-              const SizedBox(width: 6),
+           Icon(icon, size: 16, color: AppColors.primaryOrange),
+              const SizedBox(width: 8),
               Text(
                 title.toUpperCase(),
-                style: const TextStyle(
-                  fontSize: 10,
-                  fontWeight: FontWeight.w800,
-                  color: AppColors.primary,
-                  letterSpacing: 1.2,
+                style: GoogleFonts.pangolin(
+                  textStyle: const TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w800,
+                    color: AppColors.primaryOrange,
+                    letterSpacing: 1.2,
+                  ),
                 ),
               ),
             ],
@@ -503,10 +507,13 @@ class _Field extends StatelessWidget {
                   initialValue: value,
                   onChanged: onChanged,
                   keyboardType: keyboardType,
-                  style: const TextStyle(
-                      fontSize: 13,
+                  style: GoogleFonts.pangolin(
+                    textStyle: const TextStyle(
+                      fontSize: 14,
                       fontWeight: FontWeight.w700,
-                      color: AppColors.textPrimary),
+                      color: Colors.black,
+                    ),
+                  ),
                   decoration: InputDecoration(
                     contentPadding: const EdgeInsets.symmetric(
                         horizontal: 13, vertical: 11),
@@ -523,15 +530,17 @@ class _Field extends StatelessWidget {
                       borderSide: BorderSide(color: AppColors.primary.withOpacity(0.2)),
                     ),
                     filled: true,
-                    fillColor: AppColors.secondary,
+                    fillColor: Colors.white,
                   ),
                 )
               : Text(
                   value.isEmpty ? 'Not set' : value,
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w700,
-                    color: value.isEmpty ? AppColors.textSecondary : AppColors.textPrimary,
+                  style: GoogleFonts.pangolin(
+                    textStyle: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      color: value.isEmpty ? Colors.black26 : Colors.black,
+                    ),
                   ),
                 ),
         ],
@@ -553,11 +562,13 @@ class _FieldLabel extends StatelessWidget {
         const SizedBox(width: 5),
         Text(
           label.toUpperCase(),
-          style: const TextStyle(
-            fontSize: 9,
-            fontWeight: FontWeight.w800,
-            color: AppColors.textSecondary,
-            letterSpacing: 0.5,
+          style: GoogleFonts.pangolin(
+            textStyle: const TextStyle(
+              fontSize: 10,
+              fontWeight: FontWeight.w800,
+              color: Colors.black38,
+              letterSpacing: 0.5,
+            ),
           ),
         ),
       ],
@@ -599,11 +610,13 @@ class _ToggleField extends StatelessWidget {
                               label: Text(o),
                               selected: value == o,
                               onSelected: (s) => s ? onChanged(o) : null,
-                              selectedColor: AppColors.primary,
-                              labelStyle: TextStyle(
-                                fontSize: 12,
-                                color: value == o ? AppColors.textDark : AppColors.textPrimary,
-                                fontWeight: FontWeight.bold,
+                              selectedColor: AppColors.primaryOrange,
+                              labelStyle: GoogleFonts.pangolin(
+                                textStyle: TextStyle(
+                                  fontSize: 13,
+                                  color: value == o ? Colors.white : Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ),
                           ))
@@ -611,10 +624,12 @@ class _ToggleField extends StatelessWidget {
                 )
               : Text(
                   value,
-                  style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.textPrimary),
+                  style: GoogleFonts.pangolin(
+                    textStyle: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.black),
+                  ),
                 ),
         ],
       ),
@@ -663,31 +678,35 @@ class _DateField extends StatelessWidget {
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 11),
                     decoration: BoxDecoration(
-                      color: AppColors.secondary,
+                      color: Colors.white,
                       borderRadius: BorderRadius.circular(11),
-                      border: Border.all(color: AppColors.primary.withOpacity(0.2)),
+                      border: Border.all(color: AppColors.primaryOrange.withOpacity(0.2)),
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
                           value.isEmpty ? 'Select Date' : value,
-                          style: const TextStyle(
-                              fontSize: 13,
-                              fontWeight: FontWeight.w700,
-                              color: AppColors.textPrimary),
+                          style: GoogleFonts.pangolin(
+                            textStyle: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w700,
+                                color: Colors.black),
+                          ),
                         ),
-                        const Icon(Icons.calendar_today_outlined, size: 16, color: AppColors.primary),
+                        const Icon(Icons.calendar_today_outlined, size: 18, color: AppColors.primaryOrange),
                       ],
                     ),
                   ),
                 )
               : Text(
                   value.isEmpty ? 'Not set' : '$value ${suffix ?? ''}',
-                  style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.textPrimary),
+                  style: GoogleFonts.pangolin(
+                    textStyle: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.black),
+                  ),
                 ),
         ],
       ),
@@ -704,12 +723,12 @@ class _SaveBar extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.secondary,
+        color: Colors.white,
         boxShadow: [
           BoxShadow(
-              color: Colors.black.withOpacity(0.1),
-              blurRadius: 10,
-              offset: const Offset(0, -2))
+              color: Colors.black.withOpacity(0.08),
+              blurRadius: 15,
+              offset: const Offset(0, -4))
         ],
       ),
       child: SafeArea(
@@ -719,7 +738,12 @@ class _SaveBar extends StatelessWidget {
             Expanded(
               child: TextButton(
                 onPressed: onCancel,
-                child: const Text('Cancel', style: TextStyle(color: AppColors.textSecondary)),
+                child: Text(
+                  'Cancel',
+                  style: GoogleFonts.pangolin(
+                    textStyle: const TextStyle(color: Colors.black54, fontWeight: FontWeight.bold),
+                  ),
+                ),
               ),
             ),
             const SizedBox(width: 16),
@@ -727,12 +751,19 @@ class _SaveBar extends StatelessWidget {
               child: ElevatedButton(
                 onPressed: onSave,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primary,
-                  foregroundColor: AppColors.textDark,
-                  padding: const EdgeInsets.symmetric(vertical: 12),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  backgroundColor: AppColors.primaryOrange,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                  elevation: 5,
+                  shadowColor: AppColors.primaryOrange.withOpacity(0.4),
                 ),
-                child: const Text('Save Changes', style: TextStyle(fontWeight: FontWeight.bold)),
+                child: Text(
+                  'Save Changes',
+                  style: GoogleFonts.pangolin(
+                    textStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
+                ),
               ),
             ),
           ],
