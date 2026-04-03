@@ -69,23 +69,25 @@ class _AuthScreenState extends State<AuthScreen> {
           size: 220,
         ),
       ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 30),
-        child: AnimatedSwitcher(
-          duration: const Duration(milliseconds: 500),
-          transitionBuilder: (Widget child, Animation<double> animation) {
-            return FadeTransition(
-              opacity: animation,
-              child: SlideTransition(
-                position: Tween<Offset>(
-                  begin: const Offset(0.0, 0.1),
-                  end: Offset.zero,
-                ).animate(animation),
-                child: child,
-              ),
-            );
-          },
-          child: _isSignUp ? _buildSignupForm(screenHeight) : _buildLoginForm(screenHeight),
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 30),
+          child: AnimatedSwitcher(
+            duration: const Duration(milliseconds: 500),
+            transitionBuilder: (Widget child, Animation<double> animation) {
+              return FadeTransition(
+                opacity: animation,
+                child: SlideTransition(
+                  position: Tween<Offset>(
+                    begin: const Offset(0.0, 0.1),
+                    end: Offset.zero,
+                  ).animate(animation),
+                  child: child,
+                ),
+              );
+            },
+            child: _isSignUp ? _buildSignupForm(screenHeight) : _buildLoginForm(screenHeight),
+          ),
         ),
       ),
     );

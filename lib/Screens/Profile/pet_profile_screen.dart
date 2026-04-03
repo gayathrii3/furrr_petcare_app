@@ -11,6 +11,21 @@ import '../../widgets/custom_pill_tab_bar.dart';
 class PetProfileScreen extends StatefulWidget {
   const PetProfileScreen({super.key});
 
+  static const List<String> dogBreeds = [
+    'Pug',
+    'Golden Retriever',
+    'German Shepherd',
+    'Beagle',
+    'Indie',
+    'Labrador',
+    'Poodle',
+    'Husky',
+    'Chihuahua',
+    'Bulldog',
+    'Shih Tzu',
+    'Boxer'
+  ];
+
   @override
   State<PetProfileScreen> createState() => _PetProfileScreenState();
 }
@@ -158,11 +173,14 @@ class _ProfileHeader extends StatelessWidget {
                       fontWeight: FontWeight.w800,
                     ),
                   ),
-                  _CircleBtn(
-                    icon: editing ? Icons.check_rounded : Icons.edit_rounded,
-                    onTap: editing ? onSave : onEdit,
-                    filled: editing,
-                  ),
+                  if (!editing)
+                    _CircleBtn(
+                      icon: Icons.edit_rounded,
+                      onTap: onEdit,
+                      filled: false,
+                    ),
+                  if (editing)
+                    const SizedBox(width: 36), // Maintain spacing
                 ],
               ),
             ),
@@ -171,24 +189,21 @@ class _ProfileHeader extends StatelessWidget {
               width: 82,
               height: 82,
               decoration: BoxDecoration(
-                color: AppColors.primaryOrange.withOpacity(0.1),
+                color: Colors.white,
                 shape: BoxShape.circle,
                 border: Border.all(
-                    color: AppColors.primaryOrange.withOpacity(0.2), width: 2.5),
+                    color: AppColors.primaryOrange.withOpacity(0.2), width: 3),
               ),
-              child: const Center(
-                child: Text('🐶', style: TextStyle(fontSize: 44)),
-              ),
-            ),
-            const SizedBox(height: 10),
-            Text(
-              dog.name,
-              style: GoogleFonts.pangolin(
-                textStyle: const TextStyle(
-                  color: Colors.black,
-                  fontSize: 26,
-                  fontWeight: FontWeight.w900,
-                  letterSpacing: -0.4,
+              child: ClipOval(
+                child: Image.asset(
+                  "assets/images/pet_profile.png",
+                  fit: BoxFit.cover, // Clean fit inside the circle
+                  alignment: const Alignment(-0.2, 0.0), // Nudge slightly left
+                  errorBuilder: (context, error, stackTrace) => Image.asset(
+                    "assets/images/splash_mascot.png",
+                    fit: BoxFit.contain,
+                    errorBuilder: (context, error, stackTrace) => const Text('🐶', style: TextStyle(fontSize: 44)),
+                  ),
                 ),
               ),
             ),
@@ -299,12 +314,20 @@ class _BasicInfoTab extends StatelessWidget {
                 editing: editing,
                 onChanged: (v) => onChanged(dog.copyWith(name: v)),
               ),
+              _DropdownField(
+                label: TranslationService.t('breed'),
+                value: dog.breed,
+                options: PetProfileScreen.dogBreeds,
+                editing: editing,
+                icon: Icons.pets_outlined,
+                onChanged: (v) => onChanged(dog.copyWith(breed: v)),
+              ),
               _ToggleField(
                 label: TranslationService.t('gender'),
                 value: dog.gender,
                 options: const ['Male', 'Female'],
                 editing: editing,
-                icon: Icons.wc_outlined,
+                icon: Icons.pets, // Dog icon near gender as requested
                 onChanged: (v) => onChanged(dog.copyWith(gender: v)),
               ),
               _DateField(
@@ -416,6 +439,13 @@ class _HealthTab extends StatelessWidget {
                 icon: Icons.history,
                 editing: editing,
                 onChanged: (v) => onChanged(dog.copyWith(lastCheckup: v)),
+              ),
+              _DateField(
+                label: TranslationService.t('next_vaccine'), // Shown as Next Due Date
+                value: dog.nextVaccine,
+                icon: Icons.notification_important_outlined,
+                editing: editing,
+                onChanged: (v) => onChanged(dog.copyWith(nextVaccine: v)),
               ),
             ],
           ),
@@ -572,6 +602,71 @@ class _FieldLabel extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class _DropdownField extends StatelessWidget {
+  final String label, value;
+  final List<String> options;
+  final bool editing;
+  final IconData icon;
+  final ValueChanged<String> onChanged;
+
+  const _DropdownField({
+    required this.label,
+    required this.value,
+    required this.options,
+    required this.editing,
+    required this.icon,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 14),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _FieldLabel(label: label, icon: icon),
+          const SizedBox(height: 5),
+          editing
+              ? Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 13),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(11),
+                    border: Border.all(color: AppColors.primaryOrange.withOpacity(0.2)),
+                  ),
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton<String>(
+                      value: options.contains(value) ? value : options.first,
+                      isExpanded: true,
+                      icon: const Icon(Icons.arrow_drop_down, color: AppColors.primaryOrange),
+                      style: GoogleFonts.pangolin(
+                        textStyle: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.black,
+                        ),
+                      ),
+                      onChanged: (v) => v != null ? onChanged(v) : null,
+                      items: options.map((o) => DropdownMenuItem(value: o, child: Text(o))).toList(),
+                    ),
+                  ),
+                )
+              : Text(
+                  value,
+                  style: GoogleFonts.pangolin(
+                    textStyle: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.black),
+                  ),
+                ),
+        ],
+      ),
     );
   }
 }

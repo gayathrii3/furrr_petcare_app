@@ -54,8 +54,8 @@ class QuickActionCard extends StatelessWidget {
                     color: Colors.white.withOpacity(0.5),
                     shape: BoxShape.circle,
                   ),
-                  child: Icon(
-                    icon,
+                  child: _PulseIcon(
+                    icon: icon,
                     color: iconColor,
                     size: 32,
                   ),
@@ -79,6 +79,47 @@ class QuickActionCard extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+class _PulseIcon extends StatefulWidget {
+  final IconData icon;
+  final Color color;
+  final double size;
+  const _PulseIcon({required this.icon, required this.color, this.size = 24});
+
+  @override
+  State<_PulseIcon> createState() => _PulseIconState();
+}
+
+class _PulseIconState extends State<_PulseIcon> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _animation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 1500),
+      vsync: this,
+    )..repeat(reverse: true);
+
+    _animation = Tween<double>(begin: 0.94, end: 1.06).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ScaleTransition(
+      scale: _animation,
+      child: Icon(widget.icon, color: widget.color, size: widget.size),
     );
   }
 }

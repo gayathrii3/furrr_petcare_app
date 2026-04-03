@@ -145,7 +145,7 @@ class _BehaviorAnalyzerScreenState extends State<BehaviorAnalyzerScreen> {
             ),
             child: Row(
               children: [
-                const Text("🐶", style: TextStyle(fontSize: 32)),
+                const Icon(Icons.pets_rounded, color: AppColors.primary, size: 28),
                 const SizedBox(width: 15),
                 Expanded(
                   child: Text(
@@ -374,7 +374,7 @@ class _BehaviorAnalyzerScreenState extends State<BehaviorAnalyzerScreen> {
       ),
       child: Row(
         children: [
-          const Text("🐶", style: TextStyle(fontSize: 32)),
+          const Icon(Icons.pets_rounded, color: AppColors.primary, size: 28),
           const SizedBox(width: 15),
           Expanded(
             child: Text(

@@ -210,7 +210,7 @@ class _FurrrHomePageState extends State<FurrrHomePage> {
                 children: [
                   Row(
                     children: [
-                      const Icon(Icons.wb_sunny_outlined, color: Colors.white70, size: 18),
+                      const _PulseIcon(icon: Icons.wb_sunny_outlined, color: Colors.white70, size: 18),
                       const SizedBox(width: 6),
                       Text(
                         TranslationService.t('good_morning'),
@@ -233,7 +233,7 @@ class _FurrrHomePageState extends State<FurrrHomePage> {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    "${dog.breed} • ${dog.weight} kg",
+                    "${dog.breed} • ${dog.age} • ${dog.weight} kg",
                     style: GoogleFonts.pangolin(
                       textStyle: const TextStyle(color: Colors.white70, fontSize: 14),
                     ),
@@ -246,14 +246,24 @@ class _FurrrHomePageState extends State<FurrrHomePage> {
                 child: GestureDetector(
                   onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const PetProfileScreen())),
                   child: Container(
-                    width: 80,
-                    height: 80,
+                    width: 76,
+                    height: 76,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      border: Border.all(color: Colors.white24, width: 2),
+                      color: Colors.white,
+                      border: Border.all(color: Colors.white.withOpacity(0.2), width: 2),
                     ),
-                    child: const Center(
-                      child: Text('🐶', style: TextStyle(fontSize: 48)),
+                    child: ClipOval(
+                      child: Image.asset(
+                        "assets/images/pet_profile.png",
+                        fit: BoxFit.cover, // Clean fit inside the circle
+                        alignment: const Alignment(-0.2, 0.0), // Nudge slightly left
+                        errorBuilder: (context, error, stackTrace) => Image.asset(
+                          "assets/images/splash_mascot.png",
+                          fit: BoxFit.contain,
+                          errorBuilder: (context, error, stackTrace) => const Text('🐶', style: TextStyle(fontSize: 40)),
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -264,13 +274,18 @@ class _FurrrHomePageState extends State<FurrrHomePage> {
           const SizedBox(height: 32),
 
           // Stats Row
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              _buildStatCard(TranslationService.t('last_checkup'), dog.lastCheckup, Icons.favorite_rounded),
-              _buildStatCard(TranslationService.t('next_vaccine'), dog.nextVaccine, Icons.vaccines_rounded),
-              _buildStatCard(TranslationService.t('weight'), "${dog.weight} kg", Icons.scale_rounded),
-            ],
+          IntrinsicHeight(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Expanded(child: _buildStatCard(TranslationService.t('last_checkup'), dog.lastCheckup, Icons.favorite_rounded)),
+                const SizedBox(width: 8),
+                Expanded(child: _buildStatCard(TranslationService.t('next_vaccine'), dog.nextVaccine, Icons.vaccines_rounded)),
+                const SizedBox(width: 8),
+                Expanded(child: _buildStatCard(TranslationService.t('weight'), "${dog.weight} kg", Icons.scale_rounded)),
+              ],
+            ),
           ),
         ],
       ),
@@ -322,7 +337,6 @@ class _FurrrHomePageState extends State<FurrrHomePage> {
 
   Widget _buildStatCard(String label, String value, IconData icon) {
     return Container(
-      width: (MediaQuery.of(context).size.width - 72) / 3,
       padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(0.2), // Lightened orange appearance over the orange header
@@ -331,7 +345,7 @@ class _FurrrHomePageState extends State<FurrrHomePage> {
       ),
       child: Column(
         children: [
-          _AnimatedStatIcon(icon: icon),
+          _PulseIcon(icon: icon, color: Colors.white70, size: 24),
           const SizedBox(height: 8),
           Text(
             label,
@@ -383,8 +397,8 @@ class _FurrrHomePageState extends State<FurrrHomePage> {
                   color: AppColors.primaryOrange.withOpacity(0.1),
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(
-                  Icons.lightbulb_rounded,
+                child: const _PulseIcon(
+                  icon: Icons.lightbulb_rounded,
                   color: AppColors.primaryOrange,
                   size: 20,
                 ),
@@ -424,9 +438,10 @@ class _FurrrHomePageState extends State<FurrrHomePage> {
       padding: const EdgeInsets.symmetric(vertical: 20),
       child: Column(
         children: [
-          const Text(
-            "🐾",
-            style: TextStyle(fontSize: 32),
+          const _PulseIcon(
+            icon: Icons.pets_rounded, // Better than raw emoji for animation
+            color: AppColors.primaryOrange,
+            size: 32,
           ),
           const SizedBox(height: 12),
           Text(
@@ -472,15 +487,17 @@ class _FurrrHomePageState extends State<FurrrHomePage> {
   }
 }
 
-class _AnimatedStatIcon extends StatefulWidget {
+class _PulseIcon extends StatefulWidget {
   final IconData icon;
-  const _AnimatedStatIcon({required this.icon});
+  final Color color;
+  final double size;
+  const _PulseIcon({required this.icon, required this.color, this.size = 24});
 
   @override
-  State<_AnimatedStatIcon> createState() => _AnimatedStatIconState();
+  State<_PulseIcon> createState() => _PulseIconState();
 }
 
-class _AnimatedStatIconState extends State<_AnimatedStatIcon> with SingleTickerProviderStateMixin {
+class _PulseIconState extends State<_PulseIcon> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
 
@@ -492,7 +509,7 @@ class _AnimatedStatIconState extends State<_AnimatedStatIcon> with SingleTickerP
       vsync: this,
     )..repeat(reverse: true);
 
-    _animation = Tween<double>(begin: 0.9, end: 1.1).animate(
+    _animation = Tween<double>(begin: 0.92, end: 1.08).animate(
       CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
     );
   }
@@ -507,7 +524,7 @@ class _AnimatedStatIconState extends State<_AnimatedStatIcon> with SingleTickerP
   Widget build(BuildContext context) {
     return ScaleTransition(
       scale: _animation,
-      child: Icon(widget.icon, color: Colors.white70, size: 24),
+      child: Icon(widget.icon, color: widget.color, size: widget.size),
     );
   }
 }

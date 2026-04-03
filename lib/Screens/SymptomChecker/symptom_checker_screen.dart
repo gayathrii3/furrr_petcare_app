@@ -110,7 +110,7 @@ class _SymptomCheckerScreenState extends State<SymptomCheckerScreen> {
             ),
             child: Row(
               children: [
-                const Text("🐶", style: TextStyle(fontSize: 32)),
+                const Icon(Icons.pets_rounded, color: AppColors.primaryOrange, size: 28),
                 const SizedBox(width: 15),
                 Expanded(
                   child: Text(

@@ -83,6 +83,8 @@ class TranslationService extends ChangeNotifier {
       'first_aid_steps': 'FIRST AID STEPS',
       'when_to_vet': 'WHEN TO GO TO VET',
       'analyze_another': 'Analyze Another Wound',
+      'what_is_doing': 'What is {name} doing?',
+      'select_symptoms': 'Select symptoms for {name}',
     },
     AppLanguage.hi: {
       'good_morning': 'सुप्रभात!',
@@ -155,6 +157,8 @@ class TranslationService extends ChangeNotifier {
       'first_aid_steps': 'प्राथमिक उपचार चरण',
       'when_to_vet': 'पशु चिकित्सक के पास कब जाएं',
       'analyze_another': 'एक और चोट का विश्लेषण करें',
+      'what_is_doing': '{name} क्या कर रहा है?',
+      'select_symptoms': '{name} के लक्षण चुनें',
     },
     AppLanguage.te: {
       'good_morning': 'శుభోదయం!',
@@ -227,6 +231,8 @@ class TranslationService extends ChangeNotifier {
       'first_aid_steps': 'ప్రథమ చికిత్స దశలు',
       'when_to_vet': 'వైద్యుని వద్దకు ఎప్పుడు వెళ్ళాలి',
       'analyze_another': 'మరో గాయాన్ని విశ్లేషించండి',
+      'what_is_doing': '{name} ఏమి చేస్తోంది?',
+      'select_symptoms': '{name} కోసం లక్షణాలను ఎంచుకోండి',
     },
     AppLanguage.ta: {
       'good_morning': 'காலை வணக்கம்!',
@@ -298,6 +304,8 @@ class TranslationService extends ChangeNotifier {
       'first_aid_steps': 'முதலுதவி படிகள்',
       'when_to_vet': 'எப்போது மருத்துவரிடம் செல்ல வேண்டும்',
       'analyze_another': 'மற்றொரு காயத்தை ஆய்வு செய்யுங்கள்',
+      'what_is_doing': '{name} என்ன செய்கிறது?',
+      'select_symptoms': '{name}க்கான அறிகுறிகளைத் தேர்ந்தெடுக்கவும்',
     },
   };
 
