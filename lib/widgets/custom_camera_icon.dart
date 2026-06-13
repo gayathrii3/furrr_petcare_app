@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import '../theme/app_colors.dart';
 
 class CustomCameraIcon extends StatefulWidget {
@@ -69,22 +70,19 @@ class _CustomCameraIconState extends State<CustomCameraIcon>
         width: width,
         height: height + (width * 0.1), // Extra space for top elements
         child: Stack(
+          clipBehavior: Clip.none,
           alignment: Alignment.bottomCenter,
           children: [
-            // 1. Shutter Button (Orange)
+
+            // 1.1 Happy Dog Sitting on the Camera (Very Big & Centered)
             Positioned(
-              top: 0,
-              right: width * 0.15,
-              child: Container(
-                width: width * 0.18,
-                height: width * 0.1,
-                decoration: const BoxDecoration(
-                  color: Color(0xFFFF8C42),
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(6),
-                    topRight: Radius.circular(6),
-                  ),
-                ),
+              top: -width * 0.65, // Sitting centered on the top edge
+              left: 0,
+              right: 0,
+              child: Lottie.asset(
+                'assets/animations/happy_dog.json',
+                width: width * 0.85,
+                fit: BoxFit.contain,
               ),
             ),
 
@@ -114,7 +112,7 @@ class _CustomCameraIconState extends State<CustomCameraIcon>
                 borderRadius: BorderRadius.circular(cornerRadius),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.2),
+                    color: Colors.black.withValues(alpha: 0.2),
                     blurRadius: 10,
                     offset: const Offset(0, 4),
                   ),

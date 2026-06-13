@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../widgets/custom_back_button.dart';
 import '../../services/translation_service.dart';
@@ -184,30 +185,7 @@ class _ProfileHeader extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(height: 16),
-            Container(
-              width: 82,
-              height: 82,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                shape: BoxShape.circle,
-                border: Border.all(
-                    color: AppColors.primaryOrange.withOpacity(0.2), width: 3),
-              ),
-              child: ClipOval(
-                child: Image.asset(
-                  "assets/images/pet_profile.png",
-                  fit: BoxFit.cover, // Clean fit inside the circle
-                  alignment: const Alignment(-0.2, 0.0), // Nudge slightly left
-                  errorBuilder: (context, error, stackTrace) => Image.asset(
-                    "assets/images/splash_mascot.png",
-                    fit: BoxFit.contain,
-                    errorBuilder: (context, error, stackTrace) => const Text('🐶', style: TextStyle(fontSize: 44)),
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(height: 3),
+            const SizedBox(height: 8),
             Text(
               '${dog.breed} · ${dog.age} · ${dog.weight} kg',
               style: GoogleFonts.pangolin(
@@ -307,6 +285,14 @@ class _BasicInfoTab extends StatelessWidget {
             title: TranslationService.t('identity'),
             icon: Icons.pets,
             children: [
+              Center(
+                child: Lottie.asset(
+                  'assets/animations/cute_dog.json',
+                  height: 130, 
+                  fit: BoxFit.contain,
+                ),
+              ),
+              const SizedBox(height: 10),
               _Field(
                 label: TranslationService.t('name'),
                 value: dog.name,

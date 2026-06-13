@@ -1,8 +1,9 @@
-import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'screens/splash_screen.dart';
-import 'screens/auth/welcome_screen.dart';
+
 import 'theme/app_colors.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'services/ai_analysis_service.dart';
@@ -10,6 +11,16 @@ import 'config/api_config.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
+
+  try {
+    // Load environment variables from assets
+    await dotenv.load(fileName: "assets/.env");
+    // print('✅ .env file loaded successfully from assets');
+    // print('Keys found in dotenv: ${dotenv.env.keys.join(', ')}');
+  } catch (e) {
+    // print('❌ FAILED TO LOAD .env from assets: $e');
+  }
   
   // Pull API Keys from environment configuration
   final gemini = ApiConfig.geminiKey;
@@ -19,14 +30,16 @@ Future<void> main() async {
   // Initialize Services
   AiAnalysisService.init(gemini);
   
+  /*
   print('--- FURRR API DIAGNOSTICS ---');
   print('GEMINI_API_KEY: ${gemini.isNotEmpty ? "✅ LOADED (${gemini.substring(0, 4)}...)" : "❌ MISSING"}');
   print('YOUTUBE_API_KEY: ${youtube.isNotEmpty ? "✅ LOADED (${youtube.substring(0, 4)}...)" : "❌ MISSING"}');
   print('GOOGLE_MAPS_API_KEY: ${maps.isNotEmpty ? "✅ LOADED (${maps.substring(0, 4)}...)" : "❌ MISSING"}');
   print('-----------------------------');
+  */
   
   if (ApiConfig.hasMissingKeys) {
-    print('⚠️ WARNING: SOME ESSENTIAL API KEYS ARE MISSING. Check your --dart-define parameters.');
+    // print('⚠️ WARNING: SOME ESSENTIAL API KEYS ARE MISSING. Check your --dart-define parameters.');
   }
 
   runApp(FurrrApp(

@@ -37,7 +37,7 @@ class QuickActionCard extends StatelessWidget {
               top: 0,
               child: Icon(
                 ghostIcon,
-                color: iconColor.withOpacity(0.15),
+                color: iconColor.withValues(alpha: 0.15),
                 size: 24,
               ),
             ),
@@ -51,7 +51,7 @@ class QuickActionCard extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.5),
+                    color: Colors.white.withValues(alpha: 0.5),
                     shape: BoxShape.circle,
                   ),
                   child: _PulseIcon(
@@ -66,7 +66,7 @@ class QuickActionCard extends StatelessWidget {
                   title,
                   style: GoogleFonts.pangolin(
                     textStyle: TextStyle(
-                      color: iconColor.withOpacity(0.8),
+                      color: iconColor.withValues(alpha: 0.8),
                       fontSize: 16,
                       fontWeight: FontWeight.w800,
                     ),

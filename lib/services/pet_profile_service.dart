@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import '../models/dog_profile.dart';
+import '../models/health_article.dart';
+import '../models/ai_food_analysis.dart';
+import '../models/ai_medication_analysis.dart';
 
 class PetProfileService extends ChangeNotifier {
   static final PetProfileService _instance = PetProfileService._internal();
@@ -9,8 +12,29 @@ class PetProfileService extends ChangeNotifier {
   DogProfile _currentPet = sampleDog;
   DogProfile get currentPet => _currentPet;
 
+  // AI Cache storage
+  List<HealthArticle>? _wikiCache;
+  final Map<String, AiFoodAnalysis> _foodCache = {};
+  final Map<String, AiMedicationAnalysis> _medCache = {};
+
+  List<HealthArticle>? get wikiCache => _wikiCache;
+
+  void setWikiCache(List<HealthArticle> articles) {
+    _wikiCache = articles;
+  }
+
+  AiFoodAnalysis? getFoodCached(String food) => _foodCache[food.toLowerCase()];
+  void cacheFood(String food, AiFoodAnalysis analysis) => _foodCache[food.toLowerCase()] = analysis;
+
+  AiMedicationAnalysis? getMedCached(String med) => _medCache[med.toLowerCase()];
+  void cacheMed(String med, AiMedicationAnalysis analysis) => _medCache[med.toLowerCase()] = analysis;
+
   void updateProfile(DogProfile newProfile) {
     _currentPet = newProfile;
+    // Invalidate caches on profile change as results are breed/age specific
+    _wikiCache = null;
+    _foodCache.clear();
+    _medCache.clear();
     notifyListeners();
   }
 

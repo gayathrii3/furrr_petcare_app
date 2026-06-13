@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lottie/lottie.dart';
 import '../theme/app_colors.dart';
 import 'auth/welcome_screen.dart';
 
@@ -56,12 +57,13 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Puppy Mascot (Peeping over the line)
-            Image.asset(
-              "assets/images/splash_mascot.png",
+            // Pepito's Pet Lottie (Dynamic Greeting)
+            Lottie.asset(
+              "assets/animations/pepitos_pet.json",
               width: double.infinity,
-              fit: BoxFit.fitWidth,
-              errorBuilder: (context, error, stackTrace) => const Icon(Icons.pets, size: 120),
+              height: 280, // Impactful splash size
+              fit: BoxFit.contain,
+              repeat: true,
             ),
             
             // Curved Staggered Text "FURRR" (Positioned below the mascot)

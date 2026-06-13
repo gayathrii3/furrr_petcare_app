@@ -5,6 +5,7 @@ import 'package:share_plus/share_plus.dart';
 import '../../widgets/custom_back_button.dart';
 import '../../services/translation_service.dart';
 import '../../widgets/paws_loading.dart';
+import '../../theme/app_colors.dart';
 
 class CommunityScreen extends StatefulWidget {
   final VoidCallback? onBack;
@@ -58,7 +59,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: AppColors.background,
       body: Stack(
         children: [
           _videos.isEmpty && _isLoading
@@ -98,19 +99,19 @@ class _CommunityScreenState extends State<CommunityScreen> {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              Colors.black.withOpacity(0.6),
-              Colors.transparent,
+              Colors.white.withOpacity(0.9),
+              Colors.white.withOpacity(0.0),
             ],
           ),
         ),
         child: Row(
           children: [
             CustomBackButton(onTap: widget.onBack),
-            const SizedBox(width: 8),
+            const SizedBox(width: 15),
             Text(
               TranslationService.t('community'),
               style: const TextStyle(
-                color: Colors.white,
+                color: AppColors.textPrimary,
                 fontSize: 22,
                 fontWeight: FontWeight.w900,
               ),

@@ -28,12 +28,11 @@ class _AppBottomNavBarState extends State<AppBottomNavBar>
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 400),
+      duration: const Duration(milliseconds: 300),
     );
-    _animation = Tween<double>(begin: 0, end: 0).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.elasticOut,
-    ));
+    _animation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.linear),
+    );
   }
 
   @override
@@ -83,28 +82,42 @@ class _AppBottomNavBarState extends State<AppBottomNavBar>
             curve: Curves.easeInOutBack,
             left: activeOffset - 30, // 30 is half of 60 radius
             top: -20,
-            child: Container(
-              width: 60,
-              height: 60,
-              decoration: BoxDecoration(
-                color: AppColors.primary,
-                shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.primary.withOpacity(0.4),
-                    blurRadius: 15,
-                    spreadRadius: 2,
-                    offset: const Offset(0, 4),
+            child: AnimatedBuilder(
+              animation: _animation,
+              builder: (context, child) {
+                // Parabolic jump: y = 4 * height * t * (1 - t)
+                // t goes from 0 to 1 as the controller plays
+                final double t = _animation.value;
+                final double jumpHeight = 50.0; // How high it jumps
+                final double verticalOffset = 4 * jumpHeight * t * (1 - t);
+
+                return Transform.translate(
+                  offset: Offset(0, -verticalOffset),
+                  child: Container(
+                    width: 60,
+                    height: 60,
+                    decoration: BoxDecoration(
+                      color: AppColors.primary,
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.primary.withValues(alpha: 0.4),
+                          blurRadius: 15,
+                          spreadRadius: 2,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: Center(
+                      child: Icon(
+                        _getIconForIndex(widget.selectedIndex),
+                        color: AppColors.textDark,
+                        size: 28,
+                      ),
+                    ),
                   ),
-                ],
-              ),
-              child: Center(
-                child: Icon(
-                  _getIconForIndex(widget.selectedIndex),
-                  color: AppColors.textDark,
-                  size: 28,
-                ),
-              ),
+                );
+              },
             ),
           ),
         ],
@@ -124,7 +137,7 @@ class _AppBottomNavBarState extends State<AppBottomNavBar>
           visible: !isSelected,
           child: Icon(
             icon,
-            color: AppColors.textSecondary.withOpacity(0.5),
+            color: AppColors.textSecondary.withValues(alpha: 0.5),
             size: 26,
           ),
         ),
@@ -175,7 +188,7 @@ class NavPainter extends CustomPainter {
     
     // Add a top border line
     Paint linePaint = Paint()
-      ..color = Colors.white.withOpacity(0.05)
+      ..color = Colors.white.withValues(alpha: 0.05)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1;
       

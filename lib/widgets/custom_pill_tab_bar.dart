@@ -22,7 +22,7 @@ class CustomPillTabBar extends StatelessWidget {
         borderRadius: BorderRadius.circular(29),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.12),
+            color: Colors.black.withValues(alpha: 0.12),
             blurRadius: 12,
             offset: const Offset(0, 5),
           ),
@@ -52,7 +52,7 @@ class CustomPillTabBar extends StatelessWidget {
                         borderRadius: BorderRadius.circular(25),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.1),
+                            color: Colors.black.withValues(alpha: 0.1),
                             blurRadius: 4,
                             spreadRadius: 1,
                             offset: const Offset(0, 1),
@@ -83,7 +83,7 @@ class CustomPillTabBar extends StatelessWidget {
                               tabs[index],
                               style: GoogleFonts.pangolin(
                                 textStyle: TextStyle(
-                                  color: isActive ? Colors.black : Colors.white.withOpacity(opacity),
+                                  color: isActive ? Colors.black : Colors.white.withValues(alpha: opacity),
                                   fontSize: 14,
                                   fontWeight: FontWeight.w800,
                                 ),

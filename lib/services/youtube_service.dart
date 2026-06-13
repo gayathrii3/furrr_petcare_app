@@ -4,7 +4,7 @@ import '../config/api_config.dart';
 
 class YouTubeService {
   // Use centralized API config
-  static const String _apiKey = ApiConfig.youtubeKey;
+  static final String _apiKey = ApiConfig.youtubeKey;
   static const String _baseUrl = 'https://www.googleapis.com/youtube/v3';
 
   Future<List<Map<String, String>>> fetchPetVideos({String pageToken = ''}) async {

@@ -43,6 +43,11 @@ dependencies:
   intl: ^0.20.2
   url_launcher: ^6.2.5
   google_fonts: ^8.0.2
+  flutter_svg: ^2.0.10+1
+  flutter_dotenv: ^5.1.0
+  flutter_tts: ^4.2.2
+  audioplayers: ^5.2.1
+  shared_preferences: ^2.2.2
 
 flutter_icons:
   name: "Furrr"
@@ -79,7 +84,18 @@ flutter:
 
   assets:
     - assets/animations/paws.json
+    - assets/animations/footer_mascot.json
+    - assets/animations/boxing_dog.json
+    - assets/animations/foody.json
+    - assets/animations/medicine.json
+    - assets/animations/cute_dog.json
+    - assets/animations/pepitos_pet.json
+    - assets/animations/puppy_sleeping.json
+    - assets/animations/veterinarian.json
+    - assets/animations/flirting_dog.json
+    - assets/animations/happy_dog.json
     - assets/images/
+    - assets/.env
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

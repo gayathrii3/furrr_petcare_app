@@ -149,7 +149,7 @@ final sampleDog = DogProfile(
   lastCheckup: '2025-01-12',
   nextVaccine: '2025-09-01',
   vetName: 'PawCare Clinic',
-  ownerName: 'Arjun',
+  ownerName: 'Gayathri',
   ownerPhone: '+91 98765 43210',
   location: 'Madhapur',
   vaccines: const [

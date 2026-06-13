@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:furrr/Screens/Home/home_screen.dart';
-import 'package:furrr/Screens/Wound Analyzer/woundAI_screen.dart';
+import 'package:furrr/Screens/Wound Analyzer/wound_ai_screen.dart';
 import 'package:furrr/Screens/Vets/vets_screen.dart';
 import 'package:furrr/Screens/Community/community_screen.dart';
 import '../widgets/nav_bar.dart';

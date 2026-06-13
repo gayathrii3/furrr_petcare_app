@@ -17,6 +17,11 @@ class _WelcomeScreenState extends State<WelcomeScreen> with TickerProviderStateM
   late AnimationController _snapController;
   late Animation<double> _snapAnimation;
 
+  // 🖊️ Welcome Text Animations
+  late AnimationController _textController;
+  late Animation<Offset> _line1Animation;
+  late Animation<Offset> _line2Animation;
+
   @override
   void initState() {
     super.initState();
@@ -24,6 +29,30 @@ class _WelcomeScreenState extends State<WelcomeScreen> with TickerProviderStateM
       vsync: this,
       duration: const Duration(milliseconds: 300),
     );
+
+    // Initializing staggered slide animations
+    _textController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1200),
+    );
+
+    _line1Animation = Tween<Offset>(
+      begin: const Offset(1.5, 0.0), // Start off-screen right
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: _textController,
+      curve: const Interval(0.0, 0.6, curve: Curves.easeOutQuart),
+    ));
+
+    _line2Animation = Tween<Offset>(
+      begin: const Offset(1.5, 0.0), // Start off-screen right
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: _textController,
+      curve: const Interval(0.2, 0.8, curve: Curves.easeOutQuart),
+    ));
+
+    _textController.forward();
   }
 
   void _onDragUpdate(DragUpdateDetails details, double maxWidth) {
@@ -76,6 +105,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> with TickerProviderStateM
   @override
   void dispose() {
     _snapController.dispose();
+    _textController.dispose();
     super.dispose();
   }
 
@@ -126,8 +156,9 @@ class _WelcomeScreenState extends State<WelcomeScreen> with TickerProviderStateM
                               padding: const EdgeInsets.symmetric(horizontal: 20),
                               child: Column(
                                 children: [
-                                  _buildHandwrittenText("where every wag has a reason. Every whimper finds an answer"),
-                                  _buildHandwrittenText("Every Paw Print leads to careYour Pet's world, safe & loved"),
+                                  _buildAnimatedTextLine("where every wag has a reason. Every whimper finds an answer", _line1Animation),
+                                  const SizedBox(height: 12),
+                                  _buildAnimatedTextLine("Every Paw Print leads to careYour Pet's world, safe & loved", _line2Animation),
                                 ],
                               ),
                             ),
@@ -247,16 +278,19 @@ class _WelcomeScreenState extends State<WelcomeScreen> with TickerProviderStateM
     );
   }
 
-  Widget _buildHandwrittenText(String text) {
-    return Text(
-      text,
-      textAlign: TextAlign.center,
-      style: GoogleFonts.pangolin(
-        textStyle: const TextStyle(
-          fontSize: 24,
-          color: Colors.black,
-          height: 1.3,
-          fontWeight: FontWeight.w500,
+  Widget _buildAnimatedTextLine(String text, Animation<Offset> animation) {
+    return SlideTransition(
+      position: animation,
+      child: Text(
+        text,
+        textAlign: TextAlign.center,
+        style: GoogleFonts.pangolin(
+          textStyle: const TextStyle(
+            fontSize: 24,
+            color: Colors.black,
+            height: 1.3,
+            fontWeight: FontWeight.w500,
+          ),
         ),
       ),
     );

@@ -142,6 +142,13 @@ class _VetsScreenState extends State<VetsScreen> {
         child: Column(
           children: [
             _buildCustomHeader(),
+            Center(
+              child: Lottie.asset(
+                'assets/animations/veterinarian.json',
+                height: 140, // Little big as requested
+                fit: BoxFit.contain,
+              ),
+            ),
             _buildFilterBar(),
             Expanded(
               child: _buildMainContent(),
@@ -195,7 +202,7 @@ class _VetsScreenState extends State<VetsScreen> {
               label: Text(
                 filter,
                 style: TextStyle(
-                  color: isSelected ? AppColors.textDark : AppColors.textSecondary,
+                  color: isSelected ? Colors.white : AppColors.textSecondary,
                   fontWeight: FontWeight.bold,
                   fontSize: 12,
                 ),
@@ -206,11 +213,11 @@ class _VetsScreenState extends State<VetsScreen> {
                   _selectedFilter = filter;
                 });
               },
-              selectedColor: AppColors.primary,
-              backgroundColor: AppColors.secondary,
+              selectedColor: AppColors.primaryOrange,
+              backgroundColor: Colors.black.withValues(alpha: 0.05),
               showCheckmark: false,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(30),
               ),
             ),
           );
@@ -289,20 +296,13 @@ class _VetsScreenState extends State<VetsScreen> {
     return Container(
       margin: const EdgeInsets.only(bottom: 20),
       decoration: BoxDecoration(
-        color: AppColors.secondary,
-        borderRadius: BorderRadius.circular(28),
-        border: Border.all(color: Colors.white.withOpacity(0.05)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.2),
-            blurRadius: 10,
-            offset: const Offset(0, 5),
-          ),
-        ],
+        color: Colors.black.withValues(alpha: 0.04), // Light grey transparent
+        borderRadius: BorderRadius.circular(30), // Pill shaped
+        border: Border.all(color: Colors.black.withValues(alpha: 0.05)),
       ),
       child: InkWell(
         onTap: () => _openInMaps(vet),
-        borderRadius: BorderRadius.circular(28),
+        borderRadius: BorderRadius.circular(30),
         child: Padding(
           padding: const EdgeInsets.all(20),
           child: Column(
@@ -315,7 +315,7 @@ class _VetsScreenState extends State<VetsScreen> {
                     width: 56,
                     height: 56,
                     decoration: BoxDecoration(
-                      color: AppColors.primary.withOpacity(0.1),
+                      color: AppColors.primary.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(16),
                     ),
                     child: const Icon(Icons.local_hospital_rounded, color: AppColors.primary, size: 28),
@@ -334,23 +334,23 @@ class _VetsScreenState extends State<VetsScreen> {
                                 style: const TextStyle(
                                   fontSize: 17,
                                   fontWeight: FontWeight.w800,
-                                  color: Colors.white,
+                                  color: Colors.black,
                                 ),
                                 overflow: TextOverflow.ellipsis,
                               ),
                             ),
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                               decoration: BoxDecoration(
-                                color: vet.isOpen ? AppColors.primary.withOpacity(0.15) : Colors.redAccent.withOpacity(0.15),
-                                borderRadius: BorderRadius.circular(8),
+                                color: vet.isOpen ? Colors.green.withValues(alpha: 0.12) : Colors.redAccent.withValues(alpha: 0.12),
+                                borderRadius: BorderRadius.circular(12),
                               ),
                               child: Text(
                                 vet.isOpen ? "OPEN" : "CLOSED",
                                 style: TextStyle(
-                                  fontSize: 9,
+                                  fontSize: 10,
                                   fontWeight: FontWeight.w900,
-                                  color: vet.isOpen ? AppColors.primary : Colors.redAccent,
+                                  color: vet.isOpen ? Colors.green : Colors.redAccent,
                                 ),
                               ),
                             ),
@@ -359,16 +359,16 @@ class _VetsScreenState extends State<VetsScreen> {
                         const SizedBox(height: 6),
                         Row(
                           children: [
-                            const Icon(Icons.star_rounded, color: AppColors.primary, size: 16),
+                            const Icon(Icons.star_rounded, color: AppColors.primaryOrange, size: 16),
                             const SizedBox(width: 4),
                             Text(
                               vet.rating.toString(),
-                              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.white),
+                              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.black),
                             ),
                             const SizedBox(width: 12),
-                            const Icon(Icons.location_on_rounded, color: AppColors.textSecondary, size: 14),
+                            Icon(Icons.location_on_rounded, color: Colors.black.withValues(alpha: 0.4), size: 14),
                             const SizedBox(width: 4),
-                            Text(vet.distance, style: const TextStyle(fontSize: 13, color: AppColors.textSecondary)),
+                            Text(vet.distance, style: TextStyle(fontSize: 13, color: Colors.black.withValues(alpha: 0.5))),
                           ],
                         ),
                       ],
@@ -379,7 +379,7 @@ class _VetsScreenState extends State<VetsScreen> {
               const SizedBox(height: 18),
               Text(
                 vet.address,
-                style: const TextStyle(fontSize: 13, color: AppColors.textSecondary, height: 1.4),
+                style: TextStyle(fontSize: 13, color: Colors.black.withValues(alpha: 0.6), height: 1.4),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -389,27 +389,25 @@ class _VetsScreenState extends State<VetsScreen> {
                   Expanded(
                     child: ElevatedButton.icon(
                       onPressed: () => _callVet(vet.phone, vet.name),
-                      icon: const Icon(Icons.call_rounded, size: 18),
-                      label: const Text("Call Clinic", style: TextStyle(fontWeight: FontWeight.w800, fontSize: 13)),
+                      icon: const Icon(Icons.call_rounded, size: 18, color: Colors.white),
+                      label: const Text("Call Clinic", style: TextStyle(fontWeight: FontWeight.w800, fontSize: 13, color: Colors.white)),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primary,
-                        foregroundColor: AppColors.textDark,
+                        backgroundColor: AppColors.primaryOrange,
                         elevation: 0,
                         padding: const EdgeInsets.symmetric(vertical: 14),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
                       ),
                     ),
                   ),
                   const SizedBox(width: 12),
                   Container(
                     decoration: BoxDecoration(
-                      color: AppColors.secondary,
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: Colors.white.withOpacity(0.1)),
+                      color: Colors.black.withValues(alpha: 0.05),
+                      borderRadius: BorderRadius.circular(18),
                     ),
                     child: IconButton(
                       onPressed: () => _openInMaps(vet),
-                      icon: const Icon(Icons.directions_rounded, color: AppColors.primary),
+                      icon: const Icon(Icons.directions_rounded, color: AppColors.primaryOrange),
                       tooltip: "Get Directions",
                     ),
                   ),

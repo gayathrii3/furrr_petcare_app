@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+
+import 'package:lottie/lottie.dart';
+
 import '../Profile/pet_profile_screen.dart';
 import '../../services/pet_profile_service.dart';
 import '../../theme/app_colors.dart';
@@ -10,8 +12,9 @@ import '../Behavior/behavior_analyzer_screen.dart';
 import '../FoodSafety/food_safety_screen.dart';
 import '../Meds/medication_guide_screen.dart';
 import '../HealthRisk/health_risk_screen.dart';
-import '../Wound Analyzer/woundAI_screen.dart';
 import '../../widgets/quick_action_card.dart';
+import 'package:audioplayers/audioplayers.dart';
+import 'dart:math';
 
 class FurrrHomePage extends StatefulWidget {
   const FurrrHomePage({super.key});
@@ -20,10 +23,22 @@ class FurrrHomePage extends StatefulWidget {
   State<FurrrHomePage> createState() => _FurrrHomePageState();
 }
 
-class _FurrrHomePageState extends State<FurrrHomePage> {
+class _FurrrHomePageState extends State<FurrrHomePage> with SingleTickerProviderStateMixin {
+  late AnimationController _lottieController;
+  final AudioPlayer _audioPlayer = AudioPlayer();
+  bool _isBarking = false;
+  
+  // Real high-quality sound URLs from Google/Firebase
+  final List<String> _barkSounds = [
+    'https://actions.google.com/sounds/v1/animals/dog_barking.ogg',
+    'https://actions.google.com/sounds/v1/animals/small_dog_barking.ogg',
+    'https://actions.google.com/sounds/v1/animals/canine_barking.ogg',
+  ];
+
   @override
   void initState() {
     super.initState();
+    _lottieController = AnimationController(vsync: this);
     PetProfileService().addListener(_onProfileChanged);
     TranslationService().addListener(_onLanguageChanged);
   }
@@ -32,6 +47,8 @@ class _FurrrHomePageState extends State<FurrrHomePage> {
   void dispose() {
     PetProfileService().removeListener(_onProfileChanged);
     TranslationService().removeListener(_onLanguageChanged);
+    _lottieController.dispose();
+    _audioPlayer.dispose();
     super.dispose();
   }
 
@@ -133,17 +150,17 @@ class _FurrrHomePageState extends State<FurrrHomePage> {
                         onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const MedicationGuideScreen())),
                       ),
                       QuickActionCard(
-                        title: TranslationService.t('wound_analyzer'),
-                        icon: Icons.pets_rounded,
-                        ghostIcon: Icons.camera_alt_outlined,
-                        backgroundColor: const Color(0xFFFFF7F0),
-                        iconColor: AppColors.primaryOrange,
-                        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const WoundAiScreen())),
-                      ),
+                        title: _isBarking ? "STOP PLAYING" : "Bark & Play",
+                        icon: _isBarking ? Icons.stop_circle_rounded : Icons.music_note_rounded,
+                        ghostIcon: Icons.pets_rounded,
+                        backgroundColor: _isBarking ? const Color(0xFFE0E0E0) : const Color(0xFFFFF7F0), 
+                        iconColor: _isBarking ? Colors.black54 : AppColors.primaryOrange,
+                        onTap: _toggleBark,
+                       ),
                       QuickActionCard(
                         title: TranslationService.t('health_risks'),
-                        icon: Icons.warning_rounded,
-                        ghostIcon: Icons.info_outline_rounded,
+                        icon: Icons.menu_book_rounded,
+                        ghostIcon: Icons.library_books_outlined,
                         backgroundColor: const Color(0xFFFFF7F0),
                         iconColor: AppColors.primaryOrange,
                         onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const HealthRiskScreen())),
@@ -190,82 +207,123 @@ class _FurrrHomePageState extends State<FurrrHomePage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 10),
-          // Language Switcher & Icons
+          // 1. Top Bar: Profile (Left) & Actions (Right)
           Row(
-            mainAxisAlignment: MainAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _buildLanguageSwitcher(),
-              const SizedBox(width: 12),
+              // 🖼️ Pet Image (Top Left)
+              GestureDetector(
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const PetProfileScreen()),
+                ),
+                child: Hero(
+                  tag: 'pet_profile',
+                  child: Container(
+                    width: 60,
+                    height: 60,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.white,
+                      border: Border.all(color: Colors.white.withValues(alpha: 0.3), width: 2),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.12),
+                          blurRadius: 8,
+                          offset: const Offset(0, 3),
+                        ),
+                      ],
+                    ),
+                    child: ClipOval(
+                      child: Image.asset(
+                        "assets/images/pet_profile.png",
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) => Image.asset(
+                          "assets/images/splash_mascot.png",
+                          fit: BoxFit.contain,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              // 🔔 Actions (Top Right)
+              Row(
+                children: [
+                  _buildLanguageSwitcher(),
+                  const SizedBox(width: 12),
+                  Stack(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withValues(alpha: 0.12),
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(Icons.notifications_none_rounded, color: Colors.white, size: 24),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ],
           ),
           
           const SizedBox(height: 10),
 
-          // Greeting & Pet Info
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          // 2. Greeting & Pet Info
+          Stack(
+            clipBehavior: Clip.none,
             children: [
-              Column(
+              Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    children: [
-                      const _PulseIcon(icon: Icons.wb_sunny_outlined, color: Colors.white70, size: 18),
-                      const SizedBox(width: 6),
-                      Text(
-                        TranslationService.t('good_morning'),
-                        style: GoogleFonts.pangolin(
-                          textStyle: const TextStyle(color: Colors.white70, fontSize: 14),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            const _PulseIcon(icon: Icons.wb_sunny_outlined, color: Colors.white70, size: 18),
+                            const SizedBox(width: 6),
+                            Text(
+                              TranslationService.t('good_morning'),
+                              style: GoogleFonts.pangolin(
+                                textStyle: const TextStyle(color: Colors.white70, fontSize: 14),
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    TranslationService.t('hi_name', arg: dog.name),
-                    style: GoogleFonts.pangolin(
-                      textStyle: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 32,
-                        fontWeight: FontWeight.w900,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    "${dog.breed} • ${dog.age} • ${dog.weight} kg",
-                    style: GoogleFonts.pangolin(
-                      textStyle: const TextStyle(color: Colors.white70, fontSize: 14),
+                        const SizedBox(height: 8),
+                        Text(
+                          TranslationService.t('hi_name', arg: dog.name),
+                          style: GoogleFonts.pangolin(
+                            textStyle: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 32,
+                              fontWeight: FontWeight.w900,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          "${dog.breed} • ${dog.age} • ${dog.weight} kg",
+                          style: GoogleFonts.pangolin(
+                            textStyle: const TextStyle(color: Colors.white70, fontSize: 14),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
               ),
-              // Pet Image (Using a CircleAvatar or similar)
-              Hero(
-                tag: 'pet_profile',
-                child: GestureDetector(
-                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const PetProfileScreen())),
-                  child: Container(
-                    width: 76,
-                    height: 76,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.white,
-                      border: Border.all(color: Colors.white.withOpacity(0.2), width: 2),
-                    ),
-                    child: ClipOval(
-                      child: Image.asset(
-                        "assets/images/pet_profile.png",
-                        fit: BoxFit.cover, // Clean fit inside the circle
-                        alignment: const Alignment(-0.2, 0.0), // Nudge slightly left
-                        errorBuilder: (context, error, stackTrace) => Image.asset(
-                          "assets/images/splash_mascot.png",
-                          fit: BoxFit.contain,
-                          errorBuilder: (context, error, stackTrace) => const Text('🐶', style: TextStyle(fontSize: 40)),
-                        ),
-                      ),
-                    ),
-                  ),
+              Positioned(
+                right: -60,
+                top: -10,
+                child: Lottie.asset(
+                  'assets/animations/flirting_dog.json',
+                  height: 150, // "Little big"
+                  fit: BoxFit.contain,
                 ),
               ),
             ],
@@ -296,7 +354,7 @@ class _FurrrHomePageState extends State<FurrrHomePage> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.1),
+        color: Colors.white.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Row(
@@ -318,7 +376,7 @@ class _FurrrHomePageState extends State<FurrrHomePage> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
         decoration: BoxDecoration(
-          color: isSelected ? Colors.white.withOpacity(0.2) : Colors.transparent,
+          color: isSelected ? Colors.white.withValues(alpha: 0.2) : Colors.transparent,
           borderRadius: BorderRadius.circular(15),
         ),
         child: Text(
@@ -339,9 +397,9 @@ class _FurrrHomePageState extends State<FurrrHomePage> {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.2), // Lightened orange appearance over the orange header
+        color: Colors.white.withValues(alpha: 0.2), // Lightened orange appearance over the orange header
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.white.withOpacity(0.1)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
       ),
       child: Column(
         children: [
@@ -377,10 +435,10 @@ class _FurrrHomePageState extends State<FurrrHomePage> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: AppColors.primaryOrange.withOpacity(0.15), width: 1.5),
+        border: Border.all(color: AppColors.primaryOrange.withValues(alpha: 0.15), width: 1.5),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.03),
+            color: Colors.black.withValues(alpha: 0.03),
             blurRadius: 20,
             offset: const Offset(0, 10),
           ),
@@ -394,7 +452,7 @@ class _FurrrHomePageState extends State<FurrrHomePage> {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: AppColors.primaryOrange.withOpacity(0.1),
+                  color: AppColors.primaryOrange.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
                 child: const _PulseIcon(
@@ -432,20 +490,55 @@ class _FurrrHomePageState extends State<FurrrHomePage> {
     );
   }
 
+  void _toggleBark() async {
+    try {
+      if (_isBarking) {
+        // Stop Barking
+        setState(() => _isBarking = false);
+        await _audioPlayer.stop();
+        _lottieController.stop();
+      } else {
+        // Start Barking
+        setState(() => _isBarking = true);
+        final randomUrl = _barkSounds[Random().nextInt(_barkSounds.length)];
+        
+        await _audioPlayer.setReleaseMode(ReleaseMode.loop);
+        await _audioPlayer.setVolume(1.0);
+        await _audioPlayer.play(UrlSource(randomUrl));
+        
+        _lottieController.repeat();
+      }
+    } catch (e) {
+      print("Error toggling bark: $e");
+    }
+  }
+
   Widget _buildAboutSection() {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(vertical: 20),
       child: Column(
         children: [
-          const _PulseIcon(
-            icon: Icons.pets_rounded, // Better than raw emoji for animation
-            color: AppColors.primaryOrange,
-            size: 32,
+          // Custom Mascot SVG replacing the Paw Icon
+          Container(
+            decoration: const BoxDecoration(
+              color: Colors.transparent, // transparent to blend with theme
+            ),
+            child: Lottie.asset(
+              'assets/animations/footer_mascot.json',
+              height: 120,
+              fit: BoxFit.contain,
+              controller: _lottieController,
+              onLoaded: (composition) {
+                // Reduced speed: 1.5x instead of 3x
+                _lottieController.duration = composition.duration * 2 ~/ 3;
+                _lottieController.repeat();
+              },
+            ),
           ),
           const SizedBox(height: 12),
           Text(
-            "Furrr",
+            "Furrrr",
             style: GoogleFonts.pangolin(
               textStyle: const TextStyle(
                 fontSize: 24,

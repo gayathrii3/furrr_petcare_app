@@ -76,9 +76,9 @@ class _WoundResultScreenState extends State<WoundResultScreen> {
       width: double.infinity,
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: AppColors.error.withOpacity(0.1),
+        color: AppColors.error.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(22),
-        border: Border.all(color: AppColors.error.withOpacity(0.5)),
+        border: Border.all(color: AppColors.error.withValues(alpha: 0.5)),
       ),
       child: Column(
         children: [
@@ -117,13 +117,7 @@ class _WoundResultScreenState extends State<WoundResultScreen> {
 
   // 🧴 SUPPLIES CARD
   Widget _buildSuppliesCard() {
-    final supplies = [
-      "Saline solution or clean lukewarm water",
-      "Sterile gauze pads (non-stick)",
-      "Pet-safe antibiotic ointment",
-      "Vet wrap or medical tape",
-      "E-collar to prevent licking",
-    ];
+
 
     return Container(
       width: double.infinity,
@@ -131,7 +125,7 @@ class _WoundResultScreenState extends State<WoundResultScreen> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(22),
-        border: Border.all(color: AppColors.primary.withOpacity(0.12)),
+        border: Border.all(color: AppColors.primary.withValues(alpha: 0.12)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -162,7 +156,7 @@ class _WoundResultScreenState extends State<WoundResultScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
       decoration: BoxDecoration(
-        color: AppColors.primary.withOpacity(0.1),
+        color: AppColors.primary.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Row(
@@ -188,12 +182,7 @@ class _WoundResultScreenState extends State<WoundResultScreen> {
 
   // 🩺 STEPS CARD
   Widget _buildStepsCard() {
-    final steps = [
-      "Gently clean the wounds with lukewarm water or saline solution to remove debris - do not scrub",
-      "Pat dry with clean gauze and apply a thin layer of pet-safe antibiotic ointment if available",
-      "Cover with a non-stick pad and wrap with gauze/bandage to keep clean - prevent licking with an e-collar if needed",
-      "Monitor closely for signs of infection and keep the paw dry and clean until veterinary evaluation",
-    ];
+
 
     return Container(
       width: double.infinity,
@@ -201,7 +190,7 @@ class _WoundResultScreenState extends State<WoundResultScreen> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(22),
-        border: Border.all(color: AppColors.primary.withOpacity(0.12)),
+        border: Border.all(color: AppColors.primary.withValues(alpha: 0.12)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -240,9 +229,9 @@ class _WoundResultScreenState extends State<WoundResultScreen> {
             height: 28,
             alignment: Alignment.center,
             decoration: BoxDecoration(
-              color: AppColors.primary.withOpacity(0.15),
+              color: AppColors.primary.withValues(alpha: 0.15),
               shape: BoxShape.circle,
-              border: Border.all(color: AppColors.primary.withOpacity(0.5)),
+              border: Border.all(color: AppColors.primary.withValues(alpha: 0.5)),
             ),
             child: Text(
               "$number",
@@ -284,7 +273,7 @@ class _WoundResultScreenState extends State<WoundResultScreen> {
             color: AppColors.surface,
             borderRadius: BorderRadius.circular(26),
             border: Border.all(
-              color: AppColors.primaryOrange.withOpacity(0.1),
+              color: AppColors.primaryOrange.withValues(alpha: 0.1),
               width: 1.3,
             ),
           ),
@@ -396,7 +385,7 @@ class _WoundResultScreenState extends State<WoundResultScreen> {
         style: OutlinedButton.styleFrom(
           backgroundColor: AppColors.surface,
           side: BorderSide(
-            color: AppColors.primaryOrange.withOpacity(0.3),
+            color: AppColors.primaryOrange.withValues(alpha: 0.3),
             width: 1.7,
           ),
           shape: RoundedRectangleBorder(

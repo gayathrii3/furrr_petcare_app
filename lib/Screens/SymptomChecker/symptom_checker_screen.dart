@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../widgets/custom_back_button.dart';
 import '../../services/translation_service.dart';
@@ -22,6 +24,7 @@ class _SymptomCheckerScreenState extends State<SymptomCheckerScreen> {
   final TextEditingController _descriptionController = TextEditingController();
   bool _isAnalyzing = false;
   AiHealthAnalysis? _aiAnalysis;
+  final FlutterTts _flutterTts = FlutterTts();
 
   @override
   void initState() {
@@ -32,6 +35,7 @@ class _SymptomCheckerScreenState extends State<SymptomCheckerScreen> {
 
   @override
   void dispose() {
+    _flutterTts.stop();
     TranslationService().removeListener(_onLanguageChanged);
     PetProfileService().removeListener(_onProfileChanged);
     _descriptionController.dispose();
@@ -141,6 +145,49 @@ class _SymptomCheckerScreenState extends State<SymptomCheckerScreen> {
             itemBuilder: (context, index) {
               final symptom = _symptomData[index];
               final isSelected = _selectedSymptoms.contains(symptom['name']);
+              final bool isLethargy = symptom['name'] == 'Lethargy';
+
+              Widget card = Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                decoration: BoxDecoration(
+                  color: isSelected ? AppColors.primaryOrange : Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: isSelected ? AppColors.primaryOrange : AppColors.primaryOrange.withOpacity(0.15),
+                    width: 1.5,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.04),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      symptom['icon'],
+                      color: isSelected ? Colors.white : AppColors.primaryOrange,
+                      size: 22,
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Text(
+                        symptom['name'],
+                        style: GoogleFonts.pangolin(
+                          textStyle: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                            color: isSelected ? Colors.white : Colors.black87,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+
               return GestureDetector(
                 onTap: () {
                   setState(() {
@@ -151,46 +198,26 @@ class _SymptomCheckerScreenState extends State<SymptomCheckerScreen> {
                     }
                   });
                 },
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                  decoration: BoxDecoration(
-                    color: isSelected ? AppColors.primaryOrange : Colors.white,
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
-                      color: isSelected ? AppColors.primaryOrange : AppColors.primaryOrange.withOpacity(0.15),
-                      width: 1.5,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.04),
-                        blurRadius: 10,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
-                  ),
-                  child: Row(
-                    children: [
-                      Icon(
-                        symptom['icon'],
-                        color: isSelected ? Colors.white : AppColors.primaryOrange,
-                        size: 22,
-                      ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: Text(
-                          symptom['name'],
-                          style: GoogleFonts.pangolin(
-                            textStyle: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                              color: isSelected ? Colors.white : Colors.black87,
+                child: isLethargy
+                    ? Stack(
+                        clipBehavior: Clip.none,
+                        children: [
+                          Positioned.fill(child: card),
+                          Positioned(
+                            top: -75, // "Sleep" on top of the box with full size
+                            left: 0,
+                            right: 0,
+                            child: Center(
+                              child: Lottie.asset(
+                                'assets/animations/puppy_sleeping.json',
+                                height: 130, // Restored to "little big" size
+                                fit: BoxFit.contain,
+                              ),
                             ),
                           ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                        ],
+                      )
+                    : card,
               );
             },
           ),
@@ -324,10 +351,31 @@ class _SymptomCheckerScreenState extends State<SymptomCheckerScreen> {
                 color: isUrgent ? AppColors.error.withOpacity(0.15) : AppColors.primaryOrange.withOpacity(0.15),
                 shape: BoxShape.circle,
               ),
-              child: Icon(
-                isUrgent ? Icons.warning_amber_rounded : Icons.check_circle_outline,
-                color: isUrgent ? AppColors.error : AppColors.primaryOrange,
-                size: 48,
+              child: GestureDetector(
+                onTap: () => _flutterTts.speak(_aiAnalysis!.description),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Icon(
+                      isUrgent ? Icons.warning_amber_rounded : Icons.check_circle_outline,
+                      color: isUrgent ? AppColors.error : AppColors.primaryOrange,
+                      size: 48,
+                    ),
+                    Positioned(
+                      right: 0,
+                      bottom: 0,
+                      child: Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration: const BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.circle,
+                          boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 4)],
+                        ),
+                        child: Icon(Icons.volume_up_rounded, color: isUrgent ? AppColors.error : AppColors.primaryOrange, size: 16),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

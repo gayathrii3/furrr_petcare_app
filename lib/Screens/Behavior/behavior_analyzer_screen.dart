@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import '../../widgets/custom_back_button.dart';
 import '../../services/translation_service.dart';
 import '../../services/pet_profile_service.dart';
@@ -32,19 +34,23 @@ class _BehaviorAnalyzerScreenState extends State<BehaviorAnalyzerScreen> {
   Behavior? _selectedBehavior;
   bool _isAnalyzing = false;
   AiHealthAnalysis? _aiAnalysis;
+  final TextEditingController _descriptionController = TextEditingController();
+  final FlutterTts _flutterTts = FlutterTts();
+
+  @override
+  void dispose() {
+    _descriptionController.dispose();
+    _flutterTts.stop();
+    TranslationService().removeListener(_onLanguageChanged);
+    PetProfileService().removeListener(_onProfileChanged);
+    super.dispose();
+  }
 
   @override
   void initState() {
     super.initState();
     TranslationService().addListener(_onLanguageChanged);
     PetProfileService().addListener(_onProfileChanged);
-  }
-
-  @override
-  void dispose() {
-    TranslationService().removeListener(_onLanguageChanged);
-    PetProfileService().removeListener(_onProfileChanged);
-    super.dispose();
   }
 
   void _onLanguageChanged() {
@@ -60,37 +66,37 @@ class _BehaviorAnalyzerScreenState extends State<BehaviorAnalyzerScreen> {
       title: "Excessive barking",
       icon: Icons.volume_up_outlined,
       dotColor: Color(0xFF52B788),
-      iconBgColor: AppColors.primary.withOpacity(0.12),
+      iconBgColor: AppColors.primary.withValues(alpha: 0.12),
     ),
     Behavior(
       title: "Aggression",
       icon: Icons.error_outline,
       dotColor: Color(0xFFE63946),
-      iconBgColor: AppColors.primary.withOpacity(0.12),
+      iconBgColor: AppColors.primary.withValues(alpha: 0.12),
     ),
     Behavior(
       title: "Hiding / withdrawing",
       icon: Icons.visibility_off_outlined,
       dotColor: Color(0xFFFB8500),
-      iconBgColor: AppColors.primary.withOpacity(0.12),
+      iconBgColor: AppColors.primary.withValues(alpha: 0.12),
     ),
     Behavior(
       title: "Eating grass",
       icon: Icons.eco_outlined,
       dotColor: Color(0xFF52B788),
-      iconBgColor: AppColors.primary.withOpacity(0.12),
+      iconBgColor: AppColors.primary.withValues(alpha: 0.12),
     ),
     Behavior(
       title: "Tail chasing",
       icon: Icons.sync,
       dotColor: Color(0xFF52B788),
-      iconBgColor: AppColors.primary.withOpacity(0.12),
+      iconBgColor: AppColors.primary.withValues(alpha: 0.12),
     ),
     Behavior(
       title: "Sudden lethargy",
       icon: Icons.sentiment_dissatisfied_outlined,
       dotColor: Color(0xFFE63946),
-      iconBgColor: AppColors.primary.withOpacity(0.12),
+      iconBgColor: AppColors.primary.withValues(alpha: 0.12),
     ),
   ];
 
@@ -103,7 +109,7 @@ class _BehaviorAnalyzerScreenState extends State<BehaviorAnalyzerScreen> {
           children: [
             _buildCustomHeader(),
             Expanded(
-              child: _selectedBehavior == null ? _buildBehaviorList() : _buildBehaviorDetail(),
+              child: (_isAnalyzing || _aiAnalysis != null) ? _buildBehaviorDetail() : _buildBehaviorList(),
             ),
           ],
         ),
@@ -140,7 +146,7 @@ class _BehaviorAnalyzerScreenState extends State<BehaviorAnalyzerScreen> {
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: AppColors.primary.withOpacity(0.12),
+              color: AppColors.primary.withValues(alpha: 0.12),
               borderRadius: BorderRadius.circular(20),
             ),
             child: Row(
@@ -160,6 +166,14 @@ class _BehaviorAnalyzerScreenState extends State<BehaviorAnalyzerScreen> {
               ],
             ),
           ),
+          Center(
+            child: Lottie.asset(
+              'assets/animations/boxing_dog.json',
+              height: 180,
+              fit: BoxFit.contain,
+              repeat: true,
+            ),
+          ),
           const SizedBox(height: 25),
           ListView.builder(
             shrinkWrap: true,
@@ -170,21 +184,85 @@ class _BehaviorAnalyzerScreenState extends State<BehaviorAnalyzerScreen> {
               return _buildBehaviorCard(behavior);
             },
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 10),
+          
+          // 📝 Description Box
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: AppColors.cardBackground,
+              borderRadius: BorderRadius.circular(24),
+              border: Border.all(color: AppColors.primary.withValues(alpha: 0.1)),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  "Explain behavior (optional)",
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: AppColors.textPrimary),
+                ),
+                const SizedBox(height: 12),
+                TextField(
+                  controller: _descriptionController,
+                  maxLines: 3,
+                  decoration: InputDecoration(
+                    hintText: "E.g. Shaking head frequently since morning...",
+                    hintStyle: TextStyle(color: AppColors.textSecondary.withValues(alpha: 0.5)),
+                    filled: true,
+                    fillColor: AppColors.background,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(16),
+                      borderSide: BorderSide.none,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 25),
+
+          // ✨ Analyze Button
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: () => _runAnalysis(),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primary,
+                padding: const EdgeInsets.symmetric(vertical: 18),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                elevation: 4,
+                shadowColor: AppColors.primary.withValues(alpha: 0.4),
+              ),
+              child: const Text(
+                "ANALYZE BEHAVIOR",
+                style: TextStyle(color: AppColors.textDark, fontWeight: FontWeight.w900, fontSize: 16, letterSpacing: 1.2),
+              ),
+            ),
+          ),
+          const SizedBox(height: 30),
         ],
       ),
     );
   }
 
-  void _analyzeBehavior(Behavior behavior) async {
+  void _runAnalysis() async {
+    if (_selectedBehavior == null && _descriptionController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Please select a behavior or type a description.")),
+      );
+      return;
+    }
+
     setState(() {
-      _selectedBehavior = behavior;
       _isAnalyzing = true;
       _aiAnalysis = null;
     });
 
     try {
-      final analysis = await AiAnalysisService().analyzeBehavior(behavior.title);
+      final analysis = await AiAnalysisService().analyzeBehavior(
+        _selectedBehavior?.title ?? "Custom Description",
+        description: _descriptionController.text.trim().isEmpty ? null : _descriptionController.text.trim(),
+      );
       
       if (!mounted) return;
 
@@ -202,16 +280,26 @@ class _BehaviorAnalyzerScreenState extends State<BehaviorAnalyzerScreen> {
     }
   }
 
+  void _analyzeBehavior(Behavior behavior) {
+    setState(() {
+      _selectedBehavior = behavior;
+    });
+  }
+
   Widget _buildBehaviorCard(Behavior behavior) {
+    final isSelected = _selectedBehavior == behavior;
     return GestureDetector(
       onTap: () => _analyzeBehavior(behavior),
       child: Container(
         margin: const EdgeInsets.only(bottom: 15),
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: AppColors.cardBackground,
+          color: isSelected ? AppColors.primary.withValues(alpha: 0.1) : AppColors.cardBackground,
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: AppColors.primary.withOpacity(0.15), width: 1.5),
+          border: Border.all(
+            color: isSelected ? AppColors.primary : AppColors.primary.withValues(alpha: 0.15),
+            width: isSelected ? 2 : 1.5,
+          ),
         ),
         child: Row(
           children: [
@@ -274,12 +362,26 @@ class _BehaviorAnalyzerScreenState extends State<BehaviorAnalyzerScreen> {
             decoration: BoxDecoration(
               color: AppColors.cardBackground,
               borderRadius: BorderRadius.circular(28),
-              border: Border.all(color: AppColors.primary.withOpacity(0.15), width: 2),
+              border: Border.all(color: AppColors.primary.withValues(alpha: 0.15), width: 2),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(b.icon, color: b.dotColor, size: 48),
+                GestureDetector(
+                  onTap: () => _flutterTts.speak(_aiAnalysis!.description),
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      Icon(b.icon, color: b.dotColor, size: 48),
+                      // Pulse effect hint
+                      Positioned(
+                        right: -4,
+                        top: -4,
+                        child: Icon(Icons.volume_up_rounded, color: b.dotColor.withValues(alpha: 0.5), size: 16),
+                      ),
+                    ],
+                  ),
+                ),
                 const SizedBox(height: 15),
                 Text(
                   b.title,
@@ -340,7 +442,7 @@ class _BehaviorAnalyzerScreenState extends State<BehaviorAnalyzerScreen> {
               decoration: BoxDecoration(
                 color: AppColors.cardBackground,
                 borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: AppColors.primary.withOpacity(0.2), width: 2),
+                border: Border.all(color: AppColors.primary.withValues(alpha: 0.2), width: 2),
               ),
               child: const Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -369,7 +471,7 @@ class _BehaviorAnalyzerScreenState extends State<BehaviorAnalyzerScreen> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.primary.withOpacity(0.12),
+        color: AppColors.primary.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Row(
@@ -415,7 +517,7 @@ class _BehaviorAnalyzerScreenState extends State<BehaviorAnalyzerScreen> {
           width: double.infinity,
           padding: hasBg ? const EdgeInsets.all(16) : EdgeInsets.zero,
           decoration: BoxDecoration(
-            color: hasBg ? AppColors.primary.withOpacity(0.08) : Colors.transparent,
+            color: hasBg ? AppColors.primary.withValues(alpha: 0.08) : Colors.transparent,
             borderRadius: BorderRadius.circular(15),
           ),
           child: Text(

@@ -1,12 +1,13 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+
 import 'package:image_picker/image_picker.dart';
-import 'package:furrr/Screens/Wound Analyzer/woundAI_results.dart';
+import 'package:furrr/Screens/Wound Analyzer/wound_ai_results.dart';
 import '../../widgets/custom_back_button.dart';
 import '../../services/translation_service.dart';
 import '../../services/ai_analysis_service.dart';
-import 'package:furrr/models/ai_health_analysis.dart';
+
 import '../../theme/app_colors.dart';
 import '../../widgets/paws_loading.dart';
 import '../../widgets/custom_camera_icon.dart';
