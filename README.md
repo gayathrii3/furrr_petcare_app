@@ -1,7 +1,3 @@
-<p align="center">
-  <img src="furrr_petcare_app\assets\images\Furrr_logo.png" width="150"/>
-</p>
-
 # Furrr - PetCare AI (Premium Companion)
 
 **Furrr** is a high-performance Flutter application designed to provide Indian pet owners with intelligent, real-time health and behavioral insights. Combining premium UI design with Google's **Gemini AI** and advanced UX animations, Furrr offers a comprehensive ecosystem for proactive pet care.
