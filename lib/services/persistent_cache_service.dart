@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../models/health_article.dart';
 import '../models/ai_food_analysis.dart';
 import '../models/ai_medication_analysis.dart';
@@ -69,6 +70,26 @@ class PersistentCacheService {
       return AiMedicationAnalysis.fromJson(json.decode(data));
     } catch (e) {
       return null;
+    }
+  }
+
+  // --- Gemini API Key Storage ---
+  static const String _userGeminiKey = 'user_gemini_api_key';
+  static const _secureStorage = FlutterSecureStorage();
+
+  Future<void> saveUserGeminiKey(String key) async {
+    if (key.isEmpty) {
+      await _secureStorage.delete(key: _userGeminiKey);
+    } else {
+      await _secureStorage.write(key: _userGeminiKey, value: key);
+    }
+  }
+
+  Future<String> getUserGeminiKey() async {
+    try {
+      return await _secureStorage.read(key: _userGeminiKey) ?? '';
+    } catch (e) {
+      return '';
     }
   }
 

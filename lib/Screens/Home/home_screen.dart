@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 
 import 'package:lottie/lottie.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:google_generative_ai/google_generative_ai.dart';
+import '../../services/persistent_cache_service.dart';
+import '../../services/ai_analysis_service.dart';
+import '../../config/api_config.dart';
 
 import '../Profile/pet_profile_screen.dart';
 import '../../services/pet_profile_service.dart';
@@ -252,17 +257,16 @@ class _FurrrHomePageState extends State<FurrrHomePage> with SingleTickerProvider
                 children: [
                   _buildLanguageSwitcher(),
                   const SizedBox(width: 12),
-                  Stack(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.12),
-                          shape: BoxShape.circle,
-                        ),
-                        child: const Icon(Icons.notifications_none_rounded, color: Colors.white, size: 24),
+                  GestureDetector(
+                    onTap: () => _showSettingsDialog(context),
+                    child: Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.12),
+                        shape: BoxShape.circle,
                       ),
-                    ],
+                      child: const Icon(Icons.settings, color: Colors.white, size: 24),
+                    ),
                   ),
                 ],
               ),
@@ -347,6 +351,242 @@ class _FurrrHomePageState extends State<FurrrHomePage> with SingleTickerProvider
           ),
         ],
       ),
+    );
+  }
+
+  void _showSettingsDialog(BuildContext context) async {
+    final cacheService = PersistentCacheService();
+    final currentKey = await cacheService.getUserGeminiKey();
+    final textController = TextEditingController(text: currentKey);
+    bool testing = false;
+    String testResult = "";
+    bool testSuccess = false;
+
+    if (!context.mounted) return;
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+              backgroundColor: const Color(0xFFFFF7F0), // Matching the warm dialog background
+              title: Row(
+                children: [
+                  const Icon(Icons.settings_suggest_rounded, color: AppColors.primaryOrange, size: 28),
+                  const SizedBox(width: 10),
+                  Text(
+                    "AI Settings",
+                    style: GoogleFonts.pangolin(
+                      textStyle: const TextStyle(fontWeight: FontWeight.w900, fontSize: 22),
+                    ),
+                  ),
+                ],
+              ),
+              content: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      "To keep this app 100% free, all AI features (wound analyzer, behavior analyzer, symptom checker) can run using your own free Gemini API key.",
+                      style: TextStyle(fontSize: 14, color: Colors.black87),
+                    ),
+                    const SizedBox(height: 16),
+                    GestureDetector(
+                      onTap: () async {
+                        final url = Uri.parse("https://aistudio.google.com/app/apikey");
+                        if (await canLaunchUrl(url)) {
+                          await launchUrl(url, mode: LaunchMode.externalApplication);
+                        }
+                      },
+                      child: const MouseRegion(
+                        cursor: SystemMouseCursors.click,
+                        child: Text(
+                          "👉 Get a free Gemini API Key from Google AI Studio",
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.blueAccent,
+                            decoration: TextDecoration.underline,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 18),
+                    Text(
+                      "Gemini API Key",
+                      style: GoogleFonts.pangolin(
+                        textStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    TextField(
+                      controller: textController,
+                      obscureText: true,
+                      decoration: InputDecoration(
+                        hintText: "AIzaSy...",
+                        filled: true,
+                        fillColor: Colors.white,
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(color: Colors.grey.shade300),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: const BorderSide(color: AppColors.primaryOrange, width: 2),
+                        ),
+                      ),
+                    ),
+                    if (testResult.isNotEmpty) ...[
+                      const SizedBox(height: 12),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Icon(
+                            testSuccess ? Icons.check_circle_outline_rounded : Icons.error_outline_rounded,
+                            color: testSuccess ? Colors.green : Colors.red,
+                            size: 18,
+                          ),
+                          const SizedBox(width: 6),
+                          Expanded(
+                            child: Text(
+                              testResult,
+                              style: TextStyle(
+                                color: testSuccess ? Colors.green.shade800 : Colors.red.shade800,
+                                fontSize: 13,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                    const SizedBox(height: 20),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        if (currentKey.isNotEmpty)
+                          TextButton.icon(
+                            style: TextButton.styleFrom(foregroundColor: Colors.red),
+                            onPressed: () async {
+                              await cacheService.saveUserGeminiKey("");
+                              AiAnalysisService.init(""); // fallback to env
+                              if (context.mounted) {
+                                Navigator.pop(context);
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: const Text("Custom API Key removed. Using default configuration."),
+                                    behavior: SnackBarBehavior.floating,
+                                    backgroundColor: Colors.grey.shade800,
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                                  ),
+                                );
+                              }
+                            },
+                            icon: const Icon(Icons.delete_forever_rounded, size: 18),
+                            label: const Text("Remove"),
+                          )
+                        else
+                          const SizedBox.shrink(),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            foregroundColor: AppColors.primaryOrange,
+                            side: const BorderSide(color: AppColors.primaryOrange),
+                            elevation: 0,
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          ),
+                          onPressed: testing
+                              ? null
+                              : () async {
+                                  final testKey = textController.text.trim();
+                                  if (testKey.isEmpty) {
+                                    setState(() {
+                                      testResult = "Please paste an API key first.";
+                                      testSuccess = false;
+                                    });
+                                    return;
+                                  }
+                                  setState(() {
+                                    testing = true;
+                                    testResult = "Testing API connection...";
+                                  });
+                                  try {
+                                    final model = GenerativeModel(model: 'gemini-1.5-flash', apiKey: testKey);
+                                    final response = await model.generateContent([Content.text('hi')]);
+                                    if (response.text != null) {
+                                      setState(() {
+                                        testResult = "Connection successful! Key is valid.";
+                                        testSuccess = true;
+                                        testing = false;
+                                      });
+                                    } else {
+                                      setState(() {
+                                        testResult = "Failed: Received an empty response.";
+                                        testSuccess = false;
+                                        testing = false;
+                                      });
+                                    }
+                                  } catch (e) {
+                                    setState(() {
+                                      testResult = "Failed: ${e.toString().contains("400") ? "Invalid API Key." : e.toString()}";
+                                      testSuccess = false;
+                                      testing = false;
+                                    });
+                                  }
+                                },
+                          child: testing
+                              ? const SizedBox(
+                                  width: 16,
+                                  height: 16,
+                                  child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.primaryOrange),
+                                )
+                              : const Text("Test Key"),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text("Cancel", style: TextStyle(color: Colors.black54)),
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primaryOrange,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  ),
+                  onPressed: () async {
+                    final key = textController.text.trim();
+                    await cacheService.saveUserGeminiKey(key);
+                    AiAnalysisService.init(key.isNotEmpty ? key : ApiConfig.geminiKey);
+                    if (context.mounted) {
+                      Navigator.pop(context);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(key.isEmpty
+                              ? "API settings cleared. Using default fallback."
+                              : "Gemini API Key saved successfully!"),
+                          behavior: SnackBarBehavior.floating,
+                          backgroundColor: Colors.green.shade800,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        ),
+                      );
+                    }
+                  },
+                  child: const Text("Save Key"),
+                ),
+              ],
+            );
+          },
+        );
+      },
     );
   }
 

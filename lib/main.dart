@@ -8,6 +8,7 @@ import 'theme/app_colors.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'services/ai_analysis_service.dart';
 import 'config/api_config.dart';
+import 'services/persistent_cache_service.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,7 +24,9 @@ Future<void> main() async {
   }
   
   // Pull API Keys from environment configuration
-  final gemini = ApiConfig.geminiKey;
+  final cacheService = PersistentCacheService();
+  final savedGeminiKey = await cacheService.getUserGeminiKey();
+  final gemini = savedGeminiKey.isNotEmpty ? savedGeminiKey : ApiConfig.geminiKey;
   final youtube = ApiConfig.youtubeKey;
   final maps = ApiConfig.mapsKey;
 

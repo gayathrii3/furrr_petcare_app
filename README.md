@@ -40,4 +40,26 @@
 
 ---
 
+## 🔑 API Configuration & Security (BYOK)
+
+To ensure the app is **100% free** to run, host, and scale, it uses a **Bring Your Own Key (BYOK)** architecture:
+
+* **Local Development**: The app loads fallback API keys from `assets/.env`. This file is ignored by Git and is never committed to keep credentials safe.
+* **Production Users**: Users can easily configure their own free Gemini API key by tapping the **Settings gear icon** in the top-right header of the Home Screen.
+* **Hardware-Backed Encryption**: Stored keys are encrypted at rest using `flutter_secure_storage` (using iOS Keychain and Android Keystore), making them secure against rooted devices, debug extractions, or backups.
+
+### Setup for Local Development
+
+1. Copy `.env.example` to `assets/.env`:
+   ```bash
+   cp .env.example assets/.env
+   ```
+2. Open `assets/.env` and replace the placeholder values with your real API keys (Gemini, YouTube, and Google Maps).
+3. Run the app:
+   ```bash
+   flutter run
+   ```
+
+---
+
 *Author - Gayathri Reddy*

@@ -75,10 +75,10 @@ class AiAnalysisService {
       return AiFoodAnalysis(
         foodName: foodName,
         safetyLevel: "Error",
-        description: "API Key is missing.",
-        breedNuance: "Please check your configuration.",
+        description: "Gemini API Key is missing. Add your own key to use this feature.",
+        breedNuance: "Configure your API key in the Home Screen settings.",
         symptoms: [],
-        actionSteps: ["Add GEMINI_API_KEY"],
+        actionSteps: ["Tap the Settings icon at the top of the Home Screen", "Get a free key from Google AI Studio", "Paste the key and save"],
       );
     }
 
@@ -124,11 +124,11 @@ class AiAnalysisService {
       return AiMedicationAnalysis(
         medName: medName,
         safetyLevel: "Error",
-        description: "API Key is missing.",
+        description: "Gemini API Key is missing. Add your own key to use this feature.",
         dosageInfo: "",
-        breedNuance: "Please check your configuration.",
+        breedNuance: "Configure your API key in the Home Screen settings.",
         sideEffects: [],
-        actionSteps: ["Add GEMINI_API_KEY"],
+        actionSteps: ["Tap the Settings icon at the top of the Home Screen", "Get a free key from Google AI Studio", "Paste the key and save"],
       );
     }
 
@@ -240,10 +240,10 @@ class AiAnalysisService {
     if (_apiKey.isEmpty) {
       return AiHealthAnalysis(
         severity: "Key Missing",
-        description: "Gemini API Key is missing. Please check your .env file or build configuration.",
+        description: "Gemini API Key is missing. Please add your own key to enable AI diagnostics.",
         supplies: ["API Key needed"],
-        steps: ["Add GEMINI_API_KEY to assets/.env"],
-        vetAdvice: "Configure the API to enable AI analysis.",
+        steps: ["Tap the Settings gear icon on the Home Screen", "Get a free key from Google AI Studio", "Paste the key and save"],
+        vetAdvice: "Configure your API key to enable AI analysis.",
       );
     }
 
@@ -309,7 +309,7 @@ class AiAnalysisService {
         severity: "Error",
         description: errorDescription,
         supplies: ["Check Internet", "Check API Credentials"],
-        steps: ["Verify assets/.env", "Wait 60 seconds"],
+        steps: ["Verify API settings on the Home Screen", "Wait 60 seconds"],
         vetAdvice: "If your pet is in distress, seek immediate veterinary care.",
       );
     }
