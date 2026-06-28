@@ -15,8 +15,7 @@
 ###  UX & Animations
 - **Jumping Navigation Bar**: A custom, playful "jump arc" animation for indicator transitions.
 - **Staggered Onboarding**: Elegant right-to-left entrance animations on the Welcome Screen.
-- **Dynamic Peeping Mascots**: Animated mascots like the "Flirting Dog" and "Boxing Dog" that interact with the UI layout.
-- **Universal Light Theme**: A cohesive "Soft Beige and Caramel" premium theme across all modules.
+- **Dynamic Mascots**: Animated mascots like the "Flirting Dog" and "Boxing Dog" that interact with the UI layout.
 
 ###  Localized Services & Real-World Data
 - **Real-Time Find Vets**: Uses GPS and the **OpenStreetMap API** to find actual veterinary clinics near you.
