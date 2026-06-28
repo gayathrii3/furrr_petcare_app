@@ -1,4 +1,4 @@
-package com.example.furrr_petcare_app
+package com.gayathrii3.furrr
 
 import io.flutter.embedding.android.FlutterActivity
 
