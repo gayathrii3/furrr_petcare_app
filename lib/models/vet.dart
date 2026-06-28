@@ -55,6 +55,35 @@ class Vet {
     return ["Animal Hospital"];
   }
 
+  factory Vet.fromOsmJson(Map<String, dynamic> json, double currentLat, double currentLng) {
+    final lat = (json['lat'] as num).toDouble();
+    final lng = (json['lon'] as num).toDouble();
+    final tags = json['tags'] as Map<String, dynamic>? ?? {};
+    
+    double distanceKm = _calculateDistance(currentLat, currentLng, lat, lng);
+    
+    // Parse address
+    String address = tags['addr:full'] ?? '';
+    if (address.isEmpty) {
+      final street = tags['addr:street'] ?? '';
+      final city = tags['addr:city'] ?? '';
+      address = street.isNotEmpty ? "$street, $city" : (tags['addr:suburb'] ?? tags['addr:district'] ?? 'Address not available');
+    }
+
+    return Vet(
+      name: tags['name'] ?? 'Veterinary Clinic',
+      distance: "${distanceKm.toStringAsFixed(1)} km",
+      rating: 4.5, // Default rating
+      specialties: ["Veterinary", "Animal Hospital"],
+      isOpen: true,
+      address: address,
+      phone: tags['phone'] ?? tags['contact:phone'] ?? 'Contact via Maps',
+      placeId: json['id']?.toString() ?? '',
+      lat: lat,
+      lng: lng,
+    );
+  }
+
   static double _calculateDistance(double lat1, double lon1, double lat2, double lon2) {
     return ((lat2 - lat1).abs() + (lon2 - lon1).abs()) * 111.0;
   }

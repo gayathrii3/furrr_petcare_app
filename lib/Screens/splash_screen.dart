@@ -4,6 +4,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import '../theme/app_colors.dart';
 import 'auth/welcome_screen.dart';
+import '../services/auth_service.dart';
+import 'main_nav.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -29,18 +31,25 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
 
   void _navigateToWelcome() async {
     await Future.delayed(const Duration(milliseconds: 1000));
-    if (mounted) {
-      Navigator.pushReplacement(
-        context,
-        PageRouteBuilder(
-          pageBuilder: (context, animation, secondaryAnimation) => const WelcomeScreen(),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            return FadeTransition(opacity: animation, child: child);
-          },
-          transitionDuration: const Duration(milliseconds: 1000),
-        ),
-      );
+    if (!mounted) return;
+    final user = await AuthService().getCurrentUser();
+    if (!mounted) return;
+    
+    Widget nextScreen = const WelcomeScreen();
+    if (user != null) {
+      nextScreen = const MainNav();
     }
+
+    Navigator.pushReplacement(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) => nextScreen,
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return FadeTransition(opacity: animation, child: child);
+        },
+        transitionDuration: const Duration(milliseconds: 1000),
+      ),
+    );
   }
 
   @override

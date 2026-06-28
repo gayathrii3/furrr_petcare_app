@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../theme/app_colors.dart';
 import '../../widgets/auth/auth_layout.dart';
+import '../../services/auth_service.dart';
 import '../main_nav.dart';
 
 class AuthScreen extends StatefulWidget {
@@ -16,11 +17,23 @@ class _AuthScreenState extends State<AuthScreen> {
   late bool _isSignUp;
   final GlobalKey<PeepingPugState> _pugKey = GlobalKey<PeepingPugState>();
   
-  // Focus Nodes for Signup
+  // Focus Nodes
   final FocusNode _userFocus = FocusNode();
   final FocusNode _emailFocus = FocusNode();
   final FocusNode _phoneFocus = FocusNode();
   final FocusNode _passFocus = FocusNode();
+
+  // Text Controllers
+  final TextEditingController _loginEmailController = TextEditingController();
+  final TextEditingController _loginPassController = TextEditingController();
+
+  final TextEditingController _signUpUserController = TextEditingController();
+  final TextEditingController _signUpEmailController = TextEditingController();
+  final TextEditingController _signUpPhoneController = TextEditingController();
+  final TextEditingController _signUpPassController = TextEditingController();
+
+  bool _agreeToTerms = true;
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -44,6 +57,14 @@ class _AuthScreenState extends State<AuthScreen> {
     _emailFocus.dispose();
     _phoneFocus.dispose();
     _passFocus.dispose();
+
+    _loginEmailController.dispose();
+    _loginPassController.dispose();
+    _signUpUserController.dispose();
+    _signUpEmailController.dispose();
+    _signUpPhoneController.dispose();
+    _signUpPassController.dispose();
+
     super.dispose();
   }
 
@@ -51,6 +72,85 @@ class _AuthScreenState extends State<AuthScreen> {
     setState(() {
       _isSignUp = !_isSignUp;
     });
+  }
+
+  Future<void> _handleLogin() async {
+    final email = _loginEmailController.text.trim();
+    final password = _loginPassController.text.trim();
+    
+    if (email.isEmpty || password.isEmpty) {
+      _showSnackbar("Email and password are required.");
+      return;
+    }
+
+    setState(() => _isLoading = true);
+    final error = await AuthService().loginUser(email: email, password: password);
+    setState(() => _isLoading = false);
+
+    if (error != null) {
+      _showSnackbar(error);
+    } else {
+      if (mounted) {
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const MainNav()));
+      }
+    }
+  }
+
+  Future<void> _handleRegister() async {
+    final username = _signUpUserController.text.trim();
+    final email = _signUpEmailController.text.trim();
+    final phone = _signUpPhoneController.text.trim();
+    final password = _signUpPassController.text.trim();
+
+    if (username.isEmpty || email.isEmpty || phone.isEmpty || password.isEmpty) {
+      _showSnackbar("All fields are required.");
+      return;
+    }
+    
+    if (!_agreeToTerms) {
+      _showSnackbar("You must agree to the terms and conditions.");
+      return;
+    }
+
+    setState(() => _isLoading = true);
+    final error = await AuthService().registerUser(
+      username: username,
+      email: email,
+      phone: phone,
+      password: password,
+    );
+    setState(() => _isLoading = false);
+
+    if (error != null) {
+      _showSnackbar(error);
+    } else {
+      if (mounted) {
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const MainNav()));
+      }
+    }
+  }
+
+  Future<void> _handleGuestLogin() async {
+    setState(() => _isLoading = true);
+    await AuthService().loginAsGuest();
+    setState(() => _isLoading = false);
+    if (mounted) {
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const MainNav()));
+    }
+  }
+
+  void _showSnackbar(String msg) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          msg,
+          style: GoogleFonts.pangolin(textStyle: const TextStyle(fontSize: 16, color: Colors.white)),
+        ),
+        backgroundColor: Colors.redAccent,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      ),
+    );
   }
 
   @override
@@ -130,9 +230,9 @@ class _AuthScreenState extends State<AuthScreen> {
           ),
           child: Column(
             children: [
-              _buildTextField("Email", Icons.email_outlined, focusNode: _emailFocus),
+              _buildTextField("Email", Icons.email_outlined, focusNode: _emailFocus, controller: _loginEmailController),
               const SizedBox(height: 16),
-              _buildTextField("Password", Icons.lock_outline, isPassword: true, focusNode: _passFocus),
+              _buildTextField("Password", Icons.lock_outline, isPassword: true, focusNode: _passFocus, controller: _loginPassController),
               const SizedBox(height: 8),
               Align(
                 alignment: Alignment.centerRight,
@@ -148,7 +248,22 @@ class _AuthScreenState extends State<AuthScreen> {
                 ),
               ),
               const SizedBox(height: 16),
-              _buildButton("LOGIN"),
+              _buildButton("LOGIN", _handleLogin),
+              const SizedBox(height: 12),
+              TextButton(
+                onPressed: _handleGuestLogin,
+                child: Text(
+                  "Continue as Guest",
+                  style: GoogleFonts.pangolin(
+                    textStyle: const TextStyle(
+                      color: AppColors.primaryOrange,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                      decoration: TextDecoration.underline,
+                    ),
+                  ),
+                ),
+              ),
             ],
           ),
         ),
@@ -201,9 +316,9 @@ class _AuthScreenState extends State<AuthScreen> {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
           decoration: BoxDecoration(
-            color: Colors.grey.shade50.withOpacity(0.9),
+            color: Colors.white,
             borderRadius: BorderRadius.circular(24),
-            border: Border.all(color: Colors.grey.shade200),
+            border: Border.all(color: AppColors.primaryOrange.withOpacity(0.1)),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withOpacity(0.04),
@@ -214,17 +329,32 @@ class _AuthScreenState extends State<AuthScreen> {
           ),
           child: Column(
             children: [
-              _buildTextField("Username", Icons.person_outline, focusNode: _userFocus),
+              _buildTextField("Username", Icons.person_outline, focusNode: _userFocus, controller: _signUpUserController),
               const SizedBox(height: 12),
-              _buildTextField("Email", Icons.email_outlined, focusNode: _emailFocus),
+              _buildTextField("Email", Icons.email_outlined, focusNode: _emailFocus, controller: _signUpEmailController),
               const SizedBox(height: 12),
-              _buildTextField("Mobile Number", Icons.phone_android_outlined, focusNode: _phoneFocus),
+              _buildTextField("Mobile Number", Icons.phone_android_outlined, focusNode: _phoneFocus, controller: _signUpPhoneController),
               const SizedBox(height: 12),
-              _buildTextField("Password", Icons.lock_outline, isPassword: true, focusNode: _passFocus),
+              _buildTextField("Password", Icons.lock_outline, isPassword: true, focusNode: _passFocus, controller: _signUpPassController),
               const SizedBox(height: 8),
               _buildAgreementCheckbox(),
               const SizedBox(height: 16),
-              _buildButton("REGISTER"),
+              _buildButton("REGISTER", _handleRegister),
+              const SizedBox(height: 12),
+              TextButton(
+                onPressed: _handleGuestLogin,
+                child: Text(
+                  "Continue as Guest",
+                  style: GoogleFonts.pangolin(
+                    textStyle: const TextStyle(
+                      color: AppColors.primaryOrange,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                      decoration: TextDecoration.underline,
+                    ),
+                  ),
+                ),
+              ),
             ],
           ),
         ),
@@ -252,8 +382,9 @@ class _AuthScreenState extends State<AuthScreen> {
     );
   }
 
-  Widget _buildTextField(String label, IconData icon, {bool isPassword = false, FocusNode? focusNode}) {
+  Widget _buildTextField(String label, IconData icon, {bool isPassword = false, FocusNode? focusNode, TextEditingController? controller}) {
     return TextField(
+      controller: controller,
       focusNode: focusNode,
       obscureText: isPassword,
       style: const TextStyle(color: Colors.black),
@@ -262,7 +393,7 @@ class _AuthScreenState extends State<AuthScreen> {
         labelStyle: GoogleFonts.pangolin(textStyle: const TextStyle(color: Colors.black54, fontSize: 18)),
         prefixIcon: Icon(icon, color: Colors.black87, size: 24),
         filled: true,
-        fillColor: Colors.white.withOpacity(0.5),
+        fillColor: AppColors.background.withOpacity(0.5),
         contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
@@ -280,14 +411,12 @@ class _AuthScreenState extends State<AuthScreen> {
     );
   }
 
-  Widget _buildButton(String text) {
+  Widget _buildButton(String text, VoidCallback onPressed) {
     return SizedBox(
       width: double.infinity,
       height: 50,
       child: ElevatedButton(
-        onPressed: () {
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const MainNav()));
-        },
+        onPressed: _isLoading ? null : onPressed,
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.primaryOrange,
           foregroundColor: Colors.white,
@@ -295,12 +424,18 @@ class _AuthScreenState extends State<AuthScreen> {
           elevation: 5,
           shadowColor: AppColors.primaryOrange.withOpacity(0.4),
         ),
-        child: Text(
-          text,
-          style: GoogleFonts.pangolin(
-            textStyle: const TextStyle(fontWeight: FontWeight.w900, fontSize: 18, letterSpacing: 1.1),
-          ),
-        ),
+        child: _isLoading
+            ? const SizedBox(
+                height: 20,
+                width: 20,
+                child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+              )
+            : Text(
+                text,
+                style: GoogleFonts.pangolin(
+                  textStyle: const TextStyle(fontWeight: FontWeight.w900, fontSize: 18, letterSpacing: 1.1),
+                ),
+              ),
       ),
     );
   }
@@ -312,8 +447,12 @@ class _AuthScreenState extends State<AuthScreen> {
           height: 24,
           width: 24,
           child: Checkbox(
-            value: true,
-            onChanged: (v) {},
+            value: _agreeToTerms,
+            onChanged: (v) {
+              setState(() {
+                _agreeToTerms = v ?? false;
+              });
+            },
             activeColor: AppColors.primaryOrange,
             checkColor: Colors.white,
             side: const BorderSide(color: Colors.black26, width: 1.5),

@@ -13,11 +13,6 @@ class ApiConfig {
       dotenv.env['YOUTUBE_API_KEY'] ??
       const String.fromEnvironment('YOUTUBE_API_KEY', defaultValue: '');
 
-  /// Google Maps API Key for Vet Services
-  /// Priority: .env -> --dart-define -> empty
-  static String get mapsKey =>
-      dotenv.env['MAPS_API_KEY'] ??
-      const String.fromEnvironment('MAPS_API_KEY', defaultValue: '');
 
   /// Helper to check if essential keys are missing
   static bool get hasMissingKeys => geminiKey.isEmpty || youtubeKey.isEmpty;

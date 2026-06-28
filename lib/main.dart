@@ -28,7 +28,6 @@ Future<void> main() async {
   final savedGeminiKey = await cacheService.getUserGeminiKey();
   final gemini = savedGeminiKey.isNotEmpty ? savedGeminiKey : ApiConfig.geminiKey;
   final youtube = ApiConfig.youtubeKey;
-  final maps = ApiConfig.mapsKey;
 
   // Initialize Services
   AiAnalysisService.init(gemini);
@@ -37,7 +36,6 @@ Future<void> main() async {
   print('--- FURRR API DIAGNOSTICS ---');
   print('GEMINI_API_KEY: ${gemini.isNotEmpty ? "✅ LOADED (${gemini.substring(0, 4)}...)" : "❌ MISSING"}');
   print('YOUTUBE_API_KEY: ${youtube.isNotEmpty ? "✅ LOADED (${youtube.substring(0, 4)}...)" : "❌ MISSING"}');
-  print('GOOGLE_MAPS_API_KEY: ${maps.isNotEmpty ? "✅ LOADED (${maps.substring(0, 4)}...)" : "❌ MISSING"}');
   print('-----------------------------');
   */
   
@@ -48,20 +46,17 @@ Future<void> main() async {
   runApp(FurrrApp(
     geminiKey: gemini,
     youtubeKey: youtube,
-    mapsKey: maps,
   ));
 }
 
 class FurrrApp extends StatelessWidget {
   final String geminiKey;
   final String youtubeKey;
-  final String mapsKey;
 
   const FurrrApp({
     super.key,
     required this.geminiKey,
     required this.youtubeKey,
-    required this.mapsKey,
   });
 
   @override

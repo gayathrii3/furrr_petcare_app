@@ -4,10 +4,6 @@ import 'package:http/http.dart' as http;
 import '../models/vet.dart';
 
 class VetService {
-  static const String _apiKey = String.fromEnvironment('GOOGLE_MAPS_API_KEY');
-  static const String _baseUrlNearby = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json';
-  static const String _baseUrlDetails = 'https://maps.googleapis.com/maps/api/place/details/json';
-
   static final VetService _instance = VetService._internal();
   factory VetService() => _instance;
   VetService._internal();
@@ -16,56 +12,31 @@ class VetService {
     try {
       Position position = await _determinePosition();
       
-      if (_apiKey.isEmpty || _apiKey == 'YOUR_GOOGLE_MAPS_API_KEY') {
-        print("Google Maps API Key not set. Returning demo data.");
-        return _getDemoVets();
-      }
+      final lat = position.latitude;
+      final lng = position.longitude;
 
-      final uri = Uri.parse(_baseUrlNearby).replace(
-        queryParameters: {
-          'location': '${position.latitude},${position.longitude}',
-          'radius': '10000', // Increased radius to 10km
-          'type': 'veterinary_care',
-          'key': _apiKey,
-        },
+      // Overpass QL query: Find elements with amenity=veterinary in a 15km radius of user
+      final query = '[out:json];node["amenity"="veterinary"](around:15000,$lat,$lng);out;';
+      
+      final uri = Uri.parse('https://overpass-api.de/api/interpreter').replace(
+        queryParameters: {'data': query},
       );
 
+      print('Fetching OpenStreetMap vets near: $lat, $lng');
       final response = await http.get(uri);
+      
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        final List<dynamic> results = data['results'] ?? [];
+        final List<dynamic> elements = data['elements'] ?? [];
         
-        return results.map((json) => Vet.fromPlacesJson(json, position.latitude, position.longitude)).toList();
+        return elements.map((json) => Vet.fromOsmJson(json, lat, lng)).toList();
       } else {
-        throw Exception('Failed to load vets: ${response.body}');
+        throw Exception('Failed to load vets from OpenStreetMap');
       }
     } catch (e) {
-      print('Error getting vets: $e');
+      print('Error getting vets from OpenStreetMap: $e. Returning fallback demo data.');
       return _getDemoVets(); 
     }
-  }
-
-  Future<String?> getVetPhoneNumber(String placeId) async {
-    if (_apiKey.isEmpty || _apiKey == 'YOUR_GOOGLE_MAPS_API_KEY') return null;
-
-    try {
-      final uri = Uri.parse(_baseUrlDetails).replace(
-        queryParameters: {
-          'place_id': placeId,
-          'fields': 'formatted_phone_number',
-          'key': _apiKey,
-        },
-      );
-      
-      final response = await http.get(uri);
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        return data['result']?['formatted_phone_number'];
-      }
-    } catch (e) {
-      print('Error fetching vet details: $e');
-    }
-    return null;
   }
 
   Future<Position> _determinePosition() async {

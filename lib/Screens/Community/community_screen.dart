@@ -56,6 +56,14 @@ class _CommunityScreenState extends State<CommunityScreen> {
     }
   }
 
+  Future<void> _handleRefresh() async {
+    setState(() {
+      _videos.clear();
+      _nextPageToken = '';
+    });
+    await _loadVideos();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -64,23 +72,29 @@ class _CommunityScreenState extends State<CommunityScreen> {
         children: [
           _videos.isEmpty && _isLoading
               ? const Center(child: PawsLoading(size: 100))
-              : PageView.builder(
-            scrollDirection: Axis.vertical,
-            itemCount: _videos.length,
-            onPageChanged: (index) {
-              if (index == _videos.length - 2) {
-                _loadVideos();
-              }
-            },
-            itemBuilder: (context, index) {
-              final video = _videos[index];
-              return CommunityShortItem(
-                videoId: video['id'] ?? '',
-                title: video['title'] ?? '',
-                channelTitle: video['channelTitle'] ?? '',
-              );
-            },
-          ),
+              : RefreshIndicator(
+                  color: AppColors.primaryOrange,
+                  backgroundColor: Colors.white,
+                  onRefresh: _handleRefresh,
+                  child: PageView.builder(
+                    scrollDirection: Axis.vertical,
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    itemCount: _videos.length,
+                    onPageChanged: (index) {
+                      if (index == _videos.length - 2) {
+                        _loadVideos();
+                      }
+                    },
+                    itemBuilder: (context, index) {
+                      final video = _videos[index];
+                      return CommunityShortItem(
+                        videoId: video['id'] ?? '',
+                        title: video['title'] ?? '',
+                        channelTitle: video['channelTitle'] ?? '',
+                      );
+                    },
+                  ),
+                ),
           _buildOverlayHeader(),
         ],
       ),
