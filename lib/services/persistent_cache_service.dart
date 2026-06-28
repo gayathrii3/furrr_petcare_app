@@ -93,6 +93,40 @@ class PersistentCacheService {
     }
   }
 
+  static const String _factsKeyPrefix = 'cache_facts_';
+  static const String _newsKey = 'cache_news';
+
+  // --- Facts Caching ---
+  Future<void> saveFacts(String petKey, List<String> facts) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setStringList('$_factsKeyPrefix$petKey', facts);
+  }
+
+  Future<List<String>?> getFacts(String petKey) async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getStringList('$_factsKeyPrefix$petKey');
+  }
+
+  // --- News Caching ---
+  Future<void> saveNews(List<HealthArticle> articles) async {
+    final prefs = await SharedPreferences.getInstance();
+    final jsonList = articles.map((a) => a.toJson()).toList();
+    await prefs.setString(_newsKey, json.encode(jsonList));
+  }
+
+  Future<List<HealthArticle>?> getNews() async {
+    final prefs = await SharedPreferences.getInstance();
+    final data = prefs.getString(_newsKey);
+    if (data == null) return null;
+    
+    try {
+      final List decoded = json.decode(data);
+      return decoded.map((a) => HealthArticle.fromJson(a)).toList();
+    } catch (e) {
+      return null;
+    }
+  }
+
   // --- System ---
 
   Future<void> clearAll() async {

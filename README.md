@@ -23,7 +23,7 @@
 - **Community Feed**: A dynamic and personalized reels feed powered by **YouTube Shorts**. Features query rotation (to keep content fresh), search ordering randomization, breed-specific customization, and pull-to-refresh support.
 
 ###  Breed-Specific Intelligence
-- **Custom Care Guides**: The app adapts based on your pet's breed, offering tailored health risks and care tips.
+- **Pet Wiki Dashboard**: A premium, media-rich knowledge hub with sliding breed facts carousels, dynamic Unsplash category photos, segmented viewports (Breed Guides vs. Care News), and full read-aloud (TTS) accessibility.
 - **Real-Time Profile Sync**: Centralized service ensures pet profile changes are instantly reflected everywhere.
 
 ### Authentication & Session Security

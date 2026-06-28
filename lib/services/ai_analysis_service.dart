@@ -199,6 +199,103 @@ class AiAnalysisService {
     }
   }
 
+  Future<List<String>> generateBreedFacts(DogProfile pet) async {
+    final prompt = """
+      Generate 3 short, fascinating, and accurate fun facts about the dog breed: ${pet.breed}.
+      Each fact must be under 15 words.
+      Return the response in valid JSON format as a list of strings:
+      {
+        "facts": [
+          "Fact 1",
+          "Fact 2",
+          "Fact 3"
+        ]
+      }
+    """;
+    
+    if (_apiKey.isEmpty) return _getDefaultFacts(pet.breed);
+
+    try {
+      final rawJson = await _getRawAiResponse(prompt);
+      final jsonResponse = jsonDecode(_extractJson(rawJson));
+      final List factsJson = jsonResponse['facts'] ?? [];
+      return factsJson.map((f) => f.toString()).toList();
+    } catch (e) {
+      return _getDefaultFacts(pet.breed);
+    }
+  }
+
+  List<String> _getDefaultFacts(String breed) {
+    return [
+      "$breed dogs are highly intelligent and adapt quickly to household training.",
+      "A healthy $breed requires daily physical exercise and mental stimulation.",
+      "The $breed has a unique coat that protects it from various weather elements."
+    ];
+  }
+
+  Future<List<HealthArticle>> generatePetNews() async {
+    final prompt = """
+      Generate a set of 3 distinct, high-quality pet care news articles or seasonal alerts.
+      The topics can cover seasonal safety (heatwaves, winter care), new scientific nutrition insights, or general wellness trends.
+      
+      You must respond in valid JSON format as a list of articles:
+      {
+        "articles": [
+          {
+            "title": "News Headline (e.g., Summer Safety Alert: Keeping Your Dog Cool)",
+            "summary": "A concise summary of the news.",
+            "sections": [
+              {
+                "title": "What's Happening",
+                "content": "Detailed overview of the issue..."
+              },
+              {
+                "title": "Actionable Advice",
+                "content": "What pet owners should do..."
+              }
+            ],
+            "tags": ["Alert", "Nutrition", "Wellness"]
+          }
+        ]
+      }
+    """;
+
+    if (_apiKey.isEmpty) return _getDefaultNews();
+
+    try {
+      final rawJson = await _getRawAiResponse(prompt);
+      final jsonResponse = jsonDecode(_extractJson(rawJson));
+      final List articlesJson = jsonResponse['articles'] ?? [];
+      return articlesJson.map((a) => HealthArticle.fromJson(a)).toList();
+    } catch (e) {
+      return _getDefaultNews();
+    }
+  }
+
+  List<HealthArticle> _getDefaultNews() {
+    return [
+      HealthArticle(
+        title: "Seasonal Care: Hydration Alert",
+        summary: "As temperatures rise, keeping your pet hydrated is crucial for preventing heat exhaustion.",
+        sections: [
+          HealthSection(title: "The Importance of Water", content: "Dogs need about 1 ounce of water per pound of body weight daily. In warmer weather, this requirement increases significantly."),
+          HealthSection(title: "Hydration Tips", content: "Always carry a portable water bowl during walks. You can also add ice cubes to their water dish at home to keep it cool and refreshing.")
+        ],
+        tags: ["Alert", "Wellness"]
+      ),
+      HealthArticle(
+        title: "Nutritional Trends: Prebiotics in Pet Food",
+        summary: "Emerging veterinary studies highlight the role of gut health in boosting a dog's overall immune system.",
+        sections: [
+          HealthSection(title: "What are Prebiotics?", content: "Prebiotics are specialized plant fibers that nourish the good bacteria in your gut, promoting better digestion."),
+          HealthSection(title: "Sources to Consider", content: "Many modern high-quality kibbles include prebiotic fibers like gut healthy chicory root, flaxseed, or pumpkin.")
+        ],
+        tags: ["Nutrition", "Wellness"]
+      )
+    ];
+  }
+
+
 
   Future<String> _getRawAiResponse(String prompt, {Uint8List? imageBytes}) async {
     final content = [
